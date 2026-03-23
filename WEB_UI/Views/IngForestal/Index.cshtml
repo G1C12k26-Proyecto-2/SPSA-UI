@@ -14,7 +14,7 @@
 
     <!-- ===== BREADCRUMB ===== -->
     <nav class="vi-breadcrumb" aria-label="Ruta de navegación">
-        <a href="@Url.Action("Index","Tecnico")"><i class="fa-solid fa-house-chimney"></i> Dashboard</a>
+        <a href="@Url.Action("TecnicoDashboard", "IngForestal")"><i class="fa-solid fa-house-chimney"></i> Dashboard</a>
         <span class="vi-breadcrumb-sep"><i class="fa-solid fa-chevron-right"></i></span>
         <span>Mis Visitas</span>
     </nav>
@@ -26,7 +26,7 @@
             <p>Gestiona y da seguimiento a todas las visitas técnicas asignadas.</p>
         </div>
         <div class="vi-header-actions">
-            <button class="btn btn-outline" onclick="location.href='@Url.Action("Agenda","Visitas")'">
+            <button class="btn btn-outline" onclick="location.href='@Url.Action("Agenda","IngForestal")'">
                 <i class="fa-solid fa-calendar-days"></i> Ver Agenda
             </button>
             <button class="btn btn-primary" onclick="abrirModalProgramar(null,'','')">

@@ -32,9 +32,9 @@
             <i class="fa-solid fa-house-chimney"></i> Dashboard
         </a>
         <span class="rl-breadcrumb-sep"><i class="fa-solid fa-chevron-right"></i></span>
-        <a href="@Url.Action("Index","Visitas")">Mis Visitas</a>
+        <a href="@Url.Action("Index","IngForestal")">Mis Visitas</a>
         <span class="rl-breadcrumb-sep"><i class="fa-solid fa-chevron-right"></i></span>
-        <a href="@Url.Action("Detalle","Visitas")">@nombreFinca</a>
+        <a href="@Url.Action("Detalle","IngForestal")">@nombreFinca</a>
         <span class="rl-breadcrumb-sep"><i class="fa-solid fa-chevron-right"></i></span>
         <span>Evaluación Técnica</span>
     </nav>
@@ -49,7 +49,7 @@
             <p>Complete el formulario con los datos observados en campo. Los cambios respecto al registro original quedarán resaltados.</p>
         </div>
         <div class="rl-header-actions">
-            <button class="btn btn-outline" onclick="location.href='@Url.Action("Detalle","Visitas")'">
+            <button class="btn btn-outline" onclick="location.href='@Url.Action("Detalle","IngForestal")'">
                 <i class="fa-solid fa-arrow-left"></i> Cancelar
             </button>
         </div>
@@ -154,14 +154,25 @@
                                 Tipo de vegetación <span class="req">*</span>
                                 <span class="orig">Orig: Plantación Forestal</span>
                             </label>
+                            @{
+                                var optsVeg = new[] {
+                                    ("bosque-primario",     "Bosque Primario"),
+                                    ("bosque-secundario",   "Bosque Secundario"),
+                                    ("plantacion-forestal", "Plantación Forestal"),
+                                    ("pasto",               "Pasto o escasa vegetación"),
+                                };
+                            }
                             <select id="rl-vegetacion"
                                     onchange="onCampoChange('rl-vegetacion')"
                                     aria-describedby="rl-vegetacion-err">
                                 <option value="">Seleccione...</option>
-                                <option value="bosque-primario"     @(origVegetacion == "bosque-primario"     ? "selected" : "")>Bosque Primario</option>
-                                <option value="bosque-secundario"   @(origVegetacion == "bosque-secundario"   ? "selected" : "")>Bosque Secundario</option>
-                                <option value="plantacion-forestal" @(origVegetacion == "plantacion-forestal" ? "selected" : "")>Plantación Forestal</option>
-                                <option value="pasto"               @(origVegetacion == "pasto"               ? "selected" : "")>Pasto o escasa vegetación</option>
+                                @foreach (var opt in optsVeg) {
+                                    if (opt.Item1 == origVegetacion) {
+                                        <option value="@opt.Item1" selected="selected">@opt.Item2</option>
+                                    } else {
+                                        <option value="@opt.Item1">@opt.Item2</option>
+                                    }
+                                }
                             </select>
                             <span class="rl-orig-tag" id="rl-vegetacion-orig" style="display:none;">
                                 <i class="fa-solid fa-rotate-left"></i>
@@ -178,13 +189,24 @@
                                 Pendiente del terreno <span class="req">*</span>
                                 <span class="orig">Orig: Inclinada</span>
                             </label>
+                            @{
+                                var optsPend = new[] {
+                                    ("plana",          "Plana"),
+                                    ("inclinada",      "Inclinada"),
+                                    ("muy-inclinada",  "Muy inclinada"),
+                                };
+                            }
                             <select id="rl-pendiente"
                                     onchange="onCampoChange('rl-pendiente')"
                                     aria-describedby="rl-pendiente-err">
                                 <option value="">Seleccione...</option>
-                                <option value="plana"     @(origPendiente == "plana"     ? "selected" : "")>Plana</option>
-                                <option value="inclinada" @(origPendiente == "inclinada" ? "selected" : "")>Inclinada</option>
-                                <option value="muy-inclinada" @(origPendiente == "muy-inclinada" ? "selected" : "")>Muy inclinada</option>
+                                @foreach (var opt in optsPend) {
+                                    if (opt.Item1 == origPendiente) {
+                                        <option value="@opt.Item1" selected="selected">@opt.Item2</option>
+                                    } else {
+                                        <option value="@opt.Item1">@opt.Item2</option>
+                                    }
+                                }
                             </select>
                             <span class="rl-orig-tag" id="rl-pendiente-orig" style="display:none;">
                                 <i class="fa-solid fa-rotate-left"></i>
@@ -201,15 +223,26 @@
                                 Recursos hídricos <span class="req">*</span>
                                 <span class="orig">Orig: Quebrada</span>
                             </label>
+                            @{
+                                var optsRec = new[] {
+                                    ("ninguno",      "Ninguno"),
+                                    ("quebrada",     "Quebrada"),
+                                    ("rio",          "Río"),
+                                    ("naciente",     "Naciente"),
+                                    ("rio-naciente", "Río y naciente"),
+                                };
+                            }
                             <select id="rl-recursos"
                                     onchange="onCampoChange('rl-recursos')"
                                     aria-describedby="rl-recursos-err">
                                 <option value="">Seleccione...</option>
-                                <option value="ninguno"   @(origRecursos == "ninguno"  ? "selected" : "")>Ninguno</option>
-                                <option value="quebrada"  @(origRecursos == "quebrada" ? "selected" : "")>Quebrada</option>
-                                <option value="rio"       @(origRecursos == "rio"      ? "selected" : "")>Río</option>
-                                <option value="naciente"  @(origRecursos == "naciente" ? "selected" : "")>Naciente</option>
-                                <option value="rio-naciente" @(origRecursos == "rio-naciente" ? "selected" : "")>Río y naciente</option>
+                                @foreach (var opt in optsRec) {
+                                    if (opt.Item1 == origRecursos) {
+                                        <option value="@opt.Item1" selected="selected">@opt.Item2</option>
+                                    } else {
+                                        <option value="@opt.Item1">@opt.Item2</option>
+                                    }
+                                }
                             </select>
                             <span class="rl-orig-tag" id="rl-recursos-orig" style="display:none;">
                                 <i class="fa-solid fa-rotate-left"></i>
@@ -226,13 +259,24 @@
                                 Uso de suelo verificado
                                 <span class="orig">Orig: Conservación</span>
                             </label>
+                            @{
+                                var optsUso = new[] {
+                                    ("conservacion", "Conservación / Reforestación"),
+                                    ("agropecuario", "Agropecuario"),
+                                    ("mixto",        "Mixto"),
+                                    ("sin-uso",      "Sin uso definido"),
+                                };
+                            }
                             <select id="rl-uso-suelo"
                                     onchange="onCampoChange('rl-uso-suelo')">
                                 <option value="">Seleccione...</option>
-                                <option value="conservacion"    @(origUsoSuelo == "conservacion"    ? "selected" : "")>Conservación / Reforestación</option>
-                                <option value="agropecuario"    @(origUsoSuelo == "agropecuario"    ? "selected" : "")>Agropecuario</option>
-                                <option value="mixto"           @(origUsoSuelo == "mixto"           ? "selected" : "")>Mixto</option>
-                                <option value="sin-uso"         @(origUsoSuelo == "sin-uso"         ? "selected" : "")>Sin uso definido</option>
+                                @foreach (var opt in optsUso) {
+                                    if (opt.Item1 == origUsoSuelo) {
+                                        <option value="@opt.Item1" selected="selected">@opt.Item2</option>
+                                    } else {
+                                        <option value="@opt.Item1">@opt.Item2</option>
+                                    }
+                                }
                             </select>
                             <span class="rl-orig-tag" id="rl-uso-suelo-orig" style="display:none;">
                                 <i class="fa-solid fa-rotate-left"></i>
@@ -347,11 +391,11 @@
 
             <!-- ===== ACCIONES FINALES ===== -->
             <div class="rl-acciones-finales">
-                <button class="btn btn-outline" onclick="location.href='@Url.Action("Detalle","Index")'">
+                <button class="btn btn-outline" onclick="location.href='@Url.Action("Detalle","IngForestal")'">
                     <i class="fa-solid fa-xmark"></i> Cancelar
                 </button>
                 <div class="rl-acciones-right">
-                    <button class="btn btn-outline" onclick="location.href='@Url.Action("Detalle", "Index")'">
+                    <button class="btn btn-outline" onclick="location.href='@Url.Action("Detalle","IngForestal")'">
                         <i class="fa-solid fa-eye"></i> Ver Detalle
                     </button>
                     <button class="btn btn-primary" onclick="guardarEvaluacion()">
