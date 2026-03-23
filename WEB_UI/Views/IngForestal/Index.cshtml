@@ -1,0 +1,425 @@
+@{
+    ViewData["Title"] = "Mis Visitas - Ingeniero Forestal";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles {
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/ingforestal/dashboard.css"      asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/ingforestal/visitas-index.css" asp-append-version="true" />
+}
+
+<div class="tecnico-dashboard">
+
+    <!-- ===== BREADCRUMB ===== -->
+    <nav class="vi-breadcrumb" aria-label="Ruta de navegación">
+        <a href="@Url.Action("Index","Tecnico")"><i class="fa-solid fa-house-chimney"></i> Dashboard</a>
+        <span class="vi-breadcrumb-sep"><i class="fa-solid fa-chevron-right"></i></span>
+        <span>Mis Visitas</span>
+    </nav>
+
+    <!-- ===== PAGE HEADER ===== -->
+    <div class="vi-page-header">
+        <div>
+            <h1><i class="fa-solid fa-map-location-dot" style="color:var(--verde-claro);font-size:1.4rem;"></i> Mis Visitas</h1>
+            <p>Gestiona y da seguimiento a todas las visitas técnicas asignadas.</p>
+        </div>
+        <div class="vi-header-actions">
+            <button class="btn btn-outline" onclick="location.href='@Url.Action("Agenda","Visitas")'">
+                <i class="fa-solid fa-calendar-days"></i> Ver Agenda
+            </button>
+            <button class="btn btn-primary" onclick="abrirModalProgramar(null,'','')">
+                <i class="fa-solid fa-calendar-plus"></i> Programar Visita
+            </button>
+        </div>
+    </div>
+
+    <!-- ===== TABS DE ESTADO ===== -->
+    <div class="vi-tabs" role="tablist" aria-label="Filtrar por estado">
+        <button class="vi-tab activo" role="tab" data-tab="todos"
+                onclick="cambiarTab('todos')" aria-selected="true">
+            <i class="fa-solid fa-layer-group"></i> Todas
+            <span class="vi-tab-badge" id="badge-todos">39</span>
+        </button>
+        <button class="vi-tab" role="tab" data-tab="pendiente"
+                onclick="cambiarTab('pendiente')" aria-selected="false">
+            <i class="fa-solid fa-hourglass-half"></i> Pendientes
+            <span class="vi-tab-badge" id="badge-pendiente">8</span>
+        </button>
+        <button class="vi-tab" role="tab" data-tab="proceso"
+                onclick="cambiarTab('proceso')" aria-selected="false">
+            <i class="fa-solid fa-spinner"></i> En Proceso
+            <span class="vi-tab-badge" id="badge-proceso">3</span>
+        </button>
+        <button class="vi-tab" role="tab" data-tab="aprobada"
+                onclick="cambiarTab('aprobada')" aria-selected="false">
+            <i class="fa-solid fa-circle-check"></i> Aprobadas
+            <span class="vi-tab-badge" id="badge-aprobada">24</span>
+        </button>
+        <button class="vi-tab" role="tab" data-tab="rechazada"
+                onclick="cambiarTab('rechazada')" aria-selected="false">
+            <i class="fa-solid fa-circle-xmark"></i> Rechazadas
+            <span class="vi-tab-badge" id="badge-rechazada">4</span>
+        </button>
+    </div>
+
+    <!-- ===== PANEL PRINCIPAL ===== -->
+    <div class="vi-panel">
+
+        <!-- Sub-header -->
+        <div class="vi-panel-header">
+            <h2><i class="fa-solid fa-list"></i> Listado de Visitas</h2>
+            <span class="vi-resultados-label" id="vi-pag-info">Cargando...</span>
+        </div>
+
+        <!-- Filtros -->
+        <div class="vi-filtros">
+            <div class="vi-search-wrap">
+                <span class="vi-search-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
+                <input type="text" id="vi-buscador"
+                       placeholder="Buscar por finca, propietario, cantón..."
+                       oninput="aplicarFiltros()"
+                       aria-label="Buscar visitas">
+            </div>
+            <select class="vi-select" id="vi-orden" onchange="aplicarFiltros()" aria-label="Ordenar por">
+                <option value="fecha-desc">Más recientes</option>
+                <option value="fecha-asc">Más antiguas</option>
+                <option value="nombre-asc">Finca A–Z</option>
+                <option value="hectareas-desc">Mayor hectáreas</option>
+            </select>
+            <button class="vi-btn-limpiar" onclick="limpiarFiltros()" title="Limpiar filtros">
+                <i class="fa-solid fa-xmark"></i> Limpiar
+            </button>
+        </div>
+
+        <!-- Tabla -->
+        <div class="vi-table-wrap">
+            <table class="vi-table" aria-label="Listado de visitas técnicas">
+                <thead>
+                    <tr>
+                        <th>Finca / Propietario</th>
+                        <th>Ubicación</th>
+                        <th>Hectáreas</th>
+                        <th>Tipo de Vegetación</th>
+                        <th>Estado</th>
+                        <th>Fecha de Visita</th>
+                        <th class="no-sort">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="vi-tbody">
+
+                    <!-- ── FILA 1 ── -->
+                    <tr data-estado="pendiente"
+                        data-nombre="Finca Los Robles"
+                        data-fecha="2026-03-23"
+                        data-hectareas="12.5"
+                        data-fecha-visita="2026-03-23">
+                        <td>
+                            <div class="vi-finca-name">Finca Los Robles</div>
+                            <div class="vi-finca-loc">José Ángel Mora</div>
+                        </td>
+                        <td>Turrialba, Cartago</td>
+                        <td>12.50 ha</td>
+                        <td>Bosque Secundario</td>
+                        <td><span class="chip chip-pendiente">Pendiente</span></td>
+                        <td>
+                            <div class="vi-fecha-principal">23/03/2026</div>
+                            <div class="vi-fecha-dias">—</div>
+                        </td>
+                        <td>
+                            <button class="btn-icon" title="Ver detalle" onclick="verDetalle(1)">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+                            <button class="btn-icon" title="Programar visita"
+                                    onclick="abrirModalProgramar(1,'Finca Los Robles','José Ángel Mora')">
+                                <i class="fa-solid fa-calendar-plus"></i>
+                            </button>
+                        </td>
+                    </tr>
+
+                    <!-- ── FILA 2 ── -->
+                    <tr data-estado="pendiente"
+                        data-nombre="Hacienda Verde"
+                        data-fecha="2026-03-15"
+                        data-hectareas="28.0"
+                        data-fecha-visita="2026-03-25">
+                        <td>
+                            <div class="vi-finca-name">Hacienda Verde</div>
+                            <div class="vi-finca-loc">María Solano Vega</div>
+                        </td>
+                        <td>Sarapiquí, Heredia</td>
+                        <td>28.00 ha</td>
+                        <td>Bosque Primario</td>
+                        <td><span class="chip chip-pendiente">Pendiente</span></td>
+                        <td>
+                            <div class="vi-fecha-principal">25/03/2026</div>
+                            <div class="vi-fecha-dias">—</div>
+                        </td>
+                        <td>
+                            <button class="btn-icon" title="Ver detalle" onclick="verDetalle(2)">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+                            <button class="btn-icon" title="Programar visita"
+                                    onclick="abrirModalProgramar(2,'Hacienda Verde','María Solano Vega')">
+                                <i class="fa-solid fa-calendar-plus"></i>
+                            </button>
+                        </td>
+                    </tr>
+
+                    <!-- ── FILA 3 ── -->
+                    <tr data-estado="proceso"
+                        data-nombre="Finca El Cedro"
+                        data-fecha="2026-03-10"
+                        data-hectareas="9.75"
+                        data-fecha-visita="2026-03-28">
+                        <td>
+                            <div class="vi-finca-name">Finca El Cedro</div>
+                            <div class="vi-finca-loc">Roberto Chaves</div>
+                        </td>
+                        <td>Pérez Zeledón, San José</td>
+                        <td>9.75 ha</td>
+                        <td>Plantación Forestal</td>
+                        <td><span class="chip chip-proceso">En Proceso</span></td>
+                        <td>
+                            <div class="vi-fecha-principal">28/03/2026</div>
+                            <div class="vi-fecha-dias">—</div>
+                        </td>
+                        <td>
+                            <button class="btn-icon" title="Ver detalle" onclick="verDetalle(3)">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+                            <button class="btn-icon" title="Continuar evaluación" onclick="realizarVisita(3)">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
+                        </td>
+                    </tr>
+
+                    <!-- ── FILA 4 ── -->
+                    <tr data-estado="aprobada"
+                        data-nombre="Lote Montañés"
+                        data-fecha="2026-03-05"
+                        data-hectareas="45.0"
+                        data-fecha-visita="2026-03-05">
+                        <td>
+                            <div class="vi-finca-name">Lote Montañés</div>
+                            <div class="vi-finca-loc">Ana Chinchilla</div>
+                        </td>
+                        <td>Tarrazú, San José</td>
+                        <td>45.00 ha</td>
+                        <td>Bosque Primario</td>
+                        <td><span class="chip chip-aprobada">Aprobada</span></td>
+                        <td>
+                            <div class="vi-fecha-principal">05/03/2026</div>
+                            <div class="vi-fecha-dias">—</div>
+                        </td>
+                        <td>
+                            <button class="btn-icon" title="Ver detalle" onclick="verDetalle(4)">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+                        </td>
+                    </tr>
+
+                    <!-- ── FILA 5 ── -->
+                    <tr data-estado="rechazada"
+                        data-nombre="Finca San Marcos"
+                        data-fecha="2026-02-28"
+                        data-hectareas="5.0"
+                        data-fecha-visita="2026-02-28">
+                        <td>
+                            <div class="vi-finca-name">Finca San Marcos</div>
+                            <div class="vi-finca-loc">Luis Blanco</div>
+                        </td>
+                        <td>Alajuela, Alajuela</td>
+                        <td>5.00 ha</td>
+                        <td>Pasto</td>
+                        <td><span class="chip chip-rechazada">Rechazada</span></td>
+                        <td>
+                            <div class="vi-fecha-principal">28/02/2026</div>
+                            <div class="vi-fecha-dias">—</div>
+                        </td>
+                        <td>
+                            <button class="btn-icon" title="Ver detalle" onclick="verDetalle(5)">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+                        </td>
+                    </tr>
+
+                    <!-- ── FILA 6 ── -->
+                    <tr data-estado="pendiente"
+                        data-nombre="Finca La Esperanza"
+                        data-fecha="2026-03-20"
+                        data-hectareas="18.3"
+                        data-fecha-visita="2026-03-22">
+                        <td>
+                            <div class="vi-finca-name">Finca La Esperanza</div>
+                            <div class="vi-finca-loc">Carmen Ulate</div>
+                        </td>
+                        <td>Acosta, San José</td>
+                        <td>18.30 ha</td>
+                        <td>Bosque Secundario</td>
+                        <td><span class="chip chip-pendiente">Pendiente</span></td>
+                        <td>
+                            <div class="vi-fecha-principal">22/03/2026</div>
+                            <div class="vi-fecha-dias">—</div>
+                        </td>
+                        <td>
+                            <button class="btn-icon" title="Ver detalle" onclick="verDetalle(6)">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+                            <button class="btn-icon" title="Programar visita"
+                                    onclick="abrirModalProgramar(6,'Finca La Esperanza','Carmen Ulate')">
+                                <i class="fa-solid fa-calendar-plus"></i>
+                            </button>
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+
+            <!-- Estado vacío -->
+            <div class="vi-empty" id="vi-empty" style="display:none;" role="status">
+                <div class="vi-empty-icon">🌿</div>
+                <h3>Sin visitas encontradas</h3>
+                <p>No hay visitas que coincidan con los filtros aplicados.</p>
+                <button class="btn btn-outline" onclick="limpiarFiltros()">
+                    <i class="fa-solid fa-rotate-left"></i> Limpiar filtros
+                </button>
+            </div>
+        </div>
+
+        <!-- Paginación -->
+        <div class="vi-paginacion">
+            <span id="vi-pag-info-bottom"></span>
+            <div class="vi-pag-btns" id="vi-pag-btns"></div>
+        </div>
+
+    </div><!-- /vi-panel -->
+
+</div><!-- /tecnico-dashboard -->
+
+<!-- ===== MODAL: PROGRAMAR VISITA ===== -->
+<div class="vi-modal-overlay" id="vi-modal-overlay" role="dialog"
+     aria-modal="true" aria-labelledby="vi-modal-titulo">
+
+    <div class="vi-modal">
+        <div class="vi-modal-head">
+            <h3 id="vi-modal-titulo">
+                <i class="fa-solid fa-calendar-plus"></i> Programar Visita Técnica
+            </h3>
+            <button class="vi-modal-close" onclick="cerrarModal()" title="Cerrar" aria-label="Cerrar modal">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <div class="vi-modal-body">
+            <form id="vi-form-programar" novalidate>
+
+                <!-- Campo oculto para el ID de la solicitud -->
+                <input type="hidden" id="pv-solicitud-id">
+
+                <div class="vi-form-grid">
+
+                    <!-- Finca (solo lectura) -->
+                    <div class="vi-field">
+                        <label>Finca</label>
+                        <input type="text" id="pv-finca" readonly
+                               style="background:var(--gris-claro);cursor:default;">
+                    </div>
+
+                    <!-- Propietario (solo lectura) -->
+                    <div class="vi-field">
+                        <label>Propietario</label>
+                        <input type="text" id="pv-propietario" readonly
+                               style="background:var(--gris-claro);cursor:default;">
+                    </div>
+
+                    <!-- Fecha de visita -->
+                    <div class="vi-field">
+                        <label for="pv-fecha">
+                            Fecha de visita <span class="req">*</span>
+                        </label>
+                        <input type="date" id="pv-fecha"
+                               aria-describedby="pv-fecha-err">
+                        <span class="vi-field-error" id="pv-fecha-err" role="alert">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            <span></span>
+                        </span>
+                    </div>
+
+                    <!-- Hora -->
+                    <div class="vi-field">
+                        <label for="pv-hora">
+                            Hora <span class="req">*</span>
+                        </label>
+                        <input type="time" id="pv-hora"
+                               aria-describedby="pv-hora-err">
+                        <span class="vi-field-error" id="pv-hora-err" role="alert">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            <span></span>
+                        </span>
+                    </div>
+
+                    <!-- Transporte -->
+                    <div class="vi-field">
+                        <label for="pv-transporte">
+                            Medio de transporte <span class="req">*</span>
+                        </label>
+                        <select id="pv-transporte" aria-describedby="pv-transporte-err">
+                            <option value="">Seleccione...</option>
+                            <option value="vehiculo-propio">Vehículo propio</option>
+                            <option value="vehiculo-institucional">Vehículo institucional</option>
+                            <option value="transporte-publico">Transporte público</option>
+                            <option value="otro">Otro</option>
+                        </select>
+                        <span class="vi-field-error" id="pv-transporte-err" role="alert">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            <span></span>
+                        </span>
+                    </div>
+
+                    <!-- Objetivo -->
+                    <div class="vi-field span-2">
+                        <label for="pv-objetivo">
+                            Objetivo de la visita <span class="req">*</span>
+                        </label>
+                        <textarea id="pv-objetivo" rows="3"
+                                  placeholder="Describa el propósito técnico de la visita..."
+                                  aria-describedby="pv-objetivo-err"></textarea>
+                        <span class="vi-field-error" id="pv-objetivo-err" role="alert">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            <span></span>
+                        </span>
+                    </div>
+
+                    <!-- Observaciones (opcional) -->
+                    <div class="vi-field span-2">
+                        <label for="pv-observacion">Observaciones adicionales</label>
+                        <textarea id="pv-observacion" rows="2"
+                                  placeholder="Notas de coordinación, equipos necesarios, etc."></textarea>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+
+        <div class="vi-modal-footer">
+            <button class="btn btn-outline" onclick="cerrarModal()">
+                <i class="fa-solid fa-xmark"></i> Cancelar
+            </button>
+            <button class="btn btn-primary" onclick="guardarVisita()">
+                <i class="fa-solid fa-calendar-check"></i> Programar Visita
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== TOAST ===== -->
+<div class="td-toast" id="vi-toast" role="alert" aria-live="polite">
+    <i class="fa-solid fa-circle-check"></i>
+    <span id="vi-toast-msg">Acción realizada correctamente.</span>
+</div>
+
+@section Scripts {
+    <script src="~/js/ingforestal/visitas-index.js" asp-append-version="true"></script>
+}

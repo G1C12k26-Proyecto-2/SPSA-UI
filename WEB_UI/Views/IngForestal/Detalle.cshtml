@@ -1,0 +1,494 @@
+@{
+    ViewData["Title"] = "Detalle de Visita - Ingeniero Forestal";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    // En producción estos valores vendrán del modelo: @Model.Estado, @Model.NombreFinca, etc.
+    var estadoActual    = "proceso";
+    var nombreFinca     = "Finca El Cedro";
+    var propietario     = "Roberto Chaves";
+    var ubicacion       = "Pérez Zeledón, San José";
+    var hectareas       = "9.75";
+    var vegetacion      = "Plantación Forestal";
+    var recursosHidricos = "Quebrada";
+    var pendiente       = "Inclinada";
+    var usoSuelo        = "Conservación / Reforestación";
+    var fechaSolicitud  = "10/03/2026";
+    var fechaVisita     = "28/03/2026";
+    var horaVisita      = "07:00 AM";
+    var transporte      = "Vehículo institucional";
+    var duracion        = "Medio día";
+    var objetivo        = "Verificar el estado del área de plantación forestal y evaluar condiciones de los recursos hídricos identificados en el formulario de solicitud.";
+    var observacion     = "Coordinar acceso por portón trasero según indicaciones del propietario. Llevar GPS y cámara fotográfica.";
+    var ingenieroAsig   = "Ing. Carlos Pérez";
+}
+
+@section Styles {
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/ingforestal/dashboard.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/ingforestal/detalle.css"   asp-append-version="true" />
+
+    <style>
+        /* ── Lightbox ── */
+        .dt-lightbox-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.88);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .dt-lightbox-overlay.activo { display: flex; }
+        .dt-lightbox-img-wrap {
+            position: relative;
+            max-width: 90vw;
+            max-height: 80vh;
+        }
+        .dt-lightbox-img-wrap img {
+            max-width: 90vw;
+            max-height: 78vh;
+            border-radius: 10px;
+            object-fit: contain;
+            display: block;
+        }
+        .dt-lightbox-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,.15);
+            border: none;
+            color: #fff;
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex; align-items: center; justify-content: center;
+            transition: background .15s;
+        }
+        .dt-lightbox-nav:hover { background: rgba(255,255,255,.3); }
+        .dt-lightbox-nav.prev  { left: -52px; }
+        .dt-lightbox-nav.next  { right: -52px; }
+        .dt-lightbox-counter {
+            color: rgba(255,255,255,.7);
+            font-size: .82rem;
+            font-family: var(--font-cuerpo);
+        }
+        .dt-lightbox-cerrar {
+            position: fixed;
+            top: 20px; right: 24px;
+            background: rgba(255,255,255,.15);
+            border: none;
+            color: #fff;
+            width: 38px; height: 38px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.1rem;
+            display: flex; align-items: center; justify-content: center;
+            transition: background .15s;
+        }
+        .dt-lightbox-cerrar:hover { background: rgba(255,255,255,.3); }
+    </style>
+}
+
+<!-- Campo oculto para que el JS conozca el estado actual -->
+<input type="hidden" id="dt-estado-actual" value="@estadoActual">
+
+<div class="tecnico-dashboard">
+
+    <!-- ===== BREADCRUMB ===== -->
+    <nav class="dt-breadcrumb" aria-label="Ruta de navegación">
+        <a href="@Url.Action("Index","IngForestal")">
+            <i class="fa-solid fa-house-chimney"></i> Dashboard
+        </a>
+        <span class="dt-breadcrumb-sep"><i class="fa-solid fa-chevron-right"></i></span>
+        <a href="@Url.Action("Index","Visitas")">Mis Visitas</a>
+        <span class="dt-breadcrumb-sep"><i class="fa-solid fa-chevron-right"></i></span>
+        <span>Detalle</span>
+    </nav>
+
+    <!-- ===== PAGE HEADER ===== -->
+    <div class="dt-page-header">
+        <div class="dt-page-header-left">
+            <h1>@nombreFinca</h1>
+            <div class="dt-meta">
+                <span class="chip chip-@estadoActual dt-chip-estado">
+                    ● @(estadoActual == "proceso" ? "En Proceso" : estadoActual == "pendiente" ? "Pendiente" : estadoActual == "aprobada" ? "Aprobada" : "Rechazada")
+                </span>
+                <span class="dt-meta-item">
+                    <i class="fa-solid fa-location-dot"></i> @ubicacion
+                </span>
+                <span class="dt-meta-item">
+                    <i class="fa-solid fa-calendar"></i> Visita: @fechaVisita
+                </span>
+                <span class="dt-meta-item">
+                    <i class="fa-solid fa-user-tie"></i> @ingenieroAsig
+                </span>
+            </div>
+        </div>
+        <div class="dt-header-actions">
+            <button class="btn btn-outline" onclick="volverLista()">
+                <i class="fa-solid fa-arrow-left"></i> Volver
+            </button>
+            <button class="btn btn-outline" onclick="abrirModalEstado()">
+                <i class="fa-solid fa-pen-to-square"></i> Cambiar Estado
+            </button>
+            <button class="btn btn-primary" id="dt-btn-realizar"
+                    onclick="realizarVisita()" style="display:none;">
+                <i class="fa-solid fa-clipboard-check"></i> Realizar Visita
+            </button>
+        </div>
+    </div>
+
+    <!-- ===== LAYOUT ===== -->
+    <div class="dt-body">
+
+        <!-- COLUMNA PRINCIPAL -->
+        <div>
+
+            <!-- ── DATOS DE LA FINCA ── -->
+            <div class="dt-panel">
+                <div class="dt-panel-header">
+                    <h2><i class="fa-solid fa-tree"></i> Datos de la Finca</h2>
+                </div>
+                <div class="dt-panel-body">
+                    <div class="dt-data-grid">
+                        <div class="dt-data-item">
+                            <span class="dt-data-label">Propietario</span>
+                            <span class="dt-data-valor destacado">@propietario</span>
+                        </div>
+                        <div class="dt-data-item">
+                            <span class="dt-data-label">Ubicación</span>
+                            <span class="dt-data-valor">@ubicacion</span>
+                        </div>
+                        <div class="dt-data-item">
+                            <span class="dt-data-label">Hectáreas</span>
+                            <span class="dt-data-valor destacado">@hectareas ha</span>
+                        </div>
+                        <div class="dt-data-item">
+                            <span class="dt-data-label">Tipo de vegetación</span>
+                            <span class="dt-data-valor">@vegetacion</span>
+                        </div>
+                        <div class="dt-data-item">
+                            <span class="dt-data-label">Recursos hídricos</span>
+                            <span class="dt-data-valor">@recursosHidricos</span>
+                        </div>
+                        <div class="dt-data-item">
+                            <span class="dt-data-label">Pendiente</span>
+                            <span class="dt-data-valor">@pendiente</span>
+                        </div>
+                        <div class="dt-data-item">
+                            <span class="dt-data-label">Uso de suelo</span>
+                            <span class="dt-data-valor">@usoSuelo</span>
+                        </div>
+                        <div class="dt-data-item">
+                            <span class="dt-data-label">Fecha de solicitud</span>
+                            <span class="dt-data-valor">@fechaSolicitud</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── DATOS DE LA VISITA ── -->
+            <div class="dt-panel">
+                <div class="dt-panel-header">
+                    <h2><i class="fa-solid fa-calendar-check"></i> Datos de la Visita</h2>
+                </div>
+                <div class="dt-panel-body">
+                    <div class="dt-data-grid">
+                        <div class="dt-data-item">
+                            <span class="dt-data-label">Fecha programada</span>
+                            <span class="dt-data-valor destacado">@fechaVisita</span>
+                        </div>
+                        <div class="dt-data-item">
+                            <span class="dt-data-label">Hora de inicio</span>
+                            <span class="dt-data-valor">@horaVisita</span>
+                        </div>
+                        <div class="dt-data-item">
+                            <span class="dt-data-label">Duración estimada</span>
+                            <span class="dt-data-valor">@duracion</span>
+                        </div>
+                        <div class="dt-data-item">
+                            <span class="dt-data-label">Transporte</span>
+                            <span class="dt-data-valor">@transporte</span>
+                        </div>
+                    </div>
+
+                    <div class="dt-divider" style="margin:20px 0 16px;display:flex;align-items:center;gap:10px;color:var(--verde-bosque);font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;">
+                        <i class="fa-solid fa-bullseye"></i> Objetivo
+                        <span style="flex:1;height:1px;background:var(--borde);display:block;"></span>
+                    </div>
+                    <div class="dt-observacion-box">@objetivo</div>
+
+                    @if (!string.IsNullOrWhiteSpace(observacion)) {
+                        <div class="dt-divider" style="margin:20px 0 16px;display:flex;align-items:center;gap:10px;color:var(--verde-bosque);font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;">
+                            <i class="fa-solid fa-note-sticky"></i> Observaciones de coordinación
+                            <span style="flex:1;height:1px;background:var(--borde);display:block;"></span>
+                        </div>
+                        <div class="dt-observacion-box" style="border-left-color:var(--amarillo);background:#FEFAE8;">
+                            @observacion
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- ── FOTOGRAFÍAS ── -->
+            <div class="dt-panel">
+                <div class="dt-panel-header">
+                    <h2><i class="fa-solid fa-images"></i> Fotografías de la Finca</h2>
+                    <span style="font-size:.8rem;color:var(--gris-medio);">3 fotos adjuntas</span>
+                </div>
+                <div class="dt-panel-body">
+                    <div class="dt-galeria">
+                        <!-- Placeholders visuales — en producción usar rutas reales del modelo -->
+                        <div class="dt-foto-item"
+                             data-foto-src="/img/finca-cedro-1.jpg"
+                             data-foto-alt="Vista aérea de la plantación"
+                             role="button" tabindex="0" aria-label="Ver foto 1">
+                            <div class="dt-foto-placeholder">🌲</div>
+                            <div class="dt-foto-overlay"><i class="fa-solid fa-magnifying-glass-plus"></i></div>
+                        </div>
+                        <div class="dt-foto-item"
+                             data-foto-src="/img/finca-cedro-2.jpg"
+                             data-foto-alt="Quebrada en el predio"
+                             role="button" tabindex="0" aria-label="Ver foto 2">
+                            <div class="dt-foto-placeholder">💧</div>
+                            <div class="dt-foto-overlay"><i class="fa-solid fa-magnifying-glass-plus"></i></div>
+                        </div>
+                        <div class="dt-foto-item"
+                             data-foto-src="/img/finca-cedro-3.jpg"
+                             data-foto-alt="Pendiente del terreno"
+                             role="button" tabindex="0" aria-label="Ver foto 3">
+                            <div class="dt-foto-placeholder">⛰️</div>
+                            <div class="dt-foto-overlay"><i class="fa-solid fa-magnifying-glass-plus"></i></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── DOCUMENTOS ADJUNTOS ── -->
+            <div class="dt-panel">
+                <div class="dt-panel-header">
+                    <h2><i class="fa-solid fa-paperclip"></i> Documentos Adjuntos</h2>
+                </div>
+                <div class="dt-panel-body">
+                    <div class="dt-doc-list">
+                        <div class="dt-doc-item" role="button" tabindex="0" aria-label="Descargar plano catastral">
+                            <div class="dt-doc-icon"><i class="fa-solid fa-file-pdf"></i></div>
+                            <span class="dt-doc-nombre">Plano catastral finca El Cedro.pdf</span>
+                            <span class="dt-doc-meta">PDF · 1.2 MB</span>
+                            <i class="fa-solid fa-download" style="color:var(--gris-medio);font-size:.9rem;"></i>
+                        </div>
+                        <div class="dt-doc-item" role="button" tabindex="0" aria-label="Descargar estudio de suelo">
+                            <div class="dt-doc-icon"><i class="fa-solid fa-file-lines"></i></div>
+                            <span class="dt-doc-nombre">Estudio de suelo 2025.pdf</span>
+                            <span class="dt-doc-meta">PDF · 840 KB</span>
+                            <i class="fa-solid fa-download" style="color:var(--gris-medio);font-size:.9rem;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- /columna principal -->
+
+        <!-- COLUMNA ASIDE -->
+        <div class="dt-aside">
+
+            <!-- Tarjeta de estado -->
+            <div class="dt-estado-card">
+                <div class="dt-estado-header">
+                    <p>Estado actual</p>
+                    <div class="dt-estado-chip-grande">
+                        <i class="fa-solid fa-spinner"></i>
+                        <span id="dt-estado-grande">
+                            @(estadoActual == "proceso" ? "En Proceso" : estadoActual == "pendiente" ? "Pendiente" : estadoActual == "aprobada" ? "Aprobada" : "Rechazada")
+                        </span>
+                    </div>
+                </div>
+                <div class="dt-estado-body">
+                    <div class="dt-estado-fila">
+                        <span class="dt-estado-fila-label">Solicitud</span>
+                        <span class="dt-estado-fila-val">@fechaSolicitud</span>
+                    </div>
+                    <div class="dt-estado-fila">
+                        <span class="dt-estado-fila-label">Visita programada</span>
+                        <span class="dt-estado-fila-val">@fechaVisita</span>
+                    </div>
+                    <div class="dt-estado-fila">
+                        <span class="dt-estado-fila-label">Hora</span>
+                        <span class="dt-estado-fila-val">@horaVisita</span>
+                    </div>
+                    <div class="dt-estado-fila">
+                        <span class="dt-estado-fila-label">Ingeniero</span>
+                        <span class="dt-estado-fila-val">@ingenieroAsig</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Acciones rápidas -->
+            <div class="dt-panel">
+                <div class="dt-panel-header">
+                    <h2><i class="fa-solid fa-bolt"></i> Acciones</h2>
+                </div>
+                <div class="dt-panel-body" style="padding:16px;">
+                    <div class="dt-acciones-aside">
+                        <button class="btn btn-primary" id="dt-btn-realizar"
+                                onclick="realizarVisita()" style="display:none;justify-content:center;">
+                            <i class="fa-solid fa-clipboard-check"></i> Realizar Visita
+                        </button>
+                        <button class="btn btn-outline" onclick="abrirModalEstado()"
+                                style="justify-content:center;">
+                            <i class="fa-solid fa-pen-to-square"></i> Cambiar Estado
+                        </button>
+                        <button class="btn btn-outline" onclick="location.href='@Url.Action("Agenda","Visitas")'"
+                                style="justify-content:center;">
+                            <i class="fa-solid fa-calendar-days"></i> Ver Agenda
+                        </button>
+                        <button class="btn btn-outline" onclick="volverLista()"
+                                style="justify-content:center;">
+                            <i class="fa-solid fa-list"></i> Volver al Listado
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Timeline -->
+            <div class="dt-panel">
+                <div class="dt-panel-header">
+                    <h2><i class="fa-solid fa-timeline"></i> Historial</h2>
+                </div>
+                <div class="dt-timeline">
+                    <div class="dt-timeline-item">
+                        <div class="dt-timeline-dot completado">
+                            <i class="fa-solid fa-check"></i>
+                        </div>
+                        <div class="dt-timeline-info">
+                            <div class="dt-timeline-titulo">Solicitud recibida</div>
+                            <div class="dt-timeline-sub">Estado inicial del sistema</div>
+                        </div>
+                        <div class="dt-timeline-fecha">10/03/2026</div>
+                    </div>
+                    <div class="dt-timeline-item">
+                        <div class="dt-timeline-dot completado">
+                            <i class="fa-solid fa-check"></i>
+                        </div>
+                        <div class="dt-timeline-info">
+                            <div class="dt-timeline-titulo">Visita programada</div>
+                            <div class="dt-timeline-sub">Asignada al Ing. Carlos Pérez</div>
+                        </div>
+                        <div class="dt-timeline-fecha">15/03/2026</div>
+                    </div>
+                    <div class="dt-timeline-item">
+                        <div class="dt-timeline-dot activo">
+                            <i class="fa-solid fa-spinner"></i>
+                        </div>
+                        <div class="dt-timeline-info">
+                            <div class="dt-timeline-titulo">En proceso</div>
+                            <div class="dt-timeline-sub">Evaluación en curso</div>
+                        </div>
+                        <div class="dt-timeline-fecha">28/03/2026</div>
+                    </div>
+                    <div class="dt-timeline-item">
+                        <div class="dt-timeline-dot pendiente">
+                            <i class="fa-solid fa-circle"></i>
+                        </div>
+                        <div class="dt-timeline-info">
+                            <div class="dt-timeline-titulo">Resolución final</div>
+                            <div class="dt-timeline-sub">Aprobación o rechazo</div>
+                        </div>
+                        <div class="dt-timeline-fecha">—</div>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- /aside -->
+
+    </div><!-- /dt-body -->
+
+</div><!-- /tecnico-dashboard -->
+
+<!-- ===== MODAL: CAMBIAR ESTADO ===== -->
+<div class="dt-modal-overlay" id="dt-modal-overlay"
+     role="dialog" aria-modal="true" aria-labelledby="dt-modal-titulo">
+    <div class="dt-modal">
+        <div class="dt-modal-head">
+            <h3 id="dt-modal-titulo">
+                <i class="fa-solid fa-pen-to-square" style="color:var(--verde-claro);"></i>
+                Cambiar Estado de Visita
+            </h3>
+            <button class="dt-modal-close" onclick="cerrarModal()" aria-label="Cerrar">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <div class="dt-modal-body">
+            <form id="dt-form-estado" novalidate>
+
+                <div class="dt-field">
+                    <label for="dt-nuevo-estado">
+                        Nuevo estado <span class="req">*</span>
+                    </label>
+                    <select id="dt-nuevo-estado" onchange="onEstadoCambio()"
+                            aria-describedby="dt-nuevo-estado-err">
+                        <option value="">Seleccione...</option>
+                        <option value="proceso">En Proceso</option>
+                        <option value="aprobada">Aprobada</option>
+                        <option value="rechazada">Rechazada</option>
+                    </select>
+                    <span class="dt-field-error" id="dt-nuevo-estado-err" role="alert">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        Debe seleccionar un nuevo estado.
+                    </span>
+                </div>
+
+                <div class="dt-field" id="dt-wrap-motivo" style="display:none;">
+                    <label for="dt-motivo">Observación (opcional)</label>
+                    <textarea id="dt-motivo" rows="3"
+                              placeholder="Ingrese una observación o motivo..."
+                              aria-describedby="dt-motivo-err"></textarea>
+                    <span class="dt-field-error" id="dt-motivo-err" role="alert">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        El motivo de rechazo debe tener al menos 10 caracteres.
+                    </span>
+                </div>
+
+            </form>
+        </div>
+        <div class="dt-modal-footer">
+            <button class="btn btn-outline" onclick="cerrarModal()">
+                <i class="fa-solid fa-xmark"></i> Cancelar
+            </button>
+            <button class="btn btn-primary" onclick="guardarEstado()">
+                <i class="fa-solid fa-check"></i> Guardar Cambio
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== LIGHTBOX ===== -->
+<div class="dt-lightbox-overlay" id="dt-lightbox" role="dialog" aria-modal="true" aria-label="Visor de fotos">
+    <button class="dt-lightbox-cerrar" onclick="cerrarLightbox()" aria-label="Cerrar visor">
+        <i class="fa-solid fa-xmark"></i>
+    </button>
+    <div class="dt-lightbox-img-wrap">
+        <button class="dt-lightbox-nav prev" onclick="lightboxAnterior()" aria-label="Foto anterior">
+            <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <img id="dt-lightbox-img" src="" alt="" />
+        <button class="dt-lightbox-nav next" onclick="lightboxSiguiente()" aria-label="Foto siguiente">
+            <i class="fa-solid fa-chevron-right"></i>
+        </button>
+    </div>
+    <div class="dt-lightbox-counter" id="dt-lightbox-counter" aria-live="polite">1 / 3</div>
+</div>
+
+<!-- ===== TOAST ===== -->
+<div class="td-toast" id="dt-toast" role="alert" aria-live="polite">
+    <i class="fa-solid fa-circle-check"></i>
+    <span id="dt-toast-msg">Acción realizada.</span>
+</div>
+
+@section Scripts {
+    <script src="~/js/ingforestal/detalle.js" asp-append-version="true"></script>
+}

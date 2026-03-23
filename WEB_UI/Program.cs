@@ -14,6 +14,10 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// IMPORTANTE: Agregar UseStaticFiles() para servir archivos estáticos
+app.UseStaticFiles();  // <-- ESTA LÍNEA ES CLAVE
+
 app.UseRouting();
 
 app.UseAuthorization();
@@ -24,6 +28,5 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
-
 
 app.Run();

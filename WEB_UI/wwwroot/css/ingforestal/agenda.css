@@ -1,0 +1,301 @@
+/* =====================================================
+   agenda.css — Visitas / Agenda | PSA
+   Ruta: wwwroot/css/ingforestal/agenda.css
+   Depende de: dashboard.css (variables base)
+   ===================================================== */
+
+/* ===== BREADCRUMB ===== */
+.ag-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: .82rem;
+    color: var(--gris-medio);
+    margin-bottom: 24px;
+}
+.ag-breadcrumb a {
+    color: var(--verde-medio);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color .15s;
+}
+.ag-breadcrumb a:hover { color: var(--verde-bosque); }
+.ag-breadcrumb-sep     { opacity: .4; }
+
+/* ===== PAGE HEADER ===== */
+.ag-page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 28px;
+}
+.ag-page-header h1 {
+    font-family: var(--font-titulo);
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: var(--verde-bosque);
+    margin: 0 0 4px 0;
+}
+.ag-page-header p {
+    margin: 0;
+    font-size: .88rem;
+    color: var(--gris-medio);
+}
+.ag-header-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+/* ===== LAYOUT ===== */
+.ag-body {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 24px;
+    align-items: start;
+}
+
+/* ===== PANEL GENÉRICO ===== */
+.ag-panel {
+    background: var(--blanco);
+    border-radius: var(--radio-lg);
+    box-shadow: var(--sombra);
+    overflow: hidden;
+}
+.ag-panel-header {
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--borde);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.ag-panel-header h2 {
+    font-family: var(--font-titulo);
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin: 0;
+    color: var(--verde-bosque);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* ===== NAVEGACIÓN MES ===== */
+.ag-cal-nav {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.ag-cal-nav-btn {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    border: 1px solid var(--borde);
+    background: var(--blanco);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: .9rem;
+    color: var(--verde-bosque);
+    transition: all .15s;
+}
+.ag-cal-nav-btn:hover {
+    background: var(--verde-bosque);
+    color: var(--blanco);
+    border-color: var(--verde-bosque);
+}
+.ag-cal-mes-label {
+    font-family: var(--font-titulo);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--verde-bosque);
+    min-width: 170px;
+    text-align: center;
+}
+
+/* ===== GRID DEL CALENDARIO ===== */
+.ag-cal-grid {
+    padding: 16px 20px 20px;
+}
+.ag-cal-dias-semana {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    margin-bottom: 6px;
+}
+.ag-cal-dia-semana {
+    text-align: center;
+    font-size: .72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    color: var(--gris-medio);
+    padding: 6px 0;
+}
+.ag-cal-semanas {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+}
+.ag-cal-celda {
+    min-height: 80px;
+    border-radius: 8px;
+    padding: 6px;
+    cursor: pointer;
+    transition: background .15s, border-color .15s;
+    position: relative;
+    border: 1.5px solid transparent;
+}
+.ag-cal-celda:hover        { background: var(--verde-suave); }
+.ag-cal-celda.otro-mes     { opacity: .3; pointer-events: none; }
+.ag-cal-celda.hoy          { border-color: var(--verde-claro); background: #F0F9E8; }
+.ag-cal-celda.seleccionada { background: var(--verde-suave); border-color: var(--verde-bosque); }
+
+.ag-cal-num {
+    font-size: .82rem;
+    font-weight: 700;
+    color: var(--gris-oscuro);
+    line-height: 1;
+    margin-bottom: 4px;
+}
+.ag-cal-celda.hoy .ag-cal-num {
+    background: var(--verde-bosque);
+    color: var(--blanco);
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: .75rem;
+}
+
+/* Píldoras de eventos */
+.ag-cal-eventos        { display: flex; flex-direction: column; gap: 2px; }
+.ag-cal-evento-pill {
+    font-size: .65rem;
+    font-weight: 600;
+    padding: 2px 5px;
+    border-radius: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+    transition: opacity .15s;
+}
+.ag-cal-evento-pill:hover    { opacity: .75; }
+.ag-cal-evento-pill.pendiente { background: #FEF3DC; color: #9A6400; }
+.ag-cal-evento-pill.proceso   { background: #E8F4FB; color: #1A5B8C; }
+.ag-cal-evento-pill.aprobada  { background: var(--verde-suave); color: var(--verde-bosque); }
+.ag-cal-evento-mas {
+    font-size: .63rem;
+    color: var(--gris-medio);
+    padding: 1px 4px;
+    font-weight: 600;
+}
+
+/* ===== PANEL DERECHO: LISTA DEL DÍA ===== */
+.ag-dia-seleccionado-label {
+    font-size: .78rem;
+    color: var(--gris-medio);
+    font-style: italic;
+}
+.ag-lista-dia  { padding: 8px 0; }
+.ag-lista-item {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    padding: 14px 20px;
+    border-bottom: 1px solid #F0F0F0;
+    cursor: pointer;
+    transition: background .15s;
+}
+.ag-lista-item:hover       { background: var(--verde-suave); }
+.ag-lista-item:last-child  { border-bottom: none; }
+
+.ag-lista-hora {
+    font-size: .8rem;
+    font-weight: 700;
+    color: var(--verde-bosque);
+    white-space: nowrap;
+    min-width: 54px;
+    padding-top: 2px;
+}
+.ag-lista-info  { flex: 1; min-width: 0; }
+.ag-lista-nombre {
+    font-weight: 600;
+    font-size: .9rem;
+    color: var(--gris-oscuro);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.ag-lista-sub {
+    font-size: .76rem;
+    color: var(--gris-medio);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 2px;
+}
+.ag-lista-acciones {
+    display: flex;
+    gap: 4px;
+    align-items: flex-start;
+    padding-top: 2px;
+}
+
+/* Vacío del panel día */
+.ag-dia-vacio {
+    padding: 36px 20px;
+    text-align: center;
+    color: var(--gris-medio);
+}
+.ag-dia-vacio-icon { font-size: 2rem; opacity: .3; margin-bottom: 8px; }
+.ag-dia-vacio p    { font-size: .85rem; margin: 0; }
+
+/* ===== LEYENDA ===== */
+.ag-leyenda {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding: 12px 24px;
+    border-top: 1px solid var(--borde);
+    background: var(--gris-claro);
+}
+.ag-leyenda-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: .76rem;
+    color: var(--gris-medio);
+    font-weight: 600;
+}
+.ag-leyenda-dot {
+    width: 10px; height: 10px;
+    border-radius: 3px;
+    flex-shrink: 0;
+}
+.ag-leyenda-dot.pendiente { background: #F5A623; }
+.ag-leyenda-dot.proceso   { background: #2E86C1; }
+.ag-leyenda-dot.aprobada  { background: var(--verde-claro); }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 960px) {
+    .ag-body { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+    .ag-cal-celda      { min-height: 52px; padding: 4px; }
+    .ag-cal-grid       { padding: 10px 8px 14px; }
+    .ag-cal-evento-pill { display: none; }
+    .ag-cal-celda.tiene-eventos::after {
+        content: '•';
+        color: var(--verde-medio);
+        font-size: 1rem;
+        display: block;
+        text-align: center;
+    }
+    .ag-page-header             { flex-direction: column; }
+    .ag-header-actions .btn     { flex: 1; justify-content: center; }
+    .ag-cal-mes-label           { min-width: 130px; font-size: .9rem; }
+}

@@ -1,0 +1,359 @@
+@{
+    ViewData["Title"] = "Programar Visita - Ingeniero Forestal";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles {
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/ingforestal/dashboard.css"  asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/ingforestal/programar.css"  asp-append-version="true" />
+}
+
+<div class="tecnico-dashboard">
+
+    <!-- ===== BREADCRUMB ===== -->
+    <nav class="pr-breadcrumb" aria-label="Ruta de navegación">
+        <a href="@Url.Action("Index","IngForestal")">
+            <i class="fa-solid fa-house-chimney"></i> Dashboard
+        </a>
+        <span class="pr-breadcrumb-sep"><i class="fa-solid fa-chevron-right"></i></span>
+        <a href="@Url.Action("Index","Visitas")">Mis Visitas</a>
+        <span class="pr-breadcrumb-sep"><i class="fa-solid fa-chevron-right"></i></span>
+        <span>Programar Visita</span>
+    </nav>
+
+    <!-- ===== PAGE HEADER ===== -->
+    <div class="pr-page-header">
+        <div>
+            <h1>
+                <i class="fa-solid fa-calendar-plus" style="color:var(--verde-claro);font-size:1.4rem;"></i>
+                Programar Visita Técnica
+            </h1>
+            <p>Complete los 3 pasos para registrar una nueva visita de evaluación.</p>
+        </div>
+    </div>
+
+    <!-- ===== STEPPER ===== -->
+    <div class="pr-stepper" role="list" aria-label="Pasos del formulario">
+
+        <div class="pr-step activo" role="listitem" aria-current="step">
+            <div class="pr-step-num">1</div>
+            <div class="pr-step-label">
+                <span class="pr-step-titulo">Solicitud</span>
+                <span class="pr-step-sub">Seleccionar finca</span>
+            </div>
+        </div>
+
+        <div class="pr-step" role="listitem">
+            <div class="pr-step-num">2</div>
+            <div class="pr-step-label">
+                <span class="pr-step-titulo">Detalles</span>
+                <span class="pr-step-sub">Fecha y logística</span>
+            </div>
+        </div>
+
+        <div class="pr-step" role="listitem">
+            <div class="pr-step-num">3</div>
+            <div class="pr-step-label">
+                <span class="pr-step-titulo">Confirmar</span>
+                <span class="pr-step-sub">Revisar y guardar</span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ===== LAYOUT PRINCIPAL ===== -->
+    <div class="pr-body">
+
+        <!-- COLUMNA IZQUIERDA: FORMULARIO -->
+        <div>
+
+            <!-- ══════ PASO 1: SELECCIÓN DE SOLICITUD ══════ -->
+            <div class="pr-seccion activa" id="pr-seccion-1">
+                <div class="pr-panel">
+                    <div class="pr-panel-header">
+                        <div class="pr-panel-header-icon">
+                            <i class="fa-solid fa-file-alt"></i>
+                        </div>
+                        <div>
+                            <h2>Seleccionar Solicitud Pendiente</h2>
+                            <p>Elija la finca que desea evaluar en esta visita.</p>
+                        </div>
+                    </div>
+                    <div class="pr-panel-body">
+
+                        <!-- Búsqueda -->
+                        <div class="pr-buscar-solicitud">
+                            <i class="fa-solid fa-magnifying-glass pr-search-ic"></i>
+                            <input type="text" id="pr-buscar-sol"
+                                   placeholder="Buscar por finca, propietario o ubicación..."
+                                   aria-label="Buscar solicitud">
+                        </div>
+
+                        <!-- Error selección -->
+                        <div class="pr-field-error" id="pr-sol-err" role="alert" style="margin-bottom:12px;">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            Debe seleccionar una solicitud para continuar.
+                        </div>
+
+                        <!-- Lista de solicitudes -->
+                        <div class="pr-solicitudes-lista" id="pr-lista-solicitudes"
+                             role="radiogroup" aria-label="Solicitudes pendientes">
+                            <!-- Renderizado por JS -->
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- ══════ PASO 2: DETALLES ══════ -->
+            <div class="pr-seccion" id="pr-seccion-2">
+                <div class="pr-panel">
+                    <div class="pr-panel-header">
+                        <div class="pr-panel-header-icon">
+                            <i class="fa-solid fa-clock"></i>
+                        </div>
+                        <div>
+                            <h2>Detalles de la Visita</h2>
+                            <p>Defina fecha, hora y logística de la evaluación.</p>
+                        </div>
+                    </div>
+                    <div class="pr-panel-body">
+                        <div class="pr-form-grid">
+
+                            <!-- Fecha -->
+                            <div class="pr-field">
+                                <label for="pr-fecha">
+                                    Fecha de visita <span class="req">*</span>
+                                </label>
+                                <div class="pr-input-icon-wrap">
+                                    <i class="fa-solid fa-calendar pr-input-icon"></i>
+                                    <input type="date" id="pr-fecha"
+                                           aria-describedby="pr-fecha-err">
+                                </div>
+                                <span class="pr-field-error" id="pr-fecha-err" role="alert">
+                                    <i class="fa-solid fa-triangle-exclamation"></i>
+                                    Seleccione una fecha válida (hoy o posterior).
+                                </span>
+                            </div>
+
+                            <!-- Hora -->
+                            <div class="pr-field">
+                                <label for="pr-hora">
+                                    Hora de inicio <span class="req">*</span>
+                                </label>
+                                <div class="pr-input-icon-wrap">
+                                    <i class="fa-solid fa-clock pr-input-icon"></i>
+                                    <input type="time" id="pr-hora"
+                                           aria-describedby="pr-hora-err">
+                                </div>
+                                <span class="pr-field-error" id="pr-hora-err" role="alert">
+                                    <i class="fa-solid fa-triangle-exclamation"></i>
+                                    Indique la hora de inicio de la visita.
+                                </span>
+                            </div>
+
+                            <!-- Duración estimada -->
+                            <div class="pr-field">
+                                <label for="pr-duracion">
+                                    Duración estimada <span class="req">*</span>
+                                </label>
+                                <select id="pr-duracion" aria-describedby="pr-duracion-err">
+                                    <option value="">Seleccione...</option>
+                                    <option value="1h">1 hora</option>
+                                    <option value="2h">2 horas</option>
+                                    <option value="3h">3 horas</option>
+                                    <option value="4h">4 horas</option>
+                                    <option value="medio-dia">Medio día</option>
+                                    <option value="dia-completo">Día completo</option>
+                                </select>
+                                <span class="pr-field-error" id="pr-duracion-err" role="alert">
+                                    <i class="fa-solid fa-triangle-exclamation"></i>
+                                    Seleccione la duración estimada.
+                                </span>
+                            </div>
+
+                            <!-- Transporte -->
+                            <div class="pr-field">
+                                <label for="pr-transporte">
+                                    Medio de transporte <span class="req">*</span>
+                                </label>
+                                <select id="pr-transporte" aria-describedby="pr-transporte-err">
+                                    <option value="">Seleccione...</option>
+                                    <option value="vehiculo-propio">Vehículo propio</option>
+                                    <option value="vehiculo-institucional">Vehículo institucional</option>
+                                    <option value="transporte-publico">Transporte público</option>
+                                    <option value="otro">Otro</option>
+                                </select>
+                                <span class="pr-field-error" id="pr-transporte-err" role="alert">
+                                    <i class="fa-solid fa-triangle-exclamation"></i>
+                                    Seleccione el medio de transporte.
+                                </span>
+                            </div>
+
+                            <!-- Objetivo -->
+                            <div class="pr-field span-2">
+                                <label for="pr-objetivo">
+                                    Objetivo de la visita <span class="req">*</span>
+                                    <span class="hint">(mín. 10 caracteres)</span>
+                                </label>
+                                <textarea id="pr-objetivo" rows="3"
+                                          placeholder="Describa el propósito técnico de esta evaluación..."
+                                          aria-describedby="pr-objetivo-err"></textarea>
+                                <span class="pr-field-error" id="pr-objetivo-err" role="alert">
+                                    <i class="fa-solid fa-triangle-exclamation"></i>
+                                    Describa el objetivo de la visita (mín. 10 caracteres).
+                                </span>
+                            </div>
+
+                        </div>
+
+                        <!-- Divider -->
+                        <div class="pr-divider">
+                            <i class="fa-solid fa-wrench"></i> Información adicional
+                        </div>
+
+                        <div class="pr-form-grid">
+
+                            <!-- Equipo / materiales -->
+                            <div class="pr-field span-2">
+                                <label for="pr-equipo">
+                                    Equipo y materiales a llevar
+                                </label>
+                                <textarea id="pr-equipo" rows="2"
+                                          placeholder="Ej: GPS, cámara, libreta de campo, metro, brújula..."></textarea>
+                            </div>
+
+                            <!-- Observaciones -->
+                            <div class="pr-field span-2">
+                                <label for="pr-observacion">
+                                    Observaciones de coordinación
+                                </label>
+                                <textarea id="pr-observacion" rows="2"
+                                          placeholder="Notas para la coordinación con el propietario, puntos de acceso, etc."></textarea>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ══════ PASO 3: CONFIRMACIÓN ══════ -->
+            <div class="pr-seccion" id="pr-seccion-3">
+                <div class="pr-panel">
+                    <div class="pr-panel-header">
+                        <div class="pr-panel-header-icon" style="background:#E8F4FB;color:#1A5B8C;">
+                            <i class="fa-solid fa-circle-check"></i>
+                        </div>
+                        <div>
+                            <h2>Confirmar Visita</h2>
+                            <p>Revise los datos antes de guardar.</p>
+                        </div>
+                    </div>
+                    <div class="pr-panel-body">
+                        <div class="pr-confirmacion">
+                            <div class="pr-confirmacion-icon">📋</div>
+                            <h3>Resumen de la Visita</h3>
+                            <p>Verifique que toda la información sea correcta.<br>
+                               Al confirmar, se notificará al sistema y quedará registrado en la auditoría.</p>
+                            <div class="pr-confirmacion-detalle" id="pr-conf-detalle">
+                                <!-- Generado por JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== ACCIONES DE NAVEGACIÓN ===== -->
+            <div class="pr-form-actions">
+                <button class="btn btn-outline" onclick="location.href='@Url.Action("Index","InfForestal")'">
+                    <i class="fa-solid fa-xmark"></i> Cancelar
+                </button>
+                <div class="pr-form-actions-right">
+                    <button class="btn btn-outline" id="pr-btn-anterior"
+                            onclick="pasoAnterior()" style="display:none;">
+                        <i class="fa-solid fa-arrow-left"></i> Anterior
+                    </button>
+                    <button class="btn btn-primary" id="pr-btn-siguiente"
+                            onclick="pasoSiguiente()">
+                        Siguiente <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                    <button class="btn btn-primary" id="pr-btn-guardar"
+                            onclick="guardarVisita()" style="display:none;">
+                        <i class="fa-solid fa-calendar-check"></i> Confirmar y Guardar
+                    </button>
+                </div>
+            </div>
+
+        </div><!-- /columna izquierda -->
+
+        <!-- COLUMNA DERECHA: RESUMEN -->
+        <div style="display:flex;flex-direction:column;gap:20px;">
+
+            <!-- Tarjeta resumen -->
+            <div class="pr-panel">
+                <div class="pr-panel-header">
+                    <div class="pr-panel-header-icon">
+                        <i class="fa-solid fa-receipt"></i>
+                    </div>
+                    <div>
+                        <h2>Resumen</h2>
+                        <p>Se actualiza en tiempo real</p>
+                    </div>
+                </div>
+                <div class="pr-resumen-body">
+                    <div class="pr-resumen-item">
+                        <span class="pr-resumen-label">Finca</span>
+                        <span class="pr-resumen-valor vacio" id="pr-res-finca">—</span>
+                    </div>
+                    <div class="pr-resumen-item">
+                        <span class="pr-resumen-label">Propietario</span>
+                        <span class="pr-resumen-valor vacio" id="pr-res-prop">—</span>
+                    </div>
+                    <div class="pr-resumen-item">
+                        <span class="pr-resumen-label">Ubicación</span>
+                        <span class="pr-resumen-valor vacio" id="pr-res-ubic">—</span>
+                    </div>
+                    <div class="pr-resumen-item">
+                        <span class="pr-resumen-label">Fecha de visita</span>
+                        <span class="pr-resumen-valor vacio" id="pr-res-fecha">—</span>
+                    </div>
+                    <div class="pr-resumen-item">
+                        <span class="pr-resumen-label">Hora</span>
+                        <span class="pr-resumen-valor vacio" id="pr-res-hora">—</span>
+                    </div>
+                    <div class="pr-resumen-item">
+                        <span class="pr-resumen-label">Duración estimada</span>
+                        <span class="pr-resumen-valor vacio" id="pr-res-duracion">—</span>
+                    </div>
+                    <div class="pr-resumen-item">
+                        <span class="pr-resumen-label">Transporte</span>
+                        <span class="pr-resumen-valor vacio" id="pr-res-transporte">—</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alerta informativa -->
+            <div class="pr-panel">
+                <div class="pr-resumen-alerta" style="margin:0;border-radius:0;border:none;border-top:1px solid var(--borde);">
+                    <i class="fa-solid fa-circle-info" style="margin-top:2px;flex-shrink:0;"></i>
+                    <span>Al guardar, la visita quedará registrada en el sistema y se generará un aviso automático de auditoría.</span>
+                </div>
+            </div>
+
+        </div><!-- /columna derecha -->
+
+    </div><!-- /pr-body -->
+
+</div><!-- /tecnico-dashboard -->
+
+<!-- ===== TOAST ===== -->
+<div class="td-toast" id="pr-toast" role="alert" aria-live="polite">
+    <i class="fa-solid fa-circle-check"></i>
+    <span id="pr-toast-msg">Acción realizada.</span>
+</div>
+
+@section Scripts {
+    <script src="~/js/ingforestal/programar.js" asp-append-version="true"></script>
+}
