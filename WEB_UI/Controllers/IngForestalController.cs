@@ -32,5 +32,18 @@ namespace WEB_UI.Controllers
         {
             return View();
         }
+        public IActionResult EvaluacionesCrear()
+        {
+            return View();
+        }
+        public IActionResult EvaluacionesEditar()
+        {
+            return View();
+        }
+        public IActionResult EvaluacionesDetalle()
+        {
+            return View();
+        }
+        
     }
 }

@@ -1,0 +1,372 @@
+@{
+    ViewData["Title"] = "Nueva Evaluación - Ingeniero Forestal";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles {
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/ingforestal/dashboard.css"            asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/ingforestal/evaluaciones-crear.css"   asp-append-version="true" />
+}
+
+<div class="tecnico-dashboard">
+
+    <!-- ===== BREADCRUMB ===== -->
+    <nav class="ec-breadcrumb" aria-label="Ruta de navegación">
+        <a href="@Url.Action("Index","IngForestal")">
+            <i class="fa-solid fa-house-chimney"></i> Dashboard
+        </a>
+        <span class="ec-breadcrumb-sep"><i class="fa-solid fa-chevron-right"></i></span>
+        <a href="@Url.Action("EvaluacionesPendientes","IngForestal")">Evaluaciones Pendientes</a>
+        <span class="ec-breadcrumb-sep"><i class="fa-solid fa-chevron-right"></i></span>
+        <span>Nueva Evaluación</span>
+    </nav>
+
+    <!-- ===== PAGE HEADER ===== -->
+    <div class="ec-page-header">
+        <div>
+            <h1>
+                <i class="fa-solid fa-plus-circle" style="color:var(--verde-claro);font-size:1.4rem;"></i>
+                Nueva Evaluación Técnica
+            </h1>
+            <p>Seleccione una solicitud pendiente y complete los datos técnicos de campo para registrar la evaluación.</p>
+        </div>
+    </div>
+
+    <!-- ===== LAYOUT ===== -->
+    <div class="ec-body">
+
+        <!-- ══════ COLUMNA PRINCIPAL ══════ -->
+        <div>
+
+            <!-- ── 1. SELECCIÓN DE SOLICITUD ── -->
+            <div class="ec-panel">
+                <div class="ec-panel-header">
+                    <h2><i class="fa-solid fa-file-circle-check"></i> Seleccionar Solicitud</h2>
+                </div>
+                <div class="ec-panel-body">
+
+                    <div class="ec-buscar-sol">
+                        <i class="fa-solid fa-magnifying-glass ec-search-ic"></i>
+                        <input type="text" id="ec-buscar-sol"
+                               placeholder="Buscar por finca, propietario o ubicación..."
+                               aria-label="Buscar solicitud">
+                    </div>
+
+                    <div class="ec-sol-err" id="ec-sol-err" role="alert">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        Debe seleccionar una solicitud pendiente para continuar.
+                    </div>
+
+                    <div class="ec-sol-lista" id="ec-sol-lista"
+                         role="radiogroup" aria-label="Solicitudes pendientes">
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── 2. DATOS TÉCNICOS DE CAMPO ── -->
+            <div class="ec-panel">
+                <div class="ec-panel-header">
+                    <h2><i class="fa-solid fa-magnifying-glass-chart"></i> Datos Técnicos Observados</h2>
+                </div>
+                <div class="ec-panel-body">
+
+                    <!-- Referencia de la finca (solo lectura) -->
+                    <div class="ec-form-grid" style="margin-bottom:20px;">
+                        <div class="ec-field">
+                            <label>Finca</label>
+                            <input type="text" id="ec-finca-ref" readonly
+                                   placeholder="Se llenará al seleccionar solicitud">
+                        </div>
+                        <div class="ec-field">
+                            <label>Propietario</label>
+                            <input type="text" id="ec-prop-ref" readonly
+                                   placeholder="Se llenará al seleccionar solicitud">
+                        </div>
+                        <div class="ec-field span-2">
+                            <label>Ubicación</label>
+                            <input type="text" id="ec-ubic-ref" readonly
+                                   placeholder="Se llenará al seleccionar solicitud">
+                        </div>
+                    </div>
+
+                    <div class="ec-divider">
+                        <i class="fa-solid fa-leaf"></i> Características del terreno
+                    </div>
+
+                    <div class="ec-form-grid">
+
+                        <!-- Hectáreas -->
+                        <div class="ec-field">
+                            <label for="ec-hectareas">
+                                Hectáreas verificadas <span class="req">*</span>
+                            </label>
+                            <input type="number" id="ec-hectareas"
+                                   step="0.01" min="0.01"
+                                   placeholder="Ej: 12.50"
+                                   aria-describedby="ec-hectareas-err">
+                            <span class="ec-field-error" id="ec-hectareas-err" role="alert">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                                Las hectáreas deben ser un número mayor a 0.
+                            </span>
+                        </div>
+
+                        <!-- Tipo de vegetación -->
+                        <div class="ec-field">
+                            <label for="ec-vegetacion">
+                                Tipo de vegetación <span class="req">*</span>
+                            </label>
+                            <select id="ec-vegetacion" aria-describedby="ec-vegetacion-err">
+                                <option value="">Seleccione...</option>
+                                <option value="bosque-primario">Bosque Primario (+30%)</option>
+                                <option value="bosque-secundario">Bosque Secundario (+20%)</option>
+                                <option value="plantacion-forestal">Plantación Forestal (+10%)</option>
+                                <option value="pasto">Pasto o escasa vegetación (0%)</option>
+                            </select>
+                            <span class="ec-field-error" id="ec-vegetacion-err" role="alert">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                                Seleccione el tipo de vegetación.
+                            </span>
+                        </div>
+
+                        <!-- Pendiente -->
+                        <div class="ec-field">
+                            <label for="ec-pendiente">
+                                Pendiente del terreno <span class="req">*</span>
+                            </label>
+                            <select id="ec-pendiente" aria-describedby="ec-pendiente-err">
+                                <option value="">Seleccione...</option>
+                                <option value="plana">Plana (0%)</option>
+                                <option value="inclinada">Inclinada (+10%)</option>
+                                <option value="muy-inclinada">Muy inclinada (+20%)</option>
+                            </select>
+                            <span class="ec-field-error" id="ec-pendiente-err" role="alert">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                                Seleccione el tipo de pendiente.
+                            </span>
+                        </div>
+
+                        <!-- Recursos hídricos -->
+                        <div class="ec-field">
+                            <label for="ec-recursos">
+                                Recursos hídricos <span class="req">*</span>
+                            </label>
+                            <select id="ec-recursos" aria-describedby="ec-recursos-err">
+                                <option value="">Seleccione...</option>
+                                <option value="ninguno">Ninguno (0%)</option>
+                                <option value="quebrada">Quebrada (0%)</option>
+                                <option value="rio">Río (+10%)</option>
+                                <option value="naciente">Naciente (+5%)</option>
+                                <option value="rio-naciente">Río y naciente (+15%)</option>
+                            </select>
+                            <span class="ec-field-error" id="ec-recursos-err" role="alert">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                                Seleccione los recursos hídricos.
+                            </span>
+                        </div>
+
+                    </div>
+
+                    <!-- Uso de suelo (selección múltiple) -->
+                    <div class="ec-divider">
+                        <i class="fa-solid fa-map"></i> Uso de suelo
+                        <span style="font-weight:400;text-transform:none;font-size:.75rem;letter-spacing:0;">(selección múltiple)</span>
+                    </div>
+
+                    <div class="ec-check-grid">
+                        <label class="ec-check-item" onclick="ecToggleUso('conservacion', this)">
+                            <input type="checkbox" value="conservacion">
+                            <div class="ec-check-box"></div>
+                            <span class="ec-check-label">Conservación</span>
+                        </label>
+                        <label class="ec-check-item" onclick="ecToggleUso('reforestacion', this)">
+                            <input type="checkbox" value="reforestacion">
+                            <div class="ec-check-box"></div>
+                            <span class="ec-check-label">Reforestación</span>
+                        </label>
+                        <label class="ec-check-item" onclick="ecToggleUso('agropecuario', this)">
+                            <input type="checkbox" value="agropecuario">
+                            <div class="ec-check-box"></div>
+                            <span class="ec-check-label">Agropecuario</span>
+                        </label>
+                        <label class="ec-check-item" onclick="ecToggleUso('agroforestal', this)">
+                            <input type="checkbox" value="agroforestal">
+                            <div class="ec-check-box"></div>
+                            <span class="ec-check-label">Agroforestal</span>
+                        </label>
+                        <label class="ec-check-item" onclick="ecToggleUso('proteccion-nacientes', this)">
+                            <input type="checkbox" value="proteccion-nacientes">
+                            <div class="ec-check-box"></div>
+                            <span class="ec-check-label">Protección de nacientes</span>
+                        </label>
+                        <label class="ec-check-item" onclick="ecToggleUso('sin-uso', this)">
+                            <input type="checkbox" value="sin-uso">
+                            <div class="ec-check-box"></div>
+                            <span class="ec-check-label">Sin uso definido</span>
+                        </label>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ── 3. DATOS DE LA VISITA ── -->
+            <div class="ec-panel">
+                <div class="ec-panel-header">
+                    <h2><i class="fa-solid fa-calendar-check"></i> Datos de la Visita</h2>
+                </div>
+                <div class="ec-panel-body">
+                    <div class="ec-form-grid">
+
+                        <!-- Fecha -->
+                        <div class="ec-field">
+                            <label for="ec-fecha-visita">
+                                Fecha de visita <span class="req">*</span>
+                            </label>
+                            <div class="ec-input-wrap">
+                                <i class="fa-solid fa-calendar ec-input-ic"></i>
+                                <input type="date" id="ec-fecha-visita"
+                                       aria-describedby="ec-fecha-visita-err">
+                            </div>
+                            <span class="ec-field-error" id="ec-fecha-visita-err" role="alert">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                                Seleccione una fecha válida (hoy o posterior).
+                            </span>
+                        </div>
+
+                        <!-- Hora -->
+                        <div class="ec-field">
+                            <label for="ec-hora-visita">Hora de inicio</label>
+                            <div class="ec-input-wrap">
+                                <i class="fa-solid fa-clock ec-input-ic"></i>
+                                <input type="time" id="ec-hora-visita">
+                            </div>
+                        </div>
+
+                        <!-- Observaciones -->
+                        <div class="ec-field span-2">
+                            <label for="ec-observaciones">
+                                Observaciones técnicas <span class="req">*</span>
+                                <span class="hint">(mín. 15 caracteres)</span>
+                            </label>
+                            <textarea id="ec-observaciones" rows="4"
+                                      placeholder="Describa las condiciones observadas en campo, hallazgos relevantes o discrepancias con el registro..."
+                                      aria-describedby="ec-observaciones-err"></textarea>
+                            <span class="ec-field-error" id="ec-observaciones-err" role="alert">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                                Las observaciones son obligatorias (mín. 15 caracteres).
+                            </span>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== ACCIONES ===== -->
+            <div class="ec-acciones">
+                <button class="btn btn-outline"
+                        onclick="location.href='@Url.Action("EvaluacionesPendientes","IngForestal")'">
+                    <i class="fa-solid fa-xmark"></i> Cancelar
+                </button>
+                <div class="ec-acciones-right">
+                    <button class="btn btn-primary" onclick="ecGuardar()">
+                        <i class="fa-solid fa-floppy-disk"></i> Guardar Evaluación
+                    </button>
+                </div>
+            </div>
+
+        </div><!-- /columna principal -->
+
+        <!-- ══════ COLUMNA DERECHA ══════ -->
+        <div style="display:flex;flex-direction:column;gap:20px;">
+
+            <!-- Resumen -->
+            <div class="ec-panel" style="margin-bottom:0;">
+                <div class="ec-panel-header">
+                    <h2><i class="fa-solid fa-receipt"></i> Resumen</h2>
+                </div>
+                <div class="ec-resumen-body">
+                    <div class="ec-res-item">
+                        <span class="ec-res-label">Finca</span>
+                        <span class="ec-res-valor vacio" id="ec-res-finca">—</span>
+                    </div>
+                    <div class="ec-res-item">
+                        <span class="ec-res-label">Propietario</span>
+                        <span class="ec-res-valor vacio" id="ec-res-prop">—</span>
+                    </div>
+                    <div class="ec-res-item">
+                        <span class="ec-res-label">Hectáreas</span>
+                        <span class="ec-res-valor vacio" id="ec-res-has">—</span>
+                    </div>
+                    <div class="ec-res-item">
+                        <span class="ec-res-label">Vegetación</span>
+                        <span class="ec-res-valor vacio" id="ec-res-veg">—</span>
+                    </div>
+                    <div class="ec-res-item">
+                        <span class="ec-res-label">Pendiente</span>
+                        <span class="ec-res-valor vacio" id="ec-res-pen">—</span>
+                    </div>
+                    <div class="ec-res-item">
+                        <span class="ec-res-label">Recursos hídricos</span>
+                        <span class="ec-res-valor vacio" id="ec-res-rec">—</span>
+                    </div>
+                    <div class="ec-res-item">
+                        <span class="ec-res-label">Uso de suelo</span>
+                        <span class="ec-res-valor vacio" id="ec-res-uso">—</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cálculo estimado de pago -->
+            <div class="ec-calculo-panel">
+                <div class="ec-calculo-header">
+                    <p>Pago mensual estimado</p>
+                    <div class="ec-calculo-monto" id="ec-calculo-monto">₡0</div>
+                    <div class="ec-calculo-sub">Basado en ₡50,000 / ha · tope 40%</div>
+                </div>
+                <div class="ec-calculo-body">
+                    <div class="ec-calculo-fila">
+                        <span class="ec-calculo-fila-label">Monto base</span>
+                        <span class="ec-calculo-fila-val" id="ec-calc-base">₡0</span>
+                    </div>
+                    <div class="ec-calculo-fila">
+                        <span class="ec-calculo-fila-label">Ajuste vegetación</span>
+                        <span class="ec-calculo-fila-val" id="ec-calc-veg">0%</span>
+                    </div>
+                    <div class="ec-calculo-fila">
+                        <span class="ec-calculo-fila-label">Ajuste pendiente</span>
+                        <span class="ec-calculo-fila-val" id="ec-calc-pen">0%</span>
+                    </div>
+                    <div class="ec-calculo-fila">
+                        <span class="ec-calculo-fila-label">Ajuste recursos hídricos</span>
+                        <span class="ec-calculo-fila-val" id="ec-calc-rec">0%</span>
+                    </div>
+                    <div class="ec-calculo-fila">
+                        <span class="ec-calculo-fila-label">Total ajustes</span>
+                        <span class="ec-calculo-fila-val positivo" id="ec-calc-ajuste">₡0</span>
+                    </div>
+                    <div class="ec-calculo-fila" style="border-top:2px solid var(--borde);margin-top:4px;padding-top:10px;">
+                        <span class="ec-calculo-fila-label" style="color:var(--verde-bosque);font-weight:700;">Total mensual</span>
+                        <span class="ec-calculo-fila-val total" id="ec-calc-total">₡0</span>
+                    </div>
+                </div>
+                <p class="ec-calculo-nota">
+                    Estimación referencial. El cálculo final lo realiza el sistema al aprobar la evaluación.
+                </p>
+            </div>
+
+        </div><!-- /columna derecha -->
+
+    </div><!-- /ec-body -->
+
+</div><!-- /tecnico-dashboard -->
+
+<!-- ===== TOAST ===== -->
+<div class="td-toast" id="ec-toast" role="alert" aria-live="polite">
+    <i class="fa-solid fa-circle-check"></i>
+    <span id="ec-toast-msg">Acción realizada.</span>
+</div>
+
+@section Scripts {
+    <script src="~/js/ingforestal/evaluaciones-crear.js" asp-append-version="true"></script>
+}

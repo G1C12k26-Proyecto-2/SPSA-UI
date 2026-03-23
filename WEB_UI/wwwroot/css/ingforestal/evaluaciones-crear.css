@@ -1,0 +1,420 @@
+/* =====================================================
+   evaluaciones-crear.css — Evaluaciones / Crear | PSA
+   Ruta: wwwroot/css/ingforestal/evaluaciones-crear.css
+   Depende de: dashboard.css (variables base)
+   ===================================================== */
+
+/* ===== BREADCRUMB ===== */
+.ec-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: .82rem;
+    color: var(--gris-medio);
+    margin-bottom: 24px;
+}
+.ec-breadcrumb a {
+    color: var(--verde-medio);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color .15s;
+}
+.ec-breadcrumb a:hover { color: var(--verde-bosque); }
+.ec-breadcrumb-sep     { opacity: .4; }
+
+/* ===== PAGE HEADER ===== */
+.ec-page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 28px;
+}
+.ec-page-header h1 {
+    font-family: var(--font-titulo);
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: var(--verde-bosque);
+    margin: 0 0 4px 0;
+}
+.ec-page-header p {
+    margin: 0;
+    font-size: .88rem;
+    color: var(--gris-medio);
+}
+
+/* ===== LAYOUT ===== */
+.ec-body {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 24px;
+    align-items: start;
+}
+
+/* ===== PANEL GENÉRICO ===== */
+.ec-panel {
+    background: var(--blanco);
+    border-radius: var(--radio-lg);
+    box-shadow: var(--sombra);
+    overflow: hidden;
+    margin-bottom: 24px;
+}
+.ec-panel:last-child { margin-bottom: 0; }
+.ec-panel-header {
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--borde);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+.ec-panel-header h2 {
+    font-family: var(--font-titulo);
+    font-size: 1rem;
+    font-weight: 700;
+    margin: 0;
+    color: var(--verde-bosque);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.ec-panel-body { padding: 24px; }
+
+/* ===== SELECTOR DE SOLICITUD ===== */
+.ec-buscar-sol {
+    position: relative;
+    margin-bottom: 16px;
+}
+.ec-buscar-sol input {
+    width: 100%;
+    padding: 10px 14px 10px 38px;
+    border: 1.5px solid var(--borde);
+    border-radius: 8px;
+    font-family: var(--font-cuerpo);
+    font-size: .9rem;
+    outline: none;
+    background: var(--blanco);
+    transition: border-color .2s, box-shadow .2s;
+}
+.ec-buscar-sol input:focus {
+    border-color: var(--verde-claro);
+    box-shadow: 0 0 0 3px rgba(107,170,62,.15);
+}
+.ec-buscar-sol .ec-search-ic {
+    position: absolute;
+    left: 12px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--gris-medio);
+    pointer-events: none;
+}
+.ec-sol-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 300px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+.ec-sol-lista::-webkit-scrollbar       { width: 5px; }
+.ec-sol-lista::-webkit-scrollbar-thumb { background: var(--borde); border-radius: 3px; }
+
+.ec-sol-card {
+    border: 1.5px solid var(--borde);
+    border-radius: 10px;
+    padding: 14px 16px;
+    cursor: pointer;
+    transition: all .2s;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.ec-sol-card:hover      { border-color: var(--verde-claro); background: var(--verde-suave); }
+.ec-sol-card.seleccionada {
+    border-color: var(--verde-bosque);
+    background: var(--verde-suave);
+    box-shadow: 0 0 0 3px rgba(45,80,22,.10);
+}
+.ec-sol-radio {
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    border: 2px solid var(--borde);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: all .2s;
+}
+.ec-sol-card.seleccionada .ec-sol-radio { border-color: var(--verde-bosque); background: var(--verde-bosque); }
+.ec-sol-card.seleccionada .ec-sol-radio::after {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--blanco);
+}
+.ec-sol-info   { flex: 1; min-width: 0; }
+.ec-sol-nombre {
+    font-weight: 700;
+    font-size: .9rem;
+    color: var(--verde-bosque);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.ec-sol-sub {
+    font-size: .76rem;
+    color: var(--gris-medio);
+    margin-top: 2px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+.ec-sol-err {
+    font-size: .76rem;
+    color: var(--rojo);
+    display: none;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 12px;
+}
+.ec-sol-err.visible { display: flex; }
+
+/* ===== FORM GRID ===== */
+.ec-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
+.ec-form-grid .span-2 { grid-column: span 2; }
+
+.ec-field { display: flex; flex-direction: column; gap: 6px; }
+.ec-field label {
+    font-size: .77rem;
+    font-weight: 700;
+    color: var(--gris-oscuro);
+    text-transform: uppercase;
+    letter-spacing: .4px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.ec-field label .req  { color: var(--rojo); }
+.ec-field label .hint {
+    font-weight: 400;
+    text-transform: none;
+    font-size: .73rem;
+    color: var(--gris-medio);
+    letter-spacing: 0;
+}
+.ec-field input,
+.ec-field select,
+.ec-field textarea {
+    padding: 10px 13px;
+    border: 1.5px solid var(--borde);
+    border-radius: 8px;
+    font-family: var(--font-cuerpo);
+    font-size: .9rem;
+    color: var(--gris-oscuro);
+    background: var(--blanco);
+    outline: none;
+    transition: border-color .2s, box-shadow .2s;
+    width: 100%;
+}
+.ec-field input:focus,
+.ec-field select:focus,
+.ec-field textarea:focus {
+    border-color: var(--verde-claro);
+    box-shadow: 0 0 0 3px rgba(107,170,62,.15);
+}
+.ec-field input.invalido,
+.ec-field select.invalido,
+.ec-field textarea.invalido {
+    border-color: var(--rojo);
+    box-shadow: 0 0 0 3px rgba(217,79,61,.12);
+}
+.ec-field input[readonly] {
+    background: var(--gris-claro);
+    color: var(--gris-medio);
+    cursor: default;
+}
+.ec-field textarea { resize: vertical; min-height: 100px; }
+
+/* Input con ícono */
+.ec-input-wrap          { position: relative; }
+.ec-input-wrap input    { padding-left: 38px; }
+.ec-input-ic {
+    position: absolute;
+    left: 12px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--gris-medio);
+    pointer-events: none;
+    font-size: .88rem;
+}
+
+.ec-field-error {
+    font-size: .76rem;
+    color: var(--rojo);
+    display: none;
+    align-items: center;
+    gap: 4px;
+}
+.ec-field-error.visible { display: flex; }
+
+/* ===== DIVIDER ===== */
+.ec-divider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 24px 0 18px;
+    color: var(--verde-bosque);
+    font-size: .77rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+}
+.ec-divider::before,
+.ec-divider::after { content:''; flex:1; height:1px; background: var(--borde); }
+
+/* ===== CHECKBOXES MÚLTIPLE (uso de suelo) ===== */
+.ec-check-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 10px;
+}
+.ec-check-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border: 1.5px solid var(--borde);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all .18s;
+    user-select: none;
+}
+.ec-check-item:hover           { border-color: var(--verde-claro); background: var(--verde-suave); }
+.ec-check-item.marcado         { border-color: var(--verde-bosque); background: var(--verde-suave); }
+.ec-check-item input[type=checkbox] { display: none; }
+.ec-check-box {
+    width: 18px; height: 18px;
+    border-radius: 5px;
+    border: 2px solid var(--borde);
+    background: var(--blanco);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-size: .65rem;
+    color: var(--blanco);
+    transition: all .18s;
+}
+.ec-check-item.marcado .ec-check-box {
+    background: var(--verde-bosque);
+    border-color: var(--verde-bosque);
+}
+.ec-check-item.marcado .ec-check-box::after { content: '✓'; }
+.ec-check-label { font-size: .86rem; font-weight: 500; color: var(--gris-oscuro); }
+
+/* ===== PANEL DERECHO: RESUMEN ===== */
+.ec-resumen-body { padding: 0; }
+.ec-res-item {
+    padding: 12px 20px;
+    border-bottom: 1px solid #F0F0F0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+.ec-res-item:last-child    { border-bottom: none; }
+.ec-res-label {
+    font-size: .71rem;
+    font-weight: 700;
+    color: var(--gris-medio);
+    text-transform: uppercase;
+    letter-spacing: .4px;
+}
+.ec-res-valor {
+    font-size: .88rem;
+    font-weight: 600;
+    color: var(--gris-oscuro);
+}
+.ec-res-valor.vacio        { color: var(--gris-medio); font-style: italic; font-weight: 400; }
+
+/* ===== CÁLCULO ESTIMADO DE PAGO ===== */
+.ec-calculo-panel {
+    background: var(--blanco);
+    border-radius: var(--radio-lg);
+    box-shadow: var(--sombra);
+    overflow: hidden;
+}
+.ec-calculo-header {
+    background: linear-gradient(135deg, var(--verde-bosque), var(--verde-medio));
+    padding: 16px 20px;
+    color: var(--blanco);
+}
+.ec-calculo-header p {
+    margin: 0 0 4px;
+    font-size: .75rem;
+    opacity: .8;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    font-weight: 700;
+}
+.ec-calculo-monto {
+    font-family: var(--font-titulo);
+    font-size: 1.6rem;
+    font-weight: 700;
+    line-height: 1;
+}
+.ec-calculo-sub {
+    font-size: .73rem;
+    opacity: .7;
+    margin-top: 4px;
+}
+.ec-calculo-body { padding: 16px 20px; }
+.ec-calculo-fila {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 7px 0;
+    border-bottom: 1px solid #F0F0F0;
+    font-size: .82rem;
+    gap: 8px;
+}
+.ec-calculo-fila:last-child    { border-bottom: none; }
+.ec-calculo-fila-label         { color: var(--gris-medio); font-weight: 600; }
+.ec-calculo-fila-val           { color: var(--gris-oscuro); font-weight: 700; text-align: right; }
+.ec-calculo-fila-val.positivo  { color: var(--verde-medio); }
+.ec-calculo-fila-val.total     { color: var(--verde-bosque); font-size: .95rem; }
+.ec-calculo-nota {
+    font-size: .74rem;
+    color: var(--gris-medio);
+    text-align: center;
+    padding: 10px 16px 14px;
+    line-height: 1.5;
+    font-style: italic;
+}
+
+/* ===== ACCIONES ===== */
+.ec-acciones {
+    display: flex;
+    gap: 12px;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 28px;
+    padding-top: 24px;
+    border-top: 1px solid var(--borde);
+    flex-wrap: wrap;
+}
+.ec-acciones-right { display: flex; gap: 12px; }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 900px) {
+    .ec-body { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+    .ec-form-grid,
+    .ec-form-grid .span-2 { grid-template-columns: 1fr; grid-column: span 1; }
+    .ec-panel-body        { padding: 16px; }
+    .ec-acciones          { flex-direction: column; }
+    .ec-acciones-right    { width: 100%; }
+    .ec-acciones-right .btn { flex: 1; justify-content: center; }
+    .ec-check-grid        { grid-template-columns: 1fr 1fr; }
+}
