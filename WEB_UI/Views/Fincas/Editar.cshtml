@@ -1,0 +1,100 @@
+@{
+    ViewData["Title"] = "Editar Finca";
+    ViewData["Breadcrumb"] = "Editar Finca";
+}
+
+<div class="psa-page-header">
+    <div>
+        <span class="subtitle">Mis Propiedades</span>
+        <h1>Editar Finca</h1>
+    </div>
+    <a class="btn btn-outline-psa btn-sm" asp-controller="Fincas" asp-action="Index"><i class="fas fa-arrow-left"></i> Volver</a>
+</div>
+
+<div class="alert alert-warning d-flex align-items-center gap-2">
+    <i class="fas fa-info-circle"></i> Solo puede editar mientras la solicitud no haya sido evaluada.
+</div>
+
+<div class="psa-card">
+    <div class="psa-card-header">
+        <div class="psa-card-title"><i class="fas fa-pen"></i> Editar: Finca Las Palmas</div>
+        <span class="psa-badge psa-badge-gold">En Revisión</span>
+    </div>
+    <div class="psa-card-body">
+        <form id="frmEditar">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label-psa">Nombre</label>
+                    <input type="text" class="form-control" value="Finca Las Palmas" />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label-psa">Hectáreas</label>
+                    <input type="number" class="form-control" value="78" min="0.1" step="0.1" />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label-psa">Provincia</label>
+                    <input type="text" class="form-control" value="Heredia" readonly />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label-psa">Cantón / Distrito</label>
+                    <input type="text" class="form-control" value="Sarapiquí, Puerto Viejo" readonly />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label-psa">Vegetación</label>
+                    <select class="form-select">
+                        <option>Bosque Primario</option>
+                        <option selected>Bosque Secundario</option>
+                        <option>Plantación Forestal</option>
+                        <option>Pasto / Escasa</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label-psa">Superficie</label>
+                    <select class="form-select">
+                        <option>Montañosa</option>
+                        <option selected>Llanura</option>
+                        <option>Laderas</option>
+                        <option>Valle</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label-psa">Recursos Hídricos</label>
+                    <select class="form-select">
+                        <option selected>Ríos o Quebradas</option>
+                        <option>Nacientes</option>
+                        <option>Ambos</option>
+                        <option>Sin recurso</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label-psa">Pendiente</label>
+                    <select class="form-select">
+                        <option selected>Plana</option>
+                        <option>Inclinada</option>
+                        <option>Muy Inclinada</option>
+                    </select>
+                </div>
+                <div class="col-12">
+                    <label class="form-label-psa">Documentos</label>
+                    <div class="psa-upload mb-2">
+                        <i class="fas fa-file-arrow-up"></i>
+                        <p>Arrastra archivos o haz clic</p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <span class="psa-file-chip"><i class="fas fa-file-pdf text-danger"></i> plano_catastrado.pdf <i class="fas fa-xmark remove"></i></span>
+                        <span class="psa-file-chip"><i class="fas fa-file-image text-primary"></i> foto_finca_01.jpg <i class="fas fa-xmark remove"></i></span>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="d-flex gap-2">
+                <button type="button" class="btn btn-psa" id="btnGuardar"><i class="fas fa-save"></i> Guardar Cambios</button>
+                <a class="btn btn-outline-psa" asp-controller="Fincas" asp-action="Index">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/Pages/Fincas/editarfinca.js" asp-append-version="true"></script>
+}

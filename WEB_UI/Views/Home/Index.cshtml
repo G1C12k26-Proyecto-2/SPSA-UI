@@ -1,8 +1,15 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@{
+    ViewData["Title"] = "Inicio";
+    ViewData["Breadcrumb"] = "Inicio";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="psa-page-header">
+    <div>
+        <span class="subtitle">Bienvenido</span>
+        <h1>Panel Principal</h1>
+        <p>Sistema de Gestión de Pagos por Servicios Ambientales</p>
+    </div>
+</div>
+<div class="text-center py-5">
+    <a class="btn btn-psa btn-lg" asp-controller="Fincas" asp-action="Index"><i class="fas fa-tree me-2"></i>Ir a Mis Fincas</a>
 </div>
