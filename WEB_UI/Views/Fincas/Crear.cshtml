@@ -1,0 +1,138 @@
+@{
+    ViewData["Title"] = "Registrar Finca";
+    ViewData["Breadcrumb"] = "Registrar Finca";
+}
+
+<div class="psa-page-header">
+    <div>
+        <span class="subtitle">Registro de Propiedades</span>
+        <h1>Registrar Nueva Finca</h1>
+        <p>Complete los datos para solicitar ingreso al programa PSA</p>
+    </div>
+</div>
+
+<div class="psa-card">
+    <div class="psa-card-header">
+        <div class="psa-card-title"><i class="fas fa-tree"></i> Datos de la Propiedad</div>
+        <span class="psa-badge psa-badge-muted">Estado inicial: Pendiente</span>
+    </div>
+    <div class="psa-card-body">
+        <form id="frmCrear">
+            <h5 class="mb-3"><i class="fas fa-map-pin text-success"></i> Ubicación</h5>
+            <div class="row g-3 mb-3">
+                <div class="col-12">
+                    <label class="form-label-psa">Nombre de la Finca</label>
+                    <input id="txtNombre" type="text" class="form-control" placeholder="Nombre de la finca" />
+                </div>
+                <div class="col-12">
+                    <label class="form-label-psa">Seleccionar Ubicación en Mapa</label>
+                    <div class="psa-map-selector">
+                        <div class="pin" style="top:45%;left:50%;background:var(--psa-red);box-shadow:0 0 0 6px rgba(184,50,50,0.3);"></div>
+                        <div class="psa-map-hint"><i class="fas fa-mouse-pointer"></i> Clic para seleccionar ubicación</div>
+                    </div>
+                    <small class="text-muted">Coordenadas: 10.4628° N, -84.6426° W</small>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label-psa">Provincia</label>
+                    <input type="text" class="form-control" value="Alajuela" >
+                    <small class="text-muted">Auto-detectada</small>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label-psa">Cantón</label>
+                    <input type="text" class="form-control" value="San Carlos" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label-psa">Distrito</label>
+                    <input type="text" class="form-control" value="La Fortuna" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label-psa">Tamaño (Hectáreas)</label>
+                    <input id="txtHectareas" type="number" class="form-control" placeholder="Ej: 85.5" min="0.1" step="0.1" />
+                    <small class="text-muted">Debe ser mayor que 0</small>
+                </div>
+            </div>
+
+            <h5 class="mb-3 mt-4"><i class="fas fa-leaf text-success"></i> Características Ambientales</h5>
+            <div class="mb-3">
+                <label class="form-label-psa">Tipo de Superficie</label>
+                <select class="form-select" style="max-width:400px;">
+                    <option disabled selected>Seleccione tipo</option>
+                    <option>Montañosa</option>
+                    <option>Llanura</option>
+                    <option>Laderas</option>
+                    <option>Valle</option>
+                    <option>Costera</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label-psa">Tipo de Vegetación</label>
+                <div class="psa-chip-group">
+                    <span class="psa-chip selected">Bosque Primario</span>
+                    <span class="psa-chip">Bosque Secundario</span>
+                    <span class="psa-chip">Plantación Forestal</span>
+                    <span class="psa-chip">Pasto / Escasa</span>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label-psa">Recursos Hídricos</label>
+                <div class="psa-chip-group" data-multi="true">
+                    <span class="psa-chip selected">Ríos o Quebradas</span>
+                    <span class="psa-chip">Nacientes</span>
+                    <span class="psa-chip">Sin recurso hídrico</span>
+                </div>
+                <div class="d-flex gap-2 align-items-center mt-2">
+                    <label class="form-label-psa mb-0" style="white-space:nowrap;">Cantidad de nacientes:</label>
+                    <input type="number" class="form-control" value="0" min="0" style="width:80px;" />
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label-psa">Pendiente del Terreno</label>
+                <div class="psa-chip-group">
+                    <span class="psa-chip">Plana</span>
+                    <span class="psa-chip selected">Inclinada</span>
+                    <span class="psa-chip">Muy Inclinada</span>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label-psa">Uso de Suelo (selección múltiple)</label>
+                <div class="psa-chip-group" data-multi="true">
+                    <span class="psa-chip selected">Conservación</span>
+                    <span class="psa-chip selected">Protección Hídrica</span>
+                    <span class="psa-chip">Reforestación</span>
+                    <span class="psa-chip">Agroforestal</span>
+                    <span class="psa-chip">Manejo de Bosque</span>
+                </div>
+            </div>
+
+            <h5 class="mb-3 mt-4"><i class="fas fa-folder-open" style="color:var(--psa-gold);"></i> Fotografías y Documentos</h5>
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <label class="form-label-psa">Fotografías</label>
+                    <div class="psa-upload">
+                        <i class="fas fa-camera"></i>
+                        <p>Arrastra imágenes o haz clic</p>
+                        <small>JPG, PNG · máx. 10MB</small>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label-psa">Documentos Legales</label>
+                    <div class="psa-upload">
+                        <i class="fas fa-file-arrow-up"></i>
+                        <p>Plano catastrado, escritura, etc.</p>
+                        <small>PDF · máx. 25MB</small>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="d-flex gap-2">
+                <button type="button" class="btn btn-psa" id="btnEnviar"><i class="fas fa-paper-plane"></i> Enviar Solicitud</button>
+                <button type="button" class="btn btn-outline-psa" id="btnBorrador"><i class="fas fa-floppy-disk"></i> Guardar Borrador</button>
+                <a class="btn btn-outline-psa" asp-controller="Fincas" asp-action="Index">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/Pages/Fincas/crearfinca.js" asp-append-version="true"></script>
+}

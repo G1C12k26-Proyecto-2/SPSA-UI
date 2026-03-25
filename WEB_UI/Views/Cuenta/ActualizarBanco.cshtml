@@ -1,0 +1,134 @@
+@{
+    ViewData["Title"] = "Datos Bancarios";
+    ViewData["Breadcrumb"] = "Datos Bancarios";
+}
+
+<div class="psa-page-header">
+    <div>
+        <span class="subtitle">Mi Cuenta</span>
+        <h1>Datos Bancarios</h1>
+        <p>Ingrese o actualice su cuenta bancaria para recibir pagos PSA</p>
+    </div>
+</div>
+
+
+
+<div class="row g-3">
+    <div class="col-lg-7">
+        <div class="psa-card">
+            <div class="psa-card-header">
+                <div class="psa-card-title"><i class="fas fa-building-columns"></i> Cuenta Bancaria</div>
+            </div>
+            <div class="psa-card-body">
+                <form id="frmBanco">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label-psa">Titular</label>
+                            <input type="text" class="form-control" value="Nombre"  />
+                            <small class="text-muted">Debe coincidir con el nombre registrado.</small>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label-psa">Cédula del Titular</label>
+                            <input type="text" class="form-control" value="1-1234-5678"  />
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label-psa">Banco</label>
+                            <select id="ddBanco" class="form-select">
+                                <option value="" disabled selected>Seleccione su banco</option>
+                                <option>Banco Nacional de Costa Rica</option>
+                                <option>Banco de Costa Rica (BCR)</option>
+                                <option>BAC Credomatic</option>
+                                <option>Scotiabank</option>
+                                <option>Banco Popular</option>
+                                <option>Banco Promerica</option>
+                                <option>Davivienda</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label-psa">Tipo de Cuenta</label>
+                            <select class="form-select">
+                                <option>Cuenta Corriente (Colones)</option>
+                                <option>Cuenta Ahorros (Colones)</option>
+                                <option>Cuenta IBAN</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label-psa">Número de Cuenta / IBAN</label>
+                            <input id="txtCuenta" type="text" class="form-control" placeholder="Ej: CR12345678901234567890" />
+                            <small class="text-muted">IBAN de 22 dígitos o número completo.</small>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label-psa">Confirmar Número</label>
+                            <input id="txtConfirmar" type="text" class="form-control" placeholder="Repita el número de cuenta" />
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-psa" id="btnGuardar"><i class="fas fa-save"></i> Guardar Datos Bancarios</button>
+                        <button type="button" class="btn btn-outline-psa">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="psa-card ">
+            <div class="psa-card-header">
+                <div class="psa-card-title"><i class="fas fa-shield-halved"></i> Información Importante</div>
+            </div>
+            <div class="psa-card-body">
+                <div class="d-flex gap-3 align-items-start mb-3">
+                    <div class="psa-tl-dot green"><i class="fas fa-lock"></i></div>
+                    <div>
+                        <div style="font-size:0.82rem;font-weight:500;">Datos encriptados</div>
+                        <div style="font-size:0.72rem;color:var(--psa-muted);">Información almacenada con cifrado AES-256.</div>
+                    </div>
+                </div>
+                <div class="d-flex gap-3 align-items-start mb-3">
+                    <div class="psa-tl-dot gold"><i class="fas fa-user-check"></i></div>
+                    <div>
+                        <div style="font-size:0.82rem;font-weight:500;">Titular verificado</div>
+                        <div style="font-size:0.72rem;color:var(--psa-muted);">La cuenta debe estar a nombre del propietario registrado.</div>
+                    </div>
+                </div>
+                <div class="d-flex gap-3 align-items-start">
+                    <div class="psa-tl-dot blue"><i class="fas fa-calendar-check"></i></div>
+                    <div>
+                        <div style="font-size:0.82rem;font-weight:500;">Pagos automáticos</div>
+                        <div style="font-size:0.72rem;color:var(--psa-muted);">Depósito el día 15 de cada mes.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="psa-card Juan" >
+            <div class="psa-card-header">
+                <div class="psa-card-title"><i class="fas fa-clock-rotate-left"></i> Historial</div>
+            </div>
+            <div class="psa-card-body">
+                <div class="psa-timeline">
+                    <div class="psa-tl-item">
+                        <div class="psa-tl-dot gold"><i class="fas fa-envelope"></i></div>
+                        <div class="psa-tl-body">
+                            <div class="psa-tl-title">Correo de aprobación enviado</div>
+                            <div class="psa-tl-desc">Se solicitó ingresar datos bancarios</div>
+                            <div class="psa-tl-time">Hoy, 9:00 AM</div>
+                        </div>
+                    </div>
+                    <div class="psa-tl-item">
+                        <div class="psa-tl-dot green"><i class="fas fa-check"></i></div>
+                        <div class="psa-tl-body">
+                            <div class="psa-tl-title">Finca La Catarata aprobada</div>
+                            <div class="psa-tl-desc">Ing. Roberto Rojas</div>
+                            <div class="psa-tl-time">Hoy, 8:45 AM</div>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-muted fst-italic mt-2" style="font-size:0.72rem;">Aún no se ha registrado una cuenta bancaria.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/Pages/Cuenta/banco.js" asp-append-version="true"></script>
+}
