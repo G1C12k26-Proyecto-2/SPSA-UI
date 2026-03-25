@@ -287,12 +287,12 @@ function mostrarToastVI(mensaje, esError = false) {
 /* ── 9. NAVEGACIÓN ───────────────────────────────── */
 function verDetalle(id) {
     if (!id || isNaN(id)) { mostrarToastVI('ID de visita inválido.', true); return; }
-    window.location.href = `/Detalle?id=${encodeURIComponent(id)}`;
+    window.location.href = `/IngForestal/Detalle?id=${encodeURIComponent(id)}`;
 }
 
 function realizarVisita(id) {
     if (!id || isNaN(id)) { mostrarToastVI('ID de visita inválido.', true); return; }
-    window.location.href = `/Realizar?id=${encodeURIComponent(id)}`;
+    window.location.href = `/IngForestal/Realizar?id=${encodeURIComponent(id)}`;
 }
 
 /* ── 10. INIT ─────────────────────────────────────── */

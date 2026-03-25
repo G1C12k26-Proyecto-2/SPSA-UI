@@ -163,7 +163,7 @@ function edEditar() {
 
 function edRealizar() {
     const id = edGetId();
-    window.location.href = `/IngForestal/Realizar?id=${encodeURIComponent(id)}`;
+    window.location.href = `/IngForestal/EvaluacionesCrear?id=${encodeURIComponent(id)}`;
 }
 
 function edGetId() {

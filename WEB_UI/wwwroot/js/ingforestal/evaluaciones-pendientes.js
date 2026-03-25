@@ -245,12 +245,12 @@ function epActualizarFilaEstado(id) {
 ═══════════════════════════════════════════════════ */
 function epVerDetalle(id) {
     if (!id || isNaN(id)) { epToast('ID inválido.', true); return; }
-    window.location.href = `/IngForestal/Detalle?id=${encodeURIComponent(id)}`;
+    window.location.href = `/IngForestal/EvaluacionesDetalle?id=${encodeURIComponent(id)}`;
 }
 
 function epRealizar(id) {
     if (!id || isNaN(id)) { epToast('ID inválido.', true); return; }
-    window.location.href = `/IngForestal/Realizar?id=${encodeURIComponent(id)}`;
+    window.location.href = `/IngForestal/EvaluacionesCrear?id=${encodeURIComponent(id)}`;
 }
 
 /* ═══════════════════════════════════════════════════

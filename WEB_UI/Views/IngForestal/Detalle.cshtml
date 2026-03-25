@@ -100,11 +100,11 @@
 
     <!-- ===== BREADCRUMB ===== -->
     <nav class="dt-breadcrumb" aria-label="Ruta de navegación">
-        <a href="@Url.Action("Index","IngForestal")">
+        <a href="@Url.Action("TecnicoDashboard","IngForestal")">
             <i class="fa-solid fa-house-chimney"></i> Dashboard
         </a>
         <span class="dt-breadcrumb-sep"><i class="fa-solid fa-chevron-right"></i></span>
-        <a href="@Url.Action("Index","Visitas")">Mis Visitas</a>
+        <a href="@Url.Action("Index","IngForestal")">@nombreFinca</a>
         <span class="dt-breadcrumb-sep"><i class="fa-solid fa-chevron-right"></i></span>
         <span>Detalle</span>
     </nav>
@@ -342,13 +342,13 @@
                                 style="justify-content:center;">
                             <i class="fa-solid fa-pen-to-square"></i> Cambiar Estado
                         </button>
-                        <button class="btn btn-outline" onclick="location.href='@Url.Action("Agenda","Visitas")'"
+                        <button class="btn btn-outline" onclick="location.href='@Url.Action("Agenda","IngForestal")'"
                                 style="justify-content:center;">
                             <i class="fa-solid fa-calendar-days"></i> Ver Agenda
                         </button>
                         <button class="btn btn-outline" onclick="volverLista()"
                                 style="justify-content:center;">
-                            <i class="fa-solid fa-list"></i> Volver al Listado
+                            <i class="fa-solid fa-list"></i> Volver a listado de solicitudes
                         </button>
                     </div>
                 </div>

@@ -312,7 +312,7 @@ function guardarEvaluacion() {
     console.log('Evaluación a guardar:', datos);
     mostrarToastRL(`✅ Evaluación guardada. Decisión: ${RL.decision === 'aprobar' ? 'Aprobada' : 'Rechazada'}`);
     setTimeout(() => {
-        window.location.href = `/IngForestal/Visitas/Detalle?id=${id}`;
+        window.location.href = `/IngForestal/Detalle?id=${id}`;
     }, 2000);
 }
 

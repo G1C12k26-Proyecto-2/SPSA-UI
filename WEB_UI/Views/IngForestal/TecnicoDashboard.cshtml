@@ -65,13 +65,16 @@
         <div class="td-panel">
             <div class="td-panel-header">
                 <h2><i class="fa-solid fa-list-check"></i> Solicitudes Técnicas</h2>
-                <button class="btn btn-primary btn-sm" onclick="location.href='@Url.Action("Agenda", "IngForestal")'">
-                    <i class="fa-solid fa-calendar-plus"></i> Ver Agenda
-                </button>
-                <button class="btn btn-primary btn-sm" onclick="location.href='@Url.Action("Index", "IngForestal")'">
-                    <i class="fa-solid fa-calendar-plus"></i> Mis Solicitudes
-                </button>
+                <div style="display:flex; gap:10px; align-items:center;">
+                    <button class="btn btn-primary btn-sm" onclick="location.href='@Url.Action("Agenda", "IngForestal")'">
+                        <i class="fa-solid fa-calendar-plus"></i> Ver Agenda
+                    </button>
+                    <button class="btn btn-primary btn-sm" onclick="location.href='@Url.Action("Index", "IngForestal")'">
+                        <i class="fa-solid fa-list"></i> Todas las solicitudes
+                    </button>
+                </div>
             </div>
+
 
             <!-- Filtros -->
             <div class="td-filtros">

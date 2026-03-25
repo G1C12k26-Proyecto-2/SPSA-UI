@@ -146,7 +146,7 @@ function verDetalle(id) {
         mostrarToast('ID de solicitud inválido.', true);
         return;
     }
-    window.location.href = `/Detalle?id=${encodeURIComponent(id)}`;
+    window.location.href = `/IngForestal/Detalle?id=${encodeURIComponent(id)}`;
 }
 
 // ── 4. TOAST ──────────────────────────────────────────────
