@@ -12,13 +12,65 @@ const RL = {
     camposModif:    new Set(),
     valoresOriginales: {},
 };
-
 /* ═══════════════════════════════════════════════════
    1. CAMPOS MODIFICADOS vs ORIGINALES
 ═══════════════════════════════════════════════════ */
 function registrarOriginal(id) {
     const el = document.getElementById(id);
     if (el) RL.valoresOriginales[id] = el.value;
+}
+function eeRegistrarOriginales() {
+    const campos = ['ee-hectareas', 'ee-vegetacion', 'ee-pendiente',
+        'ee-recursos', 'ee-fecha-visita', 'ee-hora-visita',
+        'ee-observaciones'];
+    campos.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) EE.originales[id] = el.value;
+    });
+
+    // Uso de suelo original
+    document.querySelectorAll('.ee-check-item.marcado').forEach(el => {
+        EE.usoSueloOrig.add(el.dataset.valor);
+        EE.usoSueloSel.add(el.dataset.valor);
+    });
+}
+function eeActualizarComparador() {
+    const etiqVeg = { 'bosque-primario': 'Bosque Primario', 'bosque-secundario': 'Bosque Secundario', 'plantacion-forestal': 'Plantación Forestal', 'pasto': 'Pasto' };
+    const etiqPen = { 'plana': 'Plana', 'inclinada': 'Inclinada', 'muy-inclinada': 'Muy inclinada' };
+    const etiqRec = { 'ninguno': 'Ninguno', 'quebrada': 'Quebrada', 'rio': 'Río', 'naciente': 'Naciente', 'rio-naciente': 'Río y naciente' };
+
+    const campos = [
+        { id: 'ee-hectareas', etiq: null, label: 'Hectáreas', sufijo: ' ha' },
+        { id: 'ee-vegetacion', etiq: etiqVeg, label: 'Vegetación', sufijo: '' },
+        { id: 'ee-pendiente', etiq: etiqPen, label: 'Pendiente', sufijo: '' },
+        { id: 'ee-recursos', etiq: etiqRec, label: 'Recursos', sufijo: '' },
+    ];
+
+    const wrapOrig = document.getElementById('ee-comp-original');
+    const wrapNuev = document.getElementById('ee-comp-nuevo');
+    if (!wrapOrig || !wrapNuev) return;
+
+    wrapOrig.innerHTML = '';
+    wrapNuev.innerHTML = '';
+
+    campos.forEach(c => {
+        const orig = EE.originales[c.id] ?? '—';
+        const nuevo = document.getElementById(c.id)?.value ?? '—';
+        const camb = orig !== nuevo;
+
+        const etiqFn = v => c.etiq ? (c.etiq[v] || v) : v;
+
+        wrapOrig.innerHTML += `
+            <div class="ee-comparar-fila">
+                <span class="ee-comparar-fila-label">${c.label}</span>
+                <span class="ee-comparar-fila-val">${etiqFn(orig)}${orig !== '—' ? c.sufijo : ''}</span>
+            </div>`;
+        wrapNuev.innerHTML += `
+            <div class="ee-comparar-fila">
+                <span class="ee-comparar-fila-label">${c.label}</span>
+                <span class="ee-comparar-fila-val${camb ? ' cambiado' : ''}">${etiqFn(nuevo)}${nuevo !== '—' ? c.sufijo : ''}</span>
+            </div>`;
+    });
 }
 
 function onCampoChange(id) {

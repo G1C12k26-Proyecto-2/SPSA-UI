@@ -4,43 +4,36 @@ namespace WEB_UI.Controllers
 {
     public class IngForestalController : Controller
     {
-        public IActionResult TecnicoDashboard()
-        {
-            return View();
-        }
         public IActionResult Index()
         {
+            ViewData["Title"] = "Dashboard";
+            return View();
+        }
+        public IActionResult ListaSolicitudes()
+        {
+            ViewData["Title"] = "Todas las solicitudes";
+            ViewData["Breadcrumb"] = "Todas las solicitudes";
             return View();
         }
         public IActionResult Agenda()
         {
+            ViewData["Title"] = "Agenda";
+            ViewData["Breadcrumb"] = "Agenda";
             return View();
         }
         public IActionResult Programar()
         {
+            ViewData["Title"] = "Programar visita";
+            ViewData["Breadcrumb"] = "Programar Visita";
             return View();
         }
         public IActionResult Detalle()
         {
+            ViewData["Title"] = "Evaluación técnica";
+            ViewData["Breadcrumb"] = "Evaluación técnica";
             return View();
         }
         public IActionResult Realizar()
-        {
-            return View();
-        }
-        public IActionResult EvaluacionesPendientes()
-        {
-            return View();
-        }
-        public IActionResult EvaluacionesCrear()
-        {
-            return View();
-        }
-        public IActionResult EvaluacionesEditar()
-        {
-            return View();
-        }
-        public IActionResult EvaluacionesDetalle()
         {
             return View();
         }

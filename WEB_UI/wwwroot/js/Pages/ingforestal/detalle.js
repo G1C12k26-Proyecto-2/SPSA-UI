@@ -191,7 +191,11 @@ function realizarVisita() {
 }
 
 function volverLista() {
-    window.location.href = '/IngForestal/Index';
+    window.location.href = '/IngForestal/ListaSolicitudes';
+}
+
+function programarVisita() {
+    window.location.href = '/IngForestal/Programar';
 }
 
 /* ═══════════════════════════════════════════════════

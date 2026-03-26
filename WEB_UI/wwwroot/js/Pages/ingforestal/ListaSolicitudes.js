@@ -295,6 +295,10 @@ function realizarVisita(id) {
     window.location.href = `/IngForestal/Realizar?id=${encodeURIComponent(id)}`;
 }
 
+function programarVisita() {
+    window.location.href = '/IngForestal/Programar';
+}
+
 /* ── 10. INIT ─────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
 

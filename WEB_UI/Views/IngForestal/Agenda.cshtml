@@ -1,6 +1,6 @@
 @{
     ViewData["Title"] = "Agenda de Visitas - Ingeniero Forestal";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_LayoutIngForestal.cshtml";
 }
 
 @section Styles {
@@ -12,17 +12,6 @@
 
 <div class="tecnico-dashboard">
 
-    <!-- ===== BREADCRUMB ===== -->
-    <nav class="ag-breadcrumb" aria-label="Ruta de navegación">
-        <a href="@Url.Action("TecnicoDashboard", "IngForestal")">
-            <i class="fa-solid fa-house-chimney"></i> Dashboard
-        </a>
-        <span class="ag-breadcrumb-sep"><i class="fa-solid fa-chevron-right"></i></span>
-        <a href="@Url.Action("Index","IngForestal")">Mis Visitas</a>
-        <span class="ag-breadcrumb-sep"><i class="fa-solid fa-chevron-right"></i></span>
-        <span>Agenda</span>
-    </nav>
-
     <!-- ===== PAGE HEADER ===== -->
     <div class="ag-page-header">
         <div>
@@ -32,12 +21,12 @@
             </h1>
             <p>Visualiza y gestiona tus visitas técnicas en el calendario mensual.</p>
         </div>
-        <div class="ag-header-actions">
-            <button class="btn btn-outline" onclick="irHoy()">
-                <i class="fa-solid fa-crosshairs"></i> Hoy
+        <div style="display: flex; gap: 0.75rem;">
+            <button class="btn btn-outline-psa btn-sm" onclick="irHoy()">
+                <i class="fas fa-crosshairs"></i> Hoy
             </button>
-            <button class="btn btn-primary" onclick="programarVisita()">
-                <i class="fa-solid fa-calendar-plus"></i> Programar Visita
+            <button class="btn btn-psa btn-sm" onclick="programarVisita()">
+                <i class="fas fa-calendar-plus"></i> Programar Visita
             </button>
         </div>
     </div>

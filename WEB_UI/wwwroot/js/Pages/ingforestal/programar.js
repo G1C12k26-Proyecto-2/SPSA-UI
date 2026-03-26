@@ -318,7 +318,7 @@ function guardarVisita() {
     console.log('Visita a guardar:', datos);
     mostrarToastPR('✅ Visita programada correctamente.');
     setTimeout(() => {
-        window.location.href = '/IngForestal/Index';
+        window.location.href = '/IngForestal/ListaSolicitudes';
     }, 1800);
 }
 

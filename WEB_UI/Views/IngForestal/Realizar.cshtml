@@ -1,6 +1,6 @@
 @{
     ViewData["Title"] = "Realizar Visita Técnica - Ingeniero Forestal";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_LayoutIngForestal.cshtml";
 
     // En producción estos valores vendrán del modelo: @Model.NombreFinca, etc.
     var nombreFinca      = "Finca El Cedro";
@@ -18,292 +18,486 @@
 }
 
 @section Styles {
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="~/css/ingforestal/dashboard.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/ingforestal/realizar.css"  asp-append-version="true" />
+    <!-- Ya no necesitas estas fuentes porque psatheme.css ya las define -->
+    <!-- <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"> -->
+    <!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet"> -->
+    <!-- <link rel="stylesheet" href="~/css/ingforestal/dashboard.css" asp-append-version="true" /> -->
+    <!-- <link rel="stylesheet" href="~/css/ingforestal/realizar.css" asp-append-version="true" /> -->
+    <!-- <link rel="stylesheet" href="~/css/ingforestal/evaluaciones-editar.css" asp-append-version="true" /> -->
+
+    <style>
+        /* Estilos específicos para el formulario de evaluación */
+        
+        /* Alerta de contexto */
+        .rl-alerta-contexto {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: var(--psa-pale);
+            border-radius: var(--psa-r);
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-left: 3px solid var(--psa-leaf);
+        }
+        .rl-alerta-contexto-icon {
+            font-size: 1.5rem;
+        }
+        .rl-alerta-contexto-info {
+            flex: 1;
+        }
+        .rl-alerta-contexto-titulo {
+            font-weight: 600;
+            color: var(--psa-forest);
+            margin-bottom: 0.25rem;
+        }
+        .rl-alerta-contexto-sub {
+            font-size: 0.75rem;
+            color: var(--psa-muted);
+        }
+        
+        /* Formulario grid */
+        .rl-form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+        .rl-field {
+            grid-column: span 1;
+        }
+        .rl-field.span-2 {
+            grid-column: span 2;
+        }
+        .rl-field label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--psa-muted);
+            margin-bottom: 0.25rem;
+            display: block;
+        }
+        .rl-field label .orig {
+            font-size: 0.65rem;
+            font-weight: normal;
+            text-transform: none;
+            color: var(--psa-muted);
+            margin-left: 0.5rem;
+        }
+        .rl-field .req {
+            color: var(--psa-red);
+        }
+        .rl-orig-tag {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: var(--psa-leaf);
+            font-size: 0.8rem;
+            display: none;
+        }
+        .rl-field {
+            position: relative;
+        }
+        .rl-field-error {
+            font-size: 0.7rem;
+            color: var(--psa-red);
+            display: none;
+            margin-top: 0.25rem;
+        }
+        .rl-field-error.visible {
+            display: block;
+        }
+        
+        /* Badge de cambios */
+        .rl-cambios-badge {
+            font-size: 0.7rem;
+            background: var(--psa-pale);
+            padding: 0.2rem 0.6rem;
+            border-radius: 99px;
+            color: var(--psa-muted);
+        }
+        
+        /* Zona de upload */
+        .rl-upload-zona {
+            border: 2px dashed var(--psa-border);
+            border-radius: var(--psa-r);
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+            position: relative;
+        }
+        .rl-upload-zona:hover {
+            border-color: var(--psa-leaf);
+            background: var(--psa-pale);
+        }
+        .rl-upload-zona input {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+        .rl-upload-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        .rl-upload-txt {
+            font-size: 0.85rem;
+            color: var(--psa-muted);
+            margin: 0;
+        }
+        .rl-upload-sub {
+            font-size: 0.7rem;
+            color: var(--psa-leaf);
+            margin-top: 0.25rem;
+        }
+        
+        /* Preview de fotos */
+        .rl-fotos-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+        .rl-foto-preview-item {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            border-radius: var(--psa-r);
+            overflow: hidden;
+            border: 1px solid var(--psa-border);
+        }
+        .rl-foto-preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .rl-foto-preview-remove {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: rgba(0,0,0,0.6);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 0.7rem;
+        }
+        
+        /* Decisión buttons */
+        .rl-decision-wrap {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        .rl-decision-btn {
+            padding: 1rem;
+            border: 2px solid var(--psa-border);
+            border-radius: var(--psa-r);
+            background: #fff;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+        }
+        .rl-decision-btn:hover {
+            border-color: var(--psa-leaf);
+            background: var(--psa-pale);
+        }
+        .rl-decision-btn.seleccionado {
+            border-color: var(--psa-leaf);
+            background: var(--psa-pale);
+        }
+        .rl-decision-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .rl-decision-label {
+            font-weight: 600;
+            color: var(--psa-forest);
+            margin-bottom: 0.25rem;
+        }
+        .rl-decision-sub {
+            font-size: 0.7rem;
+            color: var(--psa-muted);
+        }
+        .rl-decision-err {
+            font-size: 0.75rem;
+            color: var(--psa-red);
+            display: none;
+            margin-top: 0.5rem;
+        }
+        .rl-decision-err.visible {
+            display: block;
+        }
+        
+        /* Acciones finales */
+        .rl-acciones-finales {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1.5rem;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .rl-acciones-right {
+            display: flex;
+            gap: 0.75rem;
+        }
+        
+        /* Panel de progreso */
+        .rl-progreso-panel {
+            background: #fff;
+            border-radius: var(--psa-r);
+            border: 1px solid var(--psa-border);
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+        .rl-progreso-header {
+            padding: 1rem;
+            background: var(--psa-pale);
+            border-bottom: 1px solid var(--psa-border);
+        }
+        .rl-progreso-header p {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            color: var(--psa-muted);
+            margin-bottom: 0.5rem;
+        }
+        .rl-progreso-pct {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--psa-leaf);
+            margin-bottom: 0.5rem;
+        }
+        .rl-progreso-bar-wrap {
+            height: 6px;
+            background: var(--psa-sand);
+            border-radius: 99px;
+            overflow: hidden;
+        }
+        .rl-progreso-bar {
+            height: 100%;
+            background: var(--psa-leaf);
+            border-radius: 99px;
+            transition: width 0.3s ease;
+        }
+        .rl-progreso-body {
+            padding: 1rem;
+        }
+        .rl-check-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--psa-border);
+        }
+        .rl-check-item:last-child {
+            border-bottom: none;
+        }
+        .rl-check-dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--psa-sand);
+            transition: background 0.2s;
+        }
+        .rl-check-dot.completado {
+            background: var(--psa-leaf);
+        }
+        .rl-check-label {
+            font-size: 0.75rem;
+            color: var(--psa-ink);
+        }
+    </style>
 }
 
-<div class="tecnico-dashboard">
+<div class="IngForestal-dashboard">
 
     <!-- ===== BREADCRUMB ===== -->
-    <nav class="rl-breadcrumb" aria-label="Ruta de navegación">
-        <a href="@Url.Action("TecnicoDashboard", "IngForestal")">
-            <i class="fa-solid fa-house-chimney"></i> Dashboard
-        </a>
-        <span class="rl-breadcrumb-sep"><i class="fa-solid fa-chevron-right"></i></span>
-        <a href="@Url.Action("Index","IngForestal")">Mis Visitas</a>
-        <span class="rl-breadcrumb-sep"><i class="fa-solid fa-chevron-right"></i></span>
-        <a href="@Url.Action("Detalle","IngForestal")">@nombreFinca</a>
-        <span class="rl-breadcrumb-sep"><i class="fa-solid fa-chevron-right"></i></span>
-        <span>Evaluación Técnica</span>
-    </nav>
+    <div class="psa-breadcrumb" style="margin-bottom: 1.2rem;">
+        <a asp-controller="IngForestal" asp-action="ListaSolicitudes">Todas las solicitudes</a>
+        <i class="fas fa-chevron-right" style="font-size:0.55rem;"></i>
+        <a asp-controller="IngForestal" asp-action="Detalle">@nombreFinca</a>
+        <i class="fas fa-chevron-right" style="font-size:0.55rem;"></i>
+        <span class="current">Evaluación Técnica</span>
+    </div>
 
     <!-- ===== PAGE HEADER ===== -->
-    <div class="rl-page-header">
+    <div class="psa-page-header">
         <div>
+            <span class="subtitle">Visita Técnica</span>
             <h1>
-                <i class="fa-solid fa-clipboard-check" style="color:var(--verde-claro);font-size:1.4rem;"></i>
+                <i class="fas fa-clipboard-check" style="color: var(--psa-leaf); font-size: 1.4rem;"></i>
                 Evaluación Técnica
             </h1>
             <p>Complete el formulario con los datos observados en campo. Los cambios respecto al registro original quedarán resaltados.</p>
         </div>
-        <div class="rl-header-actions">
-            <button class="btn btn-outline" onclick="location.href='@Url.Action("Detalle","IngForestal")'">
-                <i class="fa-solid fa-arrow-left"></i> Cancelar
-            </button>
+        <div>
+            <a class="btn btn-outline-psa btn-sm" href="@Url.Action("Detalle","IngForestal")">
+                <i class="fas fa-arrow-left"></i> Cancelar
+            </a>
         </div>
     </div>
 
     <!-- ===== ALERTA DE CONTEXTO ===== -->
     <div class="rl-alerta-contexto" role="note">
         <div class="rl-alerta-contexto-icon">
-            <i class="fa-solid fa-tree"></i>
+            <i class="fas fa-tree"></i>
         </div>
         <div class="rl-alerta-contexto-info">
             <div class="rl-alerta-contexto-titulo">@nombreFinca — @propietario</div>
             <div class="rl-alerta-contexto-sub">
-                <i class="fa-solid fa-location-dot"></i> @ubicacion &nbsp;·&nbsp;
-                <i class="fa-solid fa-calendar"></i> Visita programada: @fechaVisitaProg &nbsp;·&nbsp;
-                <i class="fa-solid fa-clock"></i> @horaVisitaProg
+                <i class="fas fa-location-dot"></i> @ubicacion &nbsp;·&nbsp;
+                <i class="fas fa-calendar"></i> Visita programada: @fechaVisitaProg &nbsp;·&nbsp;
+                <i class="fas fa-clock"></i> @horaVisitaProg
             </div>
         </div>
-        <span class="chip chip-proceso">En Proceso</span>
+        <span class="psa-badge psa-badge-blue">En Proceso</span>
     </div>
 
     <!-- ===== LAYOUT ===== -->
-    <div class="rl-body">
+    <div style="display: grid; grid-template-columns: 1fr 300px; gap: 1.5rem; align-items: start;">
 
         <!-- ══════ COLUMNA PRINCIPAL ══════ -->
-        <div>
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
 
             <!-- ── 1. DATOS DEL DÍA ── -->
-            <div class="rl-panel">
-                <div class="rl-panel-header">
-                    <h2><i class="fa-solid fa-calendar-check"></i> Datos de la Visita Real</h2>
+            <div class="psa-card">
+                <div class="psa-card-header">
+                    <div class="psa-card-title">
+                        <i class="fas fa-calendar-check"></i> Datos de la Visita Real
+                    </div>
                 </div>
-                <div class="rl-panel-body">
+                <div class="psa-card-body">
                     <div class="rl-form-grid">
-
-                        <!-- Fecha real -->
                         <div class="rl-field">
-                            <label for="rl-fecha-visita">
-                                Fecha real de visita <span class="req">*</span>
-                            </label>
-                            <input type="date" id="rl-fecha-visita"
-                                   aria-describedby="rl-fecha-visita-err">
+                            <label>Fecha real de visita <span class="req">*</span></label>
+                            <input type="date" id="rl-fecha-visita" class="form-control form-control-sm">
                             <span class="rl-field-error" id="rl-fecha-visita-err" role="alert">
-                                <i class="fa-solid fa-triangle-exclamation"></i>
+                                <i class="fas fa-triangle-exclamation"></i>
                                 Ingrese la fecha real de la visita.
                             </span>
                         </div>
-
-                        <!-- Hora real -->
                         <div class="rl-field">
-                            <label for="rl-hora-visita">
-                                Hora de inicio real <span class="req">*</span>
-                            </label>
-                            <input type="time" id="rl-hora-visita"
-                                   value="@horaVisitaProg"
-                                   aria-describedby="rl-hora-visita-err">
+                            <label>Hora de inicio real <span class="req">*</span></label>
+                            <input type="time" id="rl-hora-visita" class="form-control form-control-sm" value="@horaVisitaProg">
                             <span class="rl-field-error" id="rl-hora-visita-err" role="alert">
-                                <i class="fa-solid fa-triangle-exclamation"></i>
+                                <i class="fas fa-triangle-exclamation"></i>
                                 Ingrese la hora de inicio.
                             </span>
                         </div>
-
                     </div>
                 </div>
             </div>
 
             <!-- ── 2. DATOS OBSERVADOS EN CAMPO ── -->
-            <div class="rl-panel">
-                <div class="rl-panel-header">
-                    <h2><i class="fa-solid fa-magnifying-glass"></i> Datos Observados en Campo</h2>
+            <div class="psa-card">
+                <div class="psa-card-header">
+                    <div class="psa-card-title">
+                        <i class="fas fa-magnifying-glass"></i> Datos Observados en Campo
+                    </div>
                     <span class="rl-cambios-badge" id="rl-badge-cambios">
-                        <i class="fa-solid fa-pen"></i> 0 cambios
+                        <i class="fas fa-pen"></i> 0 cambios
                     </span>
                 </div>
-                <div class="rl-panel-body">
+                <div class="psa-card-body">
                     <div class="rl-form-grid">
-
-                        <!-- Hectáreas -->
                         <div class="rl-field">
-                            <label for="rl-hectareas">
-                                Hectáreas verificadas <span class="req">*</span>
-                                <span class="orig">Orig: @origHectareas ha</span>
-                            </label>
-                            <input type="number" id="rl-hectareas"
-                                   value="@origHectareas"
-                                   step="0.01" min="0.01"
+                            <label>Hectáreas verificadas <span class="req">*</span> <span class="orig">Orig: @origHectareas ha</span></label>
+                            <input type="number" id="rl-hectareas" class="form-control form-control-sm"
+                                   value="@origHectareas" step="0.01" min="0.01"
                                    onchange="onCampoChange('rl-hectareas')"
-                                   oninput="onCampoChange('rl-hectareas')"
-                                   aria-describedby="rl-hectareas-err">
-                            <span class="rl-orig-tag" id="rl-hectareas-orig" style="display:none;">
-                                <i class="fa-solid fa-rotate-left"></i>
-                            </span>
+                                   oninput="onCampoChange('rl-hectareas')">
                             <span class="rl-field-error" id="rl-hectareas-err" role="alert">
-                                <i class="fa-solid fa-triangle-exclamation"></i>
+                                <i class="fas fa-triangle-exclamation"></i>
                                 Las hectáreas deben ser un número mayor a 0.
                             </span>
                         </div>
 
-                        <!-- Tipo de vegetación -->
                         <div class="rl-field">
-                            <label for="rl-vegetacion">
-                                Tipo de vegetación <span class="req">*</span>
-                                <span class="orig">Orig: Plantación Forestal</span>
-                            </label>
-                            @{
-                                var optsVeg = new[] {
-                                    ("bosque-primario",     "Bosque Primario"),
-                                    ("bosque-secundario",   "Bosque Secundario"),
-                                    ("plantacion-forestal", "Plantación Forestal"),
-                                    ("pasto",               "Pasto o escasa vegetación"),
-                                };
-                            }
-                            <select id="rl-vegetacion"
-                                    onchange="onCampoChange('rl-vegetacion')"
-                                    aria-describedby="rl-vegetacion-err">
+                            <label>Tipo de vegetación <span class="req">*</span> <span class="orig">Orig: Plantación Forestal</span></label>
+                            <select id="rl-vegetacion" class="form-select form-select-sm"
+                                    onchange="onCampoChange('rl-vegetacion')">
                                 <option value="">Seleccione...</option>
-                                @foreach (var opt in optsVeg) {
-                                    if (opt.Item1 == origVegetacion) {
-                                        <option value="@opt.Item1" selected="selected">@opt.Item2</option>
-                                    } else {
-                                        <option value="@opt.Item1">@opt.Item2</option>
-                                    }
-                                }
+                                <option value="bosque-primario">Bosque Primario</option>
+                                <option value="bosque-secundario">Bosque Secundario</option>
+                                <option value="plantacion-forestal" selected>Plantación Forestal</option>
+                                <option value="pasto">Pasto o escasa vegetación</option>
                             </select>
-                            <span class="rl-orig-tag" id="rl-vegetacion-orig" style="display:none;">
-                                <i class="fa-solid fa-rotate-left"></i>
-                            </span>
                             <span class="rl-field-error" id="rl-vegetacion-err" role="alert">
-                                <i class="fa-solid fa-triangle-exclamation"></i>
+                                <i class="fas fa-triangle-exclamation"></i>
                                 Seleccione el tipo de vegetación observado.
                             </span>
                         </div>
 
-                        <!-- Pendiente -->
                         <div class="rl-field">
-                            <label for="rl-pendiente">
-                                Pendiente del terreno <span class="req">*</span>
-                                <span class="orig">Orig: Inclinada</span>
-                            </label>
-                            @{
-                                var optsPend = new[] {
-                                    ("plana",          "Plana"),
-                                    ("inclinada",      "Inclinada"),
-                                    ("muy-inclinada",  "Muy inclinada"),
-                                };
-                            }
-                            <select id="rl-pendiente"
-                                    onchange="onCampoChange('rl-pendiente')"
-                                    aria-describedby="rl-pendiente-err">
+                            <label>Pendiente del terreno <span class="req">*</span> <span class="orig">Orig: Inclinada</span></label>
+                            <select id="rl-pendiente" class="form-select form-select-sm"
+                                    onchange="onCampoChange('rl-pendiente')">
                                 <option value="">Seleccione...</option>
-                                @foreach (var opt in optsPend) {
-                                    if (opt.Item1 == origPendiente) {
-                                        <option value="@opt.Item1" selected="selected">@opt.Item2</option>
-                                    } else {
-                                        <option value="@opt.Item1">@opt.Item2</option>
-                                    }
-                                }
+                                <option value="plana">Plana</option>
+                                <option value="inclinada" selected>Inclinada</option>
+                                <option value="muy-inclinada">Muy inclinada</option>
                             </select>
-                            <span class="rl-orig-tag" id="rl-pendiente-orig" style="display:none;">
-                                <i class="fa-solid fa-rotate-left"></i>
-                            </span>
                             <span class="rl-field-error" id="rl-pendiente-err" role="alert">
-                                <i class="fa-solid fa-triangle-exclamation"></i>
+                                <i class="fas fa-triangle-exclamation"></i>
                                 Seleccione el tipo de pendiente observada.
                             </span>
                         </div>
 
-                        <!-- Recursos hídricos -->
                         <div class="rl-field">
-                            <label for="rl-recursos">
-                                Recursos hídricos <span class="req">*</span>
-                                <span class="orig">Orig: Quebrada</span>
-                            </label>
-                            @{
-                                var optsRec = new[] {
-                                    ("ninguno",      "Ninguno"),
-                                    ("quebrada",     "Quebrada"),
-                                    ("rio",          "Río"),
-                                    ("naciente",     "Naciente"),
-                                    ("rio-naciente", "Río y naciente"),
-                                };
-                            }
-                            <select id="rl-recursos"
-                                    onchange="onCampoChange('rl-recursos')"
-                                    aria-describedby="rl-recursos-err">
+                            <label>Recursos hídricos <span class="req">*</span> <span class="orig">Orig: Quebrada</span></label>
+                            <select id="rl-recursos" class="form-select form-select-sm"
+                                    onchange="onCampoChange('rl-recursos')">
                                 <option value="">Seleccione...</option>
-                                @foreach (var opt in optsRec) {
-                                    if (opt.Item1 == origRecursos) {
-                                        <option value="@opt.Item1" selected="selected">@opt.Item2</option>
-                                    } else {
-                                        <option value="@opt.Item1">@opt.Item2</option>
-                                    }
-                                }
+                                <option value="ninguno">Ninguno</option>
+                                <option value="quebrada" selected>Quebrada</option>
+                                <option value="rio">Río</option>
+                                <option value="naciente">Naciente</option>
+                                <option value="rio-naciente">Río y naciente</option>
                             </select>
-                            <span class="rl-orig-tag" id="rl-recursos-orig" style="display:none;">
-                                <i class="fa-solid fa-rotate-left"></i>
-                            </span>
                             <span class="rl-field-error" id="rl-recursos-err" role="alert">
-                                <i class="fa-solid fa-triangle-exclamation"></i>
+                                <i class="fas fa-triangle-exclamation"></i>
                                 Seleccione los recursos hídricos observados.
                             </span>
                         </div>
 
-                        <!-- Uso de suelo -->
                         <div class="rl-field span-2">
-                            <label for="rl-uso-suelo">
-                                Uso de suelo verificado
-                                <span class="orig">Orig: Conservación</span>
-                            </label>
-                            @{
-                                var optsUso = new[] {
-                                    ("conservacion", "Conservación / Reforestación"),
-                                    ("agropecuario", "Agropecuario"),
-                                    ("mixto",        "Mixto"),
-                                    ("sin-uso",      "Sin uso definido"),
-                                };
-                            }
-                            <select id="rl-uso-suelo"
+                            <label>Uso de suelo verificado <span class="orig">Orig: Conservación</span></label>
+                            <select id="rl-uso-suelo" class="form-select form-select-sm"
                                     onchange="onCampoChange('rl-uso-suelo')">
                                 <option value="">Seleccione...</option>
-                                @foreach (var opt in optsUso) {
-                                    if (opt.Item1 == origUsoSuelo) {
-                                        <option value="@opt.Item1" selected="selected">@opt.Item2</option>
-                                    } else {
-                                        <option value="@opt.Item1">@opt.Item2</option>
-                                    }
-                                }
+                                <option value="conservacion" selected>Conservación / Reforestación</option>
+                                <option value="agropecuario">Agropecuario</option>
+                                <option value="mixto">Mixto</option>
+                                <option value="sin-uso">Sin uso definido</option>
                             </select>
-                            <span class="rl-orig-tag" id="rl-uso-suelo-orig" style="display:none;">
-                                <i class="fa-solid fa-rotate-left"></i>
-                            </span>
                         </div>
-
                     </div>
                 </div>
             </div>
 
             <!-- ── 3. OBSERVACIONES TÉCNICAS ── -->
-            <div class="rl-panel">
-                <div class="rl-panel-header">
-                    <h2><i class="fa-solid fa-pen-nib"></i> Observaciones Técnicas</h2>
+            <div class="psa-card">
+                <div class="psa-card-header">
+                    <div class="psa-card-title">
+                        <i class="fas fa-pen-nib"></i> Observaciones Técnicas
+                    </div>
                 </div>
-                <div class="rl-panel-body">
+                <div class="psa-card-body">
                     <div class="rl-field">
-                        <label for="rl-observaciones">
-                            Observaciones técnicas del ingeniero
-                            <span class="req">*</span>
-                            <span class="orig">(mín. 20 caracteres)</span>
-                        </label>
-                        <textarea id="rl-observaciones" rows="5"
-                                  placeholder="Describa detalladamente las condiciones observadas en campo: estado de la vegetación, condición de los recursos hídricos, hallazgos relevantes, discrepancias con el registro original..."
-                                  aria-describedby="rl-observaciones-err"></textarea>
+                        <label>Observaciones técnicas del ingeniero <span class="req">*</span> <span class="orig">(mín. 20 caracteres)</span></label>
+                        <textarea id="rl-observaciones" rows="5" class="form-control form-control-sm"
+                                  placeholder="Describa detalladamente las condiciones observadas en campo: estado de la vegetación, condición de los recursos hídricos, hallazgos relevantes, discrepancias con el registro original..."></textarea>
                         <span class="rl-field-error" id="rl-observaciones-err" role="alert">
-                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            <i class="fas fa-triangle-exclamation"></i>
                             Las observaciones técnicas son obligatorias (mín. 20 caracteres).
                         </span>
                     </div>
@@ -311,19 +505,16 @@
             </div>
 
             <!-- ── 4. FOTOGRAFÍAS ── -->
-            <div class="rl-panel">
-                <div class="rl-panel-header">
-                    <h2><i class="fa-solid fa-camera"></i> Fotografías de Campo</h2>
-                    <span style="font-size:.8rem;color:var(--gris-medio);">Máx. 8 imágenes · JPG, PNG, WEBP</span>
+            <div class="psa-card">
+                <div class="psa-card-header">
+                    <div class="psa-card-title">
+                        <i class="fas fa-camera"></i> Fotografías de Campo
+                    </div>
+                    <span style="font-size: 0.7rem; color: var(--psa-muted);">Máx. 8 imágenes · JPG, PNG, WEBP</span>
                 </div>
-                <div class="rl-panel-body">
-                    <div class="rl-upload-zona" id="rl-upload-zona"
-                         role="button" tabindex="0"
-                         aria-label="Zona de carga de fotos. Haga clic o arrastre imágenes aquí.">
-                        <input type="file" id="rl-input-fotos"
-                               accept="image/*" multiple
-                               onchange="onFotosSeleccionadas(event)"
-                               aria-hidden="true">
+                <div class="psa-card-body">
+                    <div class="rl-upload-zona" id="rl-upload-zona" role="button" tabindex="0">
+                        <input type="file" id="rl-input-fotos" accept="image/*" multiple onchange="onFotosSeleccionadas(event)">
                         <div class="rl-upload-icon">📷</div>
                         <p class="rl-upload-txt"><strong>Haga clic</strong> o arrastre las fotos aquí</p>
                         <p class="rl-upload-sub">JPG, PNG, WEBP · Máximo 8 fotografías</p>
@@ -333,73 +524,54 @@
             </div>
 
             <!-- ── 5. DECISIÓN FINAL ── -->
-            <div class="rl-panel">
-                <div class="rl-panel-header">
-                    <h2><i class="fa-solid fa-gavel"></i> Decisión Final</h2>
+            <div class="psa-card">
+                <div class="psa-card-header">
+                    <div class="psa-card-title">
+                        <i class="fas fa-gavel"></i> Decisión Final
+                    </div>
                 </div>
-                <div class="rl-panel-body">
-
+                <div class="psa-card-body">
                     <div class="rl-decision-wrap">
-                        <!-- Aprobar -->
-                        <button class="rl-decision-btn" id="rl-btn-aprobar"
-                                onclick="seleccionarDecision('aprobar')"
-                                type="button" aria-pressed="false">
+                        <button class="rl-decision-btn" id="rl-btn-aprobar" onclick="seleccionarDecision('aprobar')" type="button">
                             <div class="rl-decision-icon">✅</div>
                             <div class="rl-decision-label">Aprobar</div>
-                            <div class="rl-decision-sub">
-                                La finca cumple los requisitos del PSA y se generará el plan de pagos.
-                            </div>
+                            <div class="rl-decision-sub">La finca cumple los requisitos del PSA y se generará el plan de pagos.</div>
                         </button>
-
-                        <!-- Rechazar -->
-                        <button class="rl-decision-btn" id="rl-btn-rechazar"
-                                onclick="seleccionarDecision('rechazar')"
-                                type="button" aria-pressed="false">
+                        <button class="rl-decision-btn" id="rl-btn-rechazar" onclick="seleccionarDecision('rechazar')" type="button">
                             <div class="rl-decision-icon">❌</div>
                             <div class="rl-decision-label">Rechazar</div>
-                            <div class="rl-decision-sub">
-                                La finca no cumple los requisitos. Se notificará al propietario.
-                            </div>
+                            <div class="rl-decision-sub">La finca no cumple los requisitos. Se notificará al propietario.</div>
                         </button>
                     </div>
-
-                    <!-- Error decisión -->
                     <div class="rl-decision-err" id="rl-decision-err" role="alert">
-                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        <i class="fas fa-triangle-exclamation"></i>
                         Debe seleccionar una decisión (Aprobar o Rechazar) antes de guardar.
                     </div>
-
-                    <!-- Motivo rechazo (solo visible si se rechaza) -->
-                    <div id="rl-wrap-motivo" style="display:none; margin-top:20px;">
+                    <div id="rl-wrap-motivo" style="display:none; margin-top: 1rem;">
                         <div class="rl-field">
-                            <label for="rl-motivo-rechazo">
-                                Motivo del rechazo <span class="req">*</span>
-                                <span class="orig">(mín. 15 caracteres)</span>
-                            </label>
-                            <textarea id="rl-motivo-rechazo" rows="3"
-                                      placeholder="Explique los motivos técnicos por los cuales la solicitud no puede ser aprobada..."
-                                      aria-describedby="rl-motivo-rechazo-err"></textarea>
+                            <label>Motivo del rechazo <span class="req">*</span> <span class="orig">(mín. 15 caracteres)</span></label>
+                            <textarea id="rl-motivo-rechazo" rows="3" class="form-control form-control-sm"
+                                      placeholder="Explique los motivos técnicos por los cuales la solicitud no puede ser aprobada..."></textarea>
                             <span class="rl-field-error" id="rl-motivo-rechazo-err" role="alert">
-                                <i class="fa-solid fa-triangle-exclamation"></i>
+                                <i class="fas fa-triangle-exclamation"></i>
                                 El motivo de rechazo debe tener al menos 15 caracteres.
                             </span>
                         </div>
                     </div>
-
                 </div>
             </div>
 
             <!-- ===== ACCIONES FINALES ===== -->
             <div class="rl-acciones-finales">
-                <button class="btn btn-outline" onclick="location.href='@Url.Action("Detalle","IngForestal")'">
-                    <i class="fa-solid fa-xmark"></i> Cancelar
-                </button>
+                <a class="btn btn-outline-psa btn-sm" href="@Url.Action("Detalle","IngForestal")">
+                    <i class="fas fa-xmark"></i> Cancelar
+                </a>
                 <div class="rl-acciones-right">
-                    <button class="btn btn-outline" onclick="location.href='@Url.Action("Detalle","IngForestal")'">
-                        <i class="fa-solid fa-eye"></i> Ver Detalle
-                    </button>
-                    <button class="btn btn-primary" onclick="guardarEvaluacion()">
-                        <i class="fa-solid fa-floppy-disk"></i> Guardar Evaluación
+                    <a class="btn btn-outline-psa btn-sm" href="@Url.Action("Detalle","IngForestal")">
+                        <i class="fas fa-eye"></i> Ver Detalle
+                    </a>
+                    <button class="btn btn-psa btn-sm" onclick="guardarEvaluacion()">
+                        <i class="fas fa-save"></i> Guardar Evaluación
                     </button>
                 </div>
             </div>
@@ -407,7 +579,7 @@
         </div><!-- /columna principal -->
 
         <!-- ══════ ASIDE ══════ -->
-        <div class="rl-aside">
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
 
             <!-- Panel de progreso -->
             <div class="rl-progreso-panel">
@@ -419,7 +591,6 @@
                     </div>
                 </div>
                 <div class="rl-progreso-body">
-
                     <div class="rl-check-item" id="chk-datos-row">
                         <div class="rl-check-dot" id="chk-datos-dot"></div>
                         <span class="rl-check-label">Datos de campo</span>
@@ -448,53 +619,55 @@
                         <div class="rl-check-dot" id="chk-decision-dot"></div>
                         <span class="rl-check-label">Decisión final</span>
                     </div>
-
                 </div>
             </div>
 
             <!-- Info de la finca (referencia rápida) -->
-            <div class="rl-panel" style="margin-bottom:0;">
-                <div class="rl-panel-header">
-                    <h2><i class="fa-solid fa-circle-info"></i> Referencia</h2>
+            <div class="psa-card">
+                <div class="psa-card-header">
+                    <div class="psa-card-title">
+                        <i class="fas fa-circle-info"></i> Referencia
+                    </div>
                 </div>
-                <div class="rl-panel-body" style="padding:16px 20px;">
-                    <table style="width:100%;font-size:.82rem;border-collapse:collapse;">
-                        <tr>
-                            <td style="color:var(--gris-medio);padding:6px 0;font-weight:600;border-bottom:1px solid #F0F0F0;">Finca</td>
-                            <td style="text-align:right;font-weight:700;color:var(--verde-bosque);border-bottom:1px solid #F0F0F0;">@nombreFinca</td>
-                        </tr>
-                        <tr>
-                            <td style="color:var(--gris-medio);padding:6px 0;font-weight:600;border-bottom:1px solid #F0F0F0;">Propietario</td>
-                            <td style="text-align:right;font-weight:700;border-bottom:1px solid #F0F0F0;">@propietario</td>
-                        </tr>
-                        <tr>
-                            <td style="color:var(--gris-medio);padding:6px 0;font-weight:600;border-bottom:1px solid #F0F0F0;">Ubicación</td>
-                            <td style="text-align:right;font-weight:700;border-bottom:1px solid #F0F0F0;">@ubicacion</td>
-                        </tr>
-                        <tr>
-                            <td style="color:var(--gris-medio);padding:6px 0;font-weight:600;border-bottom:1px solid #F0F0F0;">Ha. declaradas</td>
-                            <td style="text-align:right;font-weight:700;color:var(--verde-bosque);border-bottom:1px solid #F0F0F0;">@origHectareas ha</td>
-                        </tr>
-                        <tr>
-                            <td style="color:var(--gris-medio);padding:6px 0;font-weight:600;">Fecha programada</td>
-                            <td style="text-align:right;font-weight:700;">@fechaVisitaProg</td>
-                        </tr>
-                    </table>
+                <div class="psa-card-body" style="padding: 0;">
+                    <div style="padding: 1rem;">
+                        <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--psa-border);">
+                            <span style="color: var(--psa-muted);">Finca</span>
+                            <span style="font-weight: 700; color: var(--psa-forest);">@nombreFinca</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--psa-border);">
+                            <span style="color: var(--psa-muted);">Propietario</span>
+                            <span style="font-weight: 700;">@propietario</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--psa-border);">
+                            <span style="color: var(--psa-muted);">Ubicación</span>
+                            <span style="font-weight: 700;">@ubicacion</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--psa-border);">
+                            <span style="color: var(--psa-muted);">Ha. declaradas</span>
+                            <span style="font-weight: 700; color: var(--psa-forest);">@origHectareas ha</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; padding: 0.5rem 0;">
+                            <span style="color: var(--psa-muted);">Fecha programada</span>
+                            <span style="font-weight: 700;">@fechaVisitaProg</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
         </div><!-- /aside -->
 
-    </div><!-- /rl-body -->
+    </div><!-- /layout grid -->
 
-</div><!-- /tecnico-dashboard -->
+</div><!-- /IngForestal-dashboard -->
 
 <!-- ===== TOAST ===== -->
-<div class="td-toast" id="rl-toast" role="alert" aria-live="polite">
-    <i class="fa-solid fa-circle-check"></i>
+<div id="rl-toast" style="position: fixed; bottom: 28px; right: 28px; background: var(--psa-leaf); color: white; padding: 12px 20px; border-radius: 8px; font-size: 0.85rem; z-index: 2000; display: flex; align-items: center; gap: 10px; transform: translateY(80px); opacity: 0; transition: transform 0.3s ease, opacity 0.3s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+    <i class="fas fa-check-circle"></i>
     <span id="rl-toast-msg">Acción realizada.</span>
 </div>
 
 @section Scripts {
     <script src="~/js/pages/ingforestal/realizar.js" asp-append-version="true"></script>
+    <script src="~/js/pages/ingforestal/evaluaciones-editar.js" asp-append-version="true"></script>
 }

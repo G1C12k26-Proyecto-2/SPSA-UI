@@ -1,33 +1,301 @@
 @{
     ViewData["Title"] = "Programar Visita - Ingeniero Forestal";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_LayoutIngForestal.cshtml";
 }
 
 @section Styles {
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="~/css/ingforestal/dashboard.css"  asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/ingforestal/programar.css"  asp-append-version="true" />
+    <!-- Ya no necesitas estas fuentes porque psatheme.css ya las define -->
+    <!-- <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"> -->
+    <!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet"> -->
+    <!-- <link rel="stylesheet" href="~/css/ingforestal/dashboard.css" asp-append-version="true" /> -->
+    <!-- <link rel="stylesheet" href="~/css/ingforestal/programar.css" asp-append-version="true" /> -->
+
+    <style>
+        /* Estilos específicos para el stepper y formulario */
+        .pr-stepper {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            background: #fff;
+            padding: 1rem;
+            border-radius: var(--psa-r);
+            border: 1px solid var(--psa-border);
+        }
+        .pr-step {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: var(--psa-r);
+            transition: background 0.2s;
+        }
+        .pr-step.activo {
+            background: var(--psa-pale);
+        }
+        .pr-step-num {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            background: var(--psa-sand);
+            color: var(--psa-muted);
+        }
+        .pr-step.activo .pr-step-num {
+            background: var(--psa-leaf);
+            color: #fff;
+        }
+        .pr-step-titulo {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--psa-ink);
+        }
+        .pr-step-sub {
+            font-size: 0.7rem;
+            color: var(--psa-muted);
+        }
+        
+        /* Panel y secciones */
+        .pr-seccion {
+            display: none;
+        }
+        .pr-seccion.activa {
+            display: block;
+        }
+        
+        /* Formulario grid */
+        .pr-form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+        .pr-field {
+            grid-column: span 1;
+        }
+        .pr-field.span-2 {
+            grid-column: span 2;
+        }
+        .pr-field label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--psa-muted);
+            margin-bottom: 0.25rem;
+            display: block;
+        }
+        .pr-field .req {
+            color: var(--psa-red);
+        }
+        .pr-field .hint {
+            font-size: 0.65rem;
+            font-weight: normal;
+            text-transform: none;
+            color: var(--psa-muted);
+        }
+        .pr-input-icon-wrap {
+            position: relative;
+        }
+        .pr-input-icon {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--psa-muted);
+            font-size: 0.75rem;
+        }
+        .pr-input-icon-wrap input,
+        .pr-input-icon-wrap select {
+            padding-left: 30px;
+        }
+        .pr-field-error {
+            font-size: 0.7rem;
+            color: var(--psa-red);
+            display: none;
+            margin-top: 0.25rem;
+        }
+        .pr-field-error.visible {
+            display: block;
+        }
+        
+        /* Búsqueda de solicitudes */
+        .pr-buscar-solicitud {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+        .pr-search-ic {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--psa-muted);
+            font-size: 0.8rem;
+        }
+        .pr-buscar-solicitud input {
+            width: 100%;
+            padding: 0.5rem 0.5rem 0.5rem 2rem;
+            border: 1px solid var(--psa-border);
+            border-radius: 6px;
+            font-size: 0.85rem;
+        }
+        .pr-buscar-solicitud input:focus {
+            border-color: var(--psa-leaf);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(45,134,83,0.1);
+        }
+        
+        /* Lista de solicitudes */
+        .pr-solicitudes-lista {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid var(--psa-border);
+            border-radius: var(--psa-r);
+        }
+        .pr-solicitud-item {
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--psa-border);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .pr-solicitud-item:last-child {
+            border-bottom: none;
+        }
+        .pr-solicitud-item:hover {
+            background: var(--psa-pale);
+        }
+        .pr-solicitud-item.seleccionada {
+            background: var(--psa-pale);
+            border-left: 3px solid var(--psa-leaf);
+        }
+        .pr-solicitud-nombre {
+            font-weight: 600;
+            color: var(--psa-forest);
+            margin-bottom: 0.25rem;
+        }
+        .pr-solicitud-detalle {
+            font-size: 0.75rem;
+            color: var(--psa-muted);
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        /* Divisor */
+        .pr-divider {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 1.5rem 0 1rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--psa-muted);
+        }
+        .pr-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--psa-border);
+        }
+        
+        /* Confirmación */
+        .pr-confirmacion {
+            text-align: center;
+            padding: 1rem;
+        }
+        .pr-confirmacion-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .pr-confirmacion h3 {
+            font-family: 'Fraunces', serif;
+            font-size: 1.2rem;
+            color: var(--psa-forest);
+            margin-bottom: 0.5rem;
+        }
+        .pr-confirmacion p {
+            font-size: 0.85rem;
+            color: var(--psa-muted);
+            margin-bottom: 1.5rem;
+        }
+        .pr-confirmacion-detalle {
+            background: var(--psa-pale);
+            border-radius: var(--psa-r);
+            padding: 1rem;
+            text-align: left;
+            font-size: 0.85rem;
+        }
+        
+        /* Resumen */
+        .pr-resumen-body {
+            padding: 1rem;
+        }
+        .pr-resumen-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--psa-border);
+        }
+        .pr-resumen-item:last-child {
+            border-bottom: none;
+        }
+        .pr-resumen-label {
+            font-size: 0.75rem;
+            color: var(--psa-muted);
+        }
+        .pr-resumen-valor {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--psa-ink);
+        }
+        .pr-resumen-valor.vacio {
+            color: var(--psa-muted);
+            font-style: italic;
+        }
+        .pr-resumen-alerta {
+            display: flex;
+            gap: 0.75rem;
+            padding: 1rem;
+            background: var(--psa-pale);
+            border-radius: var(--psa-r);
+            font-size: 0.75rem;
+            color: var(--psa-muted);
+        }
+        
+        /* Form actions */
+        .pr-form-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1.5rem;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .pr-form-actions-right {
+            display: flex;
+            gap: 0.75rem;
+        }
+    </style>
 }
 
-<div class="tecnico-dashboard">
+<div class="IngForestal-dashboard">
 
     <!-- ===== BREADCRUMB ===== -->
-    <nav class="pr-breadcrumb" aria-label="Ruta de navegación">
-        <a href="@Url.Action("TecnicoDashboard", "IngForestal")">
-            <i class="fa-solid fa-house-chimney"></i> Dashboard
-        </a>
-        <span class="pr-breadcrumb-sep"><i class="fa-solid fa-chevron-right"></i></span>
-        <a href="@Url.Action("Index", "IngForestal")">Mis Visitas</a>
-        <span class="pr-breadcrumb-sep"><i class="fa-solid fa-chevron-right"></i></span>
-        <span>Programar Visita</span>
-    </nav>
+    <div class="psa-breadcrumb" style="margin-bottom: 1.2rem;">
+        <a asp-controller="IngForestal" asp-action="ListaSolicitudes">Todas las solicitudes</a>
+        <i class="fas fa-chevron-right" style="font-size:0.55rem;"></i>
+        <span class="current">Programar Visita</span>
+    </div>
 
     <!-- ===== PAGE HEADER ===== -->
-    <div class="pr-page-header">
+    <div class="psa-page-header">
         <div>
+            <span class="subtitle">Nueva Visita Técnica</span>
             <h1>
-                <i class="fa-solid fa-calendar-plus" style="color:var(--verde-claro);font-size:1.4rem;"></i>
+                <i class="fas fa-calendar-plus" style="color: var(--psa-leaf); font-size: 1.4rem;"></i>
                 Programar Visita Técnica
             </h1>
             <p>Complete los 3 pasos para registrar una nueva visita de evaluación.</p>
@@ -36,64 +304,57 @@
 
     <!-- ===== STEPPER ===== -->
     <div class="pr-stepper" role="list" aria-label="Pasos del formulario">
-
         <div class="pr-step activo" role="listitem" aria-current="step">
             <div class="pr-step-num">1</div>
             <div class="pr-step-label">
-                <span class="pr-step-titulo">Solicitud</span>
-                <span class="pr-step-sub">Seleccionar finca</span>
+                <div class="pr-step-titulo">Solicitud</div>
+                <div class="pr-step-sub">Seleccionar finca</div>
             </div>
         </div>
-
         <div class="pr-step" role="listitem">
             <div class="pr-step-num">2</div>
             <div class="pr-step-label">
-                <span class="pr-step-titulo">Detalles</span>
-                <span class="pr-step-sub">Fecha y logística</span>
+                <div class="pr-step-titulo">Detalles</div>
+                <div class="pr-step-sub">Fecha y logística</div>
             </div>
         </div>
-
         <div class="pr-step" role="listitem">
             <div class="pr-step-num">3</div>
             <div class="pr-step-label">
-                <span class="pr-step-titulo">Confirmar</span>
-                <span class="pr-step-sub">Revisar y guardar</span>
+                <div class="pr-step-titulo">Confirmar</div>
+                <div class="pr-step-sub">Revisar y guardar</div>
             </div>
         </div>
-
     </div>
 
     <!-- ===== LAYOUT PRINCIPAL ===== -->
-    <div class="pr-body">
+    <div style="display: grid; grid-template-columns: 1fr 320px; gap: 1.5rem; align-items: start;">
 
         <!-- COLUMNA IZQUIERDA: FORMULARIO -->
-        <div>
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
 
             <!-- ══════ PASO 1: SELECCIÓN DE SOLICITUD ══════ -->
             <div class="pr-seccion activa" id="pr-seccion-1">
-                <div class="pr-panel">
-                    <div class="pr-panel-header">
-                        <div class="pr-panel-header-icon">
-                            <i class="fa-solid fa-file-alt"></i>
+                <div class="psa-card">
+                    <div class="psa-card-header">
+                        <div class="psa-card-title">
+                            <i class="fas fa-file-alt"></i> Seleccionar Solicitud Pendiente
                         </div>
-                        <div>
-                            <h2>Seleccionar Solicitud Pendiente</h2>
-                            <p>Elija la finca que desea evaluar en esta visita.</p>
-                        </div>
+                        <span style="font-size: 0.7rem; color: var(--psa-muted);">Elija la finca que desea evaluar</span>
                     </div>
-                    <div class="pr-panel-body">
-
+                    <div class="psa-card-body">
                         <!-- Búsqueda -->
                         <div class="pr-buscar-solicitud">
-                            <i class="fa-solid fa-magnifying-glass pr-search-ic"></i>
-                            <input type="text" id="pr-buscar-sol"
+                            <i class="fas fa-search pr-search-ic"></i>
+                            <input type="text" id="pr-buscar-sol" class="form-control form-control-sm"
                                    placeholder="Buscar por finca, propietario o ubicación..."
+                                   style="padding-left: 30px;"
                                    aria-label="Buscar solicitud">
                         </div>
 
                         <!-- Error selección -->
-                        <div class="pr-field-error" id="pr-sol-err" role="alert" style="margin-bottom:12px;">
-                            <i class="fa-solid fa-triangle-exclamation"></i>
+                        <div class="pr-field-error" id="pr-sol-err" role="alert" style="margin-bottom: 12px; display: none;">
+                            <i class="fas fa-triangle-exclamation"></i>
                             Debe seleccionar una solicitud para continuar.
                         </div>
 
@@ -101,65 +362,73 @@
                         <div class="pr-solicitudes-lista" id="pr-lista-solicitudes"
                              role="radiogroup" aria-label="Solicitudes pendientes">
                             <!-- Renderizado por JS -->
+                            <div class="pr-solicitud-item" data-id="1" data-nombre="Finca Los Robles" data-propietario="José Ángel Mora" data-ubicacion="Turrialba, Cartago">
+                                <div class="pr-solicitud-nombre">Finca Los Robles</div>
+                                <div class="pr-solicitud-detalle">
+                                    <span><i class="fas fa-user"></i> José Ángel Mora</span>
+                                    <span><i class="fas fa-location-dot"></i> Turrialba, Cartago</span>
+                                </div>
+                            </div>
+                            <div class="pr-solicitud-item" data-id="2" data-nombre="Hacienda Verde" data-propietario="María Solano Vega" data-ubicacion="Sarapiquí, Heredia">
+                                <div class="pr-solicitud-nombre">Hacienda Verde</div>
+                                <div class="pr-solicitud-detalle">
+                                    <span><i class="fas fa-user"></i> María Solano Vega</span>
+                                    <span><i class="fas fa-location-dot"></i> Sarapiquí, Heredia</span>
+                                </div>
+                            </div>
+                            <div class="pr-solicitud-item" data-id="3" data-nombre="Finca La Esperanza" data-propietario="Carmen Ulate" data-ubicacion="Acosta, San José">
+                                <div class="pr-solicitud-nombre">Finca La Esperanza</div>
+                                <div class="pr-solicitud-detalle">
+                                    <span><i class="fas fa-user"></i> Carmen Ulate</span>
+                                    <span><i class="fas fa-location-dot"></i> Acosta, San José</span>
+                                </div>
+                            </div>
                         </div>
-
                     </div>
                 </div>
             </div>
 
             <!-- ══════ PASO 2: DETALLES ══════ -->
             <div class="pr-seccion" id="pr-seccion-2">
-                <div class="pr-panel">
-                    <div class="pr-panel-header">
-                        <div class="pr-panel-header-icon">
-                            <i class="fa-solid fa-clock"></i>
+                <div class="psa-card">
+                    <div class="psa-card-header">
+                        <div class="psa-card-title">
+                            <i class="fas fa-clock"></i> Detalles de la Visita
                         </div>
-                        <div>
-                            <h2>Detalles de la Visita</h2>
-                            <p>Defina fecha, hora y logística de la evaluación.</p>
-                        </div>
+                        <span style="font-size: 0.7rem; color: var(--psa-muted);">Defina fecha, hora y logística</span>
                     </div>
-                    <div class="pr-panel-body">
+                    <div class="psa-card-body">
                         <div class="pr-form-grid">
-
                             <!-- Fecha -->
                             <div class="pr-field">
-                                <label for="pr-fecha">
-                                    Fecha de visita <span class="req">*</span>
-                                </label>
+                                <label>Fecha de visita <span class="req">*</span></label>
                                 <div class="pr-input-icon-wrap">
-                                    <i class="fa-solid fa-calendar pr-input-icon"></i>
-                                    <input type="date" id="pr-fecha"
-                                           aria-describedby="pr-fecha-err">
+                                    <i class="fas fa-calendar pr-input-icon"></i>
+                                    <input type="date" id="pr-fecha" class="form-control form-control-sm">
                                 </div>
                                 <span class="pr-field-error" id="pr-fecha-err" role="alert">
-                                    <i class="fa-solid fa-triangle-exclamation"></i>
+                                    <i class="fas fa-triangle-exclamation"></i>
                                     Seleccione una fecha válida (hoy o posterior).
                                 </span>
                             </div>
 
                             <!-- Hora -->
                             <div class="pr-field">
-                                <label for="pr-hora">
-                                    Hora de inicio <span class="req">*</span>
-                                </label>
+                                <label>Hora de inicio <span class="req">*</span></label>
                                 <div class="pr-input-icon-wrap">
-                                    <i class="fa-solid fa-clock pr-input-icon"></i>
-                                    <input type="time" id="pr-hora"
-                                           aria-describedby="pr-hora-err">
+                                    <i class="fas fa-clock pr-input-icon"></i>
+                                    <input type="time" id="pr-hora" class="form-control form-control-sm">
                                 </div>
                                 <span class="pr-field-error" id="pr-hora-err" role="alert">
-                                    <i class="fa-solid fa-triangle-exclamation"></i>
+                                    <i class="fas fa-triangle-exclamation"></i>
                                     Indique la hora de inicio de la visita.
                                 </span>
                             </div>
 
                             <!-- Duración estimada -->
                             <div class="pr-field">
-                                <label for="pr-duracion">
-                                    Duración estimada <span class="req">*</span>
-                                </label>
-                                <select id="pr-duracion" aria-describedby="pr-duracion-err">
+                                <label>Duración estimada <span class="req">*</span></label>
+                                <select id="pr-duracion" class="form-select form-select-sm">
                                     <option value="">Seleccione...</option>
                                     <option value="1h">1 hora</option>
                                     <option value="2h">2 horas</option>
@@ -169,17 +438,15 @@
                                     <option value="dia-completo">Día completo</option>
                                 </select>
                                 <span class="pr-field-error" id="pr-duracion-err" role="alert">
-                                    <i class="fa-solid fa-triangle-exclamation"></i>
+                                    <i class="fas fa-triangle-exclamation"></i>
                                     Seleccione la duración estimada.
                                 </span>
                             </div>
 
                             <!-- Transporte -->
                             <div class="pr-field">
-                                <label for="pr-transporte">
-                                    Medio de transporte <span class="req">*</span>
-                                </label>
-                                <select id="pr-transporte" aria-describedby="pr-transporte-err">
+                                <label>Medio de transporte <span class="req">*</span></label>
+                                <select id="pr-transporte" class="form-select form-select-sm">
                                     <option value="">Seleccione...</option>
                                     <option value="vehiculo-propio">Vehículo propio</option>
                                     <option value="vehiculo-institucional">Vehículo institucional</option>
@@ -187,53 +454,42 @@
                                     <option value="otro">Otro</option>
                                 </select>
                                 <span class="pr-field-error" id="pr-transporte-err" role="alert">
-                                    <i class="fa-solid fa-triangle-exclamation"></i>
+                                    <i class="fas fa-triangle-exclamation"></i>
                                     Seleccione el medio de transporte.
                                 </span>
                             </div>
 
                             <!-- Objetivo -->
                             <div class="pr-field span-2">
-                                <label for="pr-objetivo">
-                                    Objetivo de la visita <span class="req">*</span>
-                                    <span class="hint">(mín. 10 caracteres)</span>
-                                </label>
-                                <textarea id="pr-objetivo" rows="3"
-                                          placeholder="Describa el propósito técnico de esta evaluación..."
-                                          aria-describedby="pr-objetivo-err"></textarea>
+                                <label>Objetivo de la visita <span class="req">*</span> <span class="hint">(mín. 10 caracteres)</span></label>
+                                <textarea id="pr-objetivo" rows="3" class="form-control form-control-sm"
+                                          placeholder="Describa el propósito técnico de esta evaluación..."></textarea>
                                 <span class="pr-field-error" id="pr-objetivo-err" role="alert">
-                                    <i class="fa-solid fa-triangle-exclamation"></i>
+                                    <i class="fas fa-triangle-exclamation"></i>
                                     Describa el objetivo de la visita (mín. 10 caracteres).
                                 </span>
                             </div>
-
                         </div>
 
                         <!-- Divider -->
                         <div class="pr-divider">
-                            <i class="fa-solid fa-wrench"></i> Información adicional
+                            <i class="fas fa-wrench"></i> Información adicional
                         </div>
 
                         <div class="pr-form-grid">
-
                             <!-- Equipo / materiales -->
                             <div class="pr-field span-2">
-                                <label for="pr-equipo">
-                                    Equipo y materiales a llevar
-                                </label>
-                                <textarea id="pr-equipo" rows="2"
+                                <label>Equipo y materiales a llevar</label>
+                                <textarea id="pr-equipo" rows="2" class="form-control form-control-sm"
                                           placeholder="Ej: GPS, cámara, libreta de campo, metro, brújula..."></textarea>
                             </div>
 
                             <!-- Observaciones -->
                             <div class="pr-field span-2">
-                                <label for="pr-observacion">
-                                    Observaciones de coordinación
-                                </label>
-                                <textarea id="pr-observacion" rows="2"
+                                <label>Observaciones de coordinación</label>
+                                <textarea id="pr-observacion" rows="2" class="form-control form-control-sm"
                                           placeholder="Notas para la coordinación con el propietario, puntos de acceso, etc."></textarea>
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -241,17 +497,14 @@
 
             <!-- ══════ PASO 3: CONFIRMACIÓN ══════ -->
             <div class="pr-seccion" id="pr-seccion-3">
-                <div class="pr-panel">
-                    <div class="pr-panel-header">
-                        <div class="pr-panel-header-icon" style="background:#E8F4FB;color:#1A5B8C;">
-                            <i class="fa-solid fa-circle-check"></i>
+                <div class="psa-card">
+                    <div class="psa-card-header">
+                        <div class="psa-card-title">
+                            <i class="fas fa-circle-check" style="color: var(--psa-blue);"></i> Confirmar Visita
                         </div>
-                        <div>
-                            <h2>Confirmar Visita</h2>
-                            <p>Revise los datos antes de guardar.</p>
-                        </div>
+                        <span style="font-size: 0.7rem; color: var(--psa-muted);">Revise los datos antes de guardar</span>
                     </div>
-                    <div class="pr-panel-body">
+                    <div class="psa-card-body">
                         <div class="pr-confirmacion">
                             <div class="pr-confirmacion-icon">📋</div>
                             <h3>Resumen de la Visita</h3>
@@ -267,21 +520,18 @@
 
             <!-- ===== ACCIONES DE NAVEGACIÓN ===== -->
             <div class="pr-form-actions">
-                <button class="btn btn-outline" onclick="location.href='@Url.Action("Index","IngForestal")'">
-                    <i class="fa-solid fa-xmark"></i> Cancelar
-                </button>
+                <a class="btn btn-outline-psa btn-sm" href="@Url.Action("ListaSolicitudes","IngForestal")">
+                    <i class="fas fa-xmark"></i> Cancelar
+                </a>
                 <div class="pr-form-actions-right">
-                    <button class="btn btn-outline" id="pr-btn-anterior"
-                            onclick="pasoAnterior()" style="display:none;">
-                        <i class="fa-solid fa-arrow-left"></i> Anterior
+                    <button class="btn btn-outline-psa btn-sm" id="pr-btn-anterior" onclick="pasoAnterior()" style="display:none;">
+                        <i class="fas fa-arrow-left"></i> Anterior
                     </button>
-                    <button class="btn btn-primary" id="pr-btn-siguiente"
-                            onclick="pasoSiguiente()">
-                        Siguiente <i class="fa-solid fa-arrow-right"></i>
+                    <button class="btn btn-psa btn-sm" id="pr-btn-siguiente" onclick="pasoSiguiente()">
+                        Siguiente <i class="fas fa-arrow-right"></i>
                     </button>
-                    <button class="btn btn-primary" id="pr-btn-guardar"
-                            onclick="guardarVisita()" style="display:none;">
-                        <i class="fa-solid fa-calendar-check"></i> Confirmar y Guardar
+                    <button class="btn btn-psa btn-sm" id="pr-btn-guardar" onclick="guardarVisita()" style="display:none;">
+                        <i class="fas fa-calendar-check"></i> Confirmar y Guardar
                     </button>
                 </div>
             </div>
@@ -289,18 +539,15 @@
         </div><!-- /columna izquierda -->
 
         <!-- COLUMNA DERECHA: RESUMEN -->
-        <div style="display:flex;flex-direction:column;gap:20px;">
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
 
             <!-- Tarjeta resumen -->
-            <div class="pr-panel">
-                <div class="pr-panel-header">
-                    <div class="pr-panel-header-icon">
-                        <i class="fa-solid fa-receipt"></i>
+            <div class="psa-card">
+                <div class="psa-card-header">
+                    <div class="psa-card-title">
+                        <i class="fas fa-receipt"></i> Resumen
                     </div>
-                    <div>
-                        <h2>Resumen</h2>
-                        <p>Se actualiza en tiempo real</p>
-                    </div>
+                    <span style="font-size: 0.7rem; color: var(--psa-muted);">Se actualiza en tiempo real</span>
                 </div>
                 <div class="pr-resumen-body">
                     <div class="pr-resumen-item">
@@ -335,25 +582,24 @@
             </div>
 
             <!-- Alerta informativa -->
-            <div class="pr-panel">
-                <div class="pr-resumen-alerta" style="margin:0;border-radius:0;border:none;border-top:1px solid var(--borde);">
-                    <i class="fa-solid fa-circle-info" style="margin-top:2px;flex-shrink:0;"></i>
-                    <span>Al guardar, la visita quedará registrada en el sistema y se generará un aviso automático de auditoría.</span>
-                </div>
+            <div class="pr-resumen-alerta">
+                <i class="fas fa-circle-info" style="margin-top: 2px; flex-shrink: 0;"></i>
+                <span>Al guardar, la visita quedará registrada en el sistema y se generará un aviso automático de auditoría.</span>
             </div>
 
         </div><!-- /columna derecha -->
 
-    </div><!-- /pr-body -->
+    </div><!-- /layout grid -->
 
-</div><!-- /tecnico-dashboard -->
+</div><!-- /IngForestal-dashboard -->
 
 <!-- ===== TOAST ===== -->
-<div class="td-toast" id="pr-toast" role="alert" aria-live="polite">
-    <i class="fa-solid fa-circle-check"></i>
+<div id="pr-toast" style="position: fixed; bottom: 28px; right: 28px; background: var(--psa-leaf); color: white; padding: 12px 20px; border-radius: 8px; font-size: 0.85rem; z-index: 2000; display: flex; align-items: center; gap: 10px; transform: translateY(80px); opacity: 0; transition: transform 0.3s ease, opacity 0.3s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+    <i class="fas fa-check-circle"></i>
     <span id="pr-toast-msg">Acción realizada.</span>
 </div>
 
 @section Scripts {
     <script src="~/js/pages/ingforestal/programar.js" asp-append-version="true"></script>
+    <script src="~/js/pages/ingforestal/evaluaciondetalle.js" asp-append-version="true"></script>
 }
