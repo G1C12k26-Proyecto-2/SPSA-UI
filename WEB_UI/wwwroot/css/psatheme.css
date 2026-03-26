@@ -998,3 +998,192 @@ h6,
 .psa-file-chip .remove:hover {
   color: var(--psa-red);
 }
+
+
+/* ── STAT CARDS STYLE TABS ─────────────────────────────────── */
+.psa-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--psa-border);
+    background: #fff;
+    border-radius: var(--psa-r) var(--psa-r) 0 0;
+}
+
+.psa-stat-card {
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 0.7rem 1rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    transition: all 0.2s;
+    cursor: pointer;
+    position: relative;
+    margin-bottom: -1px;
+}
+
+    .psa-stat-card::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: transparent;
+        transition: background 0.2s;
+    }
+
+    .psa-stat-card:hover {
+        background: var(--psa-pale);
+    }
+
+    .psa-stat-card.active::after {
+        background: var(--psa-leaf);
+    }
+
+    .psa-stat-card.active .psa-stat-label {
+        color: var(--psa-leaf);
+    }
+
+    .psa-stat-card.active .psa-stat-icon {
+        color: var(--psa-leaf);
+    }
+
+    .psa-stat-card.active .psa-stat-value {
+        background: var(--psa-pale);
+        color: var(--psa-leaf);
+    }
+
+.psa-stat-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+}
+
+.psa-stat-label {
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--psa-muted);
+    font-family: 'Epilogue', sans-serif;
+    margin: 0;
+}
+
+.psa-stat-icon {
+    width: auto;
+    height: auto;
+    background: transparent;
+    font-size: 0.85rem;
+    color: var(--psa-muted);
+}
+
+    .psa-stat-icon.green {
+        background: transparent;
+        color: var(--psa-leaf);
+    }
+
+    .psa-stat-icon.gold {
+        background: transparent;
+        color: var(--psa-gold);
+    }
+
+    .psa-stat-icon.blue {
+        background: transparent;
+        color: var(--psa-blue);
+    }
+
+    .psa-stat-icon.red {
+        background: transparent;
+        color: var(--psa-red);
+    }
+
+.psa-stat-value {
+    font-family: 'Epilogue', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--psa-ink);
+    background: var(--psa-sand);
+    padding: 0.1rem 0.45rem;
+    border-radius: 20px;
+    min-width: 22px;
+    text-align: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.psa-stat-sub {
+    display: none;
+}
+
+.psa-stats-tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--psa-border);
+    padding: 0;
+    background: #fafaf8;
+    margin-bottom: 1.5rem;
+    border-radius: var(--psa-r) var(--psa-r) 0 0;
+    overflow-x: auto;
+}
+
+.psa-stats-tab {
+    padding: 0.75rem 1.25rem;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--psa-muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    white-space: nowrap;
+}
+
+    .psa-stats-tab i {
+        font-size: 0.85rem;
+        color: var(--psa-muted);
+        transition: color 0.2s ease;
+    }
+
+    .psa-stats-tab:hover {
+        color: var(--psa-ink);
+        background: rgba(0, 0, 0, 0.02);
+    }
+
+        .psa-stats-tab:hover i {
+            color: var(--psa-ink);
+        }
+
+    .psa-stats-tab.active {
+        color: var(--psa-leaf);
+        border-bottom-color: var(--psa-leaf);
+    }
+
+        .psa-stats-tab.active i {
+            color: var(--psa-leaf);
+        }
+
+    .psa-stats-tab .stats-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--psa-sand);
+        padding: 0.15rem 0.55rem;
+        border-radius: 30px;
+        font-size: 0.72rem;
+        font-weight: 600;
+        color: var(--psa-ink);
+        min-width: 28px;
+        transition: all 0.2s ease;
+    }
+
+    .psa-stats-tab.active .stats-badge {
+        background: var(--psa-pale);
+        color: var(--psa-leaf);
+    }

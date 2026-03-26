@@ -23,44 +23,28 @@
     </div>
 
     <!-- ===== TARJETAS DE RESUMEN - Usando psa-stats del tema ===== -->
-    <div class="psa-stats">
-        <div class="psa-stat-card">
-            <div class="psa-stat-header">
-                <div class="psa-stat-label">Pendientes</div>
-                <div class="psa-stat-icon green"><i class="fas fa-clock"></i></div>
-            </div>
-            <div class="psa-stat-value" id="cnt-pendientes">8</div>
-            <div class="psa-stat-sub">Esperan revisión</div>
+        <div class="psa-tabs" style="margin-bottom: 1.5rem;">
+            <a href="#" class="psa-tab active" data-tab="todos" onclick="cambiarTab('todos'); return false;">
+                <i class="fas fa-layer-group"></i> Todas
+                <span class="psa-badge psa-badge-grey" style="margin-left: 6px;" id="badge-todos">39</span>
+            </a>
+            <a href="#" class="psa-tab" data-tab="pendiente" onclick="cambiarTab('pendiente'); return false;">
+                <i class="fas fa-hourglass-half"></i> Pendientes
+                <span class="psa-badge psa-badge-gold" style="margin-left: 6px;" id="badge-pendiente">8</span>
+            </a>
+            <a href="#" class="psa-tab" data-tab="proceso" onclick="cambiarTab('proceso'); return false;">
+                <i class="fas fa-spinner"></i> En Proceso
+                <span class="psa-badge psa-badge-blue" style="margin-left: 6px;" id="badge-proceso">3</span>
+            </a>
+            <a href="#" class="psa-tab" data-tab="aprobada" onclick="cambiarTab('aprobada'); return false;">
+                <i class="fas fa-circle-check"></i> Aprobadas
+                <span class="psa-badge psa-badge-green" style="margin-left: 6px;" id="badge-aprobada">24</span>
+            </a>
+            <a href="#" class="psa-tab" data-tab="rechazada" onclick="cambiarTab('rechazada'); return false;">
+                <i class="fas fa-circle-xmark"></i> Rechazadas
+                <span class="psa-badge psa-badge-red" style="margin-left: 6px;" id="badge-rechazada">4</span>
+            </a>
         </div>
-        
-        <div class="psa-stat-card">
-            <div class="psa-stat-header">
-                <div class="psa-stat-label">En Proceso</div>
-                <div class="psa-stat-icon gold"><i class="fas fa-hourglass-half"></i></div>
-            </div>
-            <div class="psa-stat-value" id="cnt-proceso">3</div>
-            <div class="psa-stat-sub">Evaluación activa</div>
-        </div>
-        
-        <div class="psa-stat-card">
-            <div class="psa-stat-header">
-                <div class="psa-stat-label">Aprobadas</div>
-                <div class="psa-stat-icon green"><i class="fas fa-check-circle"></i></div>
-            </div>
-            <div class="psa-stat-value" id="cnt-aprobadas">24</div>
-            <div class="psa-stat-sub">Este mes: 6</div>
-        </div>
-        
-        <div class="psa-stat-card">
-            <div class="psa-stat-header">
-                <div class="psa-stat-label">Rechazadas</div>
-                <div class="psa-stat-icon red"><i class="fas fa-times-circle"></i></div>
-            </div>
-            <div class="psa-stat-value" id="cnt-rechazadas">4</div>
-            <div class="psa-stat-sub">Requieren notificación</div>
-        </div>
-    </div>
-
     <!-- ===== CUERPO PRINCIPAL ===== -->
     <div class="td-body" style="display: grid; grid-template-columns: 1fr 340px; gap: 28px; align-items: start;">
 
