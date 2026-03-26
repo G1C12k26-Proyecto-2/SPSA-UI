@@ -1,4 +1,4 @@
-namespace WEB_UI.Models
+namespace LandingPageBioPagos.Models
 {
     public class ErrorViewModel
     {

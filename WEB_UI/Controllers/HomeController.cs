@@ -1,8 +1,8 @@
+using LandingPageBioPagos.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using WEB_UI.Models;
 
-namespace WEB_UI.Controllers
+namespace LandingPageBioPagos.Controllers
 {
     public class HomeController : Controller
     {
