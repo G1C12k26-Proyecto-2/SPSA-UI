@@ -1,8 +1,311 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@{
+    ViewData["Title"] = "Software Studio";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<!-- ═══════ HEADER ═══════ -->
+<header class="aw-header" id="awHeader">
+    <div class="aw-container">
+        <div class="aw-header-inner">
+            <a class="aw-logo" href="#">
+                <div class="aw-logo-icon">A</div>
+                AwakTechnologies<span>.</span>
+            </a>
+            <button class="aw-menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+            <ul class="aw-nav" id="awNav">
+                <li><a href="#services">Servicios</a></li>
+                <li><a href="#projects">Proyectos</a></li>
+                <li><a href="#team">Equipo</a></li>
+                <li><a href="#why">Nosotros</a></li>
+                <li><a href="#contact" class="aw-nav-cta">Hablemos</a></li>
+            </ul>
+        </div>
+    </div>
+</header>
+
+<!-- ═══════ HERO ═══════ -->
+<section class="aw-hero">
+    <div class="aw-hero-glow"></div>
+    <div class="aw-container">
+        <div class="aw-hero-content">
+            <div class="aw-hero-tag"><span class="pulse"></span> Software Studio · Costa Rica</div>
+            <h1>Construimos<br><span class="gradient-text">software que<br>transforma</span></h1>
+            <p class="aw-hero-text">
+                Somos AwakTechnologies — un equipo de 5 desarrolladores costarricenses 
+                que convierte ideas en productos digitales sólidos, escalables y con impacto real.
+            </p>
+            <div class="aw-hero-actions">
+                <a href="#contact" class="aw-btn-primary"><i class="fas fa-arrow-right"></i> Iniciar Proyecto</a>
+                <a href="#projects" class="aw-btn-outline"><i class="fas fa-folder-open"></i> Ver Proyectos</a>
+            </div>
+            <div class="aw-hero-stack">
+                <div class="aw-hero-stack-label">Stack Tecnológico</div>
+                <div class="aw-stack-pills">
+                    <span class="aw-stack-pill">.NET / C#</span>
+                    <span class="aw-stack-pill">ASP.NET Core MVC</span>
+                    <span class="aw-stack-pill">SQL Server</span>
+                    <span class="aw-stack-pill">Next.js</span>
+                    <span class="aw-stack-pill">React</span>
+                    <span class="aw-stack-pill">Bootstrap 5</span>
+                    <span class="aw-stack-pill">AG-Grid</span>
+                    <span class="aw-stack-pill">Azure</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="aw-divider"></div>
+
+<!-- ═══════ SECCIÓN 1: SERVICIOS ═══════ -->
+<section class="aw-section aw-services" id="services">
+    <div class="aw-container">
+        <div class="text-center">
+            <span class="aw-section-label">// Servicios</span>
+            <h2 class="aw-section-title">Lo que hacemos mejor</h2>
+            <p class="aw-section-subtitle center">Desde la arquitectura hasta el deploy, cubrimos todo el ciclo de desarrollo.</p>
+        </div>
+        <div class="aw-services-grid">
+            <div class="aw-service-card">
+                <div class="aw-service-icon"><i class="fas fa-laptop-code"></i></div>
+                <h3>Aplicaciones Web</h3>
+                <p>Sistemas empresariales completos con ASP.NET Core MVC, dashboards interactivos y paneles de administración.</p>
+            </div>
+            <div class="aw-service-card">
+                <div class="aw-service-icon"><i class="fas fa-mobile-screen-button"></i></div>
+                <h3>Apps Móviles</h3>
+                <p>Aplicaciones nativas y cross-platform con React Native y Expo. Publicación en App Store y Google Play.</p>
+            </div>
+            <div class="aw-service-card">
+                <div class="aw-service-icon"><i class="fas fa-database"></i></div>
+                <h3>APIs & Backends</h3>
+                <p>APIs RESTful robustas, stored procedures optimizados, integración con servicios de pago y autenticación.</p>
+            </div>
+            <div class="aw-service-card">
+                <div class="aw-service-icon"><i class="fas fa-palette"></i></div>
+                <h3>UI/UX Design</h3>
+                <p>Interfaces modernas con sistemas de diseño propios, temas custom y componentes reutilizables.</p>
+            </div>
+            <div class="aw-service-card">
+                <div class="aw-service-icon"><i class="fas fa-cloud"></i></div>
+                <h3>Cloud & DevOps</h3>
+                <p>Despliegue en Azure y Vercel, CI/CD automatizado, monitoreo y escalabilidad según demanda.</p>
+            </div>
+            <div class="aw-service-card">
+                <div class="aw-service-icon"><i class="fas fa-handshake"></i></div>
+                <h3>Consultoría</h3>
+                <p>Asesoría técnica en arquitectura de software, selección de stack, y estrategia de producto digital.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="aw-divider"></div>
+
+<!-- ═══════ SECCIÓN 2: PROYECTOS ═══════ -->
+<section class="aw-section aw-projects" id="projects">
+    <div class="aw-container">
+        <div class="text-center">
+            <span class="aw-section-label">// Proyectos</span>
+            <h2 class="aw-section-title">Lo que hemos construido</h2>
+            <p class="aw-section-subtitle center">Productos reales, funcionando en producción.</p>
+        </div>
+        <div class="aw-projects-showcase">
+            <div class="aw-project-card">
+                <div class="aw-project-visual biopagos">
+                    <i class="fas fa-leaf"></i>
+                </div>
+                <div class="aw-project-body">
+                    <span class="aw-project-tag">Plataforma Gubernamental</span>
+                    <h3>BioPagos — Sistema PSA</h3>
+                    <p>Plataforma de gestión de Pagos por Servicios Ambientales para FONAFIFO y SINAC. Registro de fincas, evaluaciones técnicas, cálculo automático de pagos y depósitos bancarios.</p>
+                    <div class="aw-project-tech">
+                        <span>ASP.NET Core MVC</span>
+                        <span>SQL Server</span>
+                        <span>AG-Grid</span>
+                        <span>Bootstrap 5</span>
+                        <span>jQuery</span>
+                    </div>
+                </div>
+            </div>
+            <div class="aw-project-card">
+                <div class="aw-project-visual next">
+                    <i class="fas fa-rocket"></i>
+                </div>
+                <div class="aw-project-body">
+                    <span class="aw-project-tag">Próximo Lanzamiento</span>
+                    <h3>Tu Proyecto Aquí</h3>
+                    <p>Estamos listos para construir tu próxima idea. Desde MVP hasta productos empresariales completos — con la misma calidad y compromiso que ponemos en cada línea de código.</p>
+                    <div class="aw-project-tech">
+                        <span>Next.js</span>
+                        <span>React Native</span>
+                        <span>Supabase</span>
+                        <span>Stripe</span>
+                        <span>Vercel</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="aw-divider"></div>
+
+<!-- ═══════ SECCIÓN 3: EQUIPO ═══════ -->
+<section class="aw-section aw-team" id="team">
+    <div class="aw-container">
+        <div class="text-center">
+            <span class="aw-section-label">// Equipo</span>
+            <h2 class="aw-section-title">Las personas detrás del código</h2>
+            <p class="aw-section-subtitle center">5 desarrolladores. 1 visión. Cero burocracia.</p>
+        </div>
+        <div class="aw-team-grid">
+            <div class="aw-team-card">
+                <div class="aw-team-avatar a1">ML</div>
+                <h4>Matías Lutz</h4>
+                <div class="aw-team-role">Desarrollador</div>
+            </div>
+            <div class="aw-team-card">
+                <div class="aw-team-avatar a2">TG</div>
+                <h4>Trayce González</h4>
+                <div class="aw-team-role">Desarrollador</div>
+            </div>
+            <div class="aw-team-card">
+                <div class="aw-team-avatar a3">JT</div>
+                <h4>Juan David Torres</h4>
+                <div class="aw-team-role">Desarrollador</div>
+            </div>
+            <div class="aw-team-card">
+                <div class="aw-team-avatar a4">JF</div>
+                <h4>José Daniel Fonseca</h4>
+                <div class="aw-team-role">Desarrollador</div>
+            </div>
+            <div class="aw-team-card">
+                <div class="aw-team-avatar a5">JL</div>
+                <h4>Jean López</h4>
+                <div class="aw-team-role">Desarrollador</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="aw-divider"></div>
+
+<!-- ═══════ SECCIÓN 4: POR QUÉ AWAKT ═══════ -->
+<section class="aw-section aw-why" id="why">
+    <div class="aw-container">
+        <div class="aw-why-grid">
+            <div>
+                <span class="aw-section-label">// Por qué Awakt</span>
+                <h2 class="aw-section-title">No solo desarrollamos software.<br>Transformamos industrias.</h2>
+                <p class="aw-section-subtitle" style="margin-top:1rem;">No vendemos horas. Entregamos productos que funcionan, escalan y resuelven problemas reales.</p>
+                <div class="aw-why-list" style="margin-top:2rem;">
+                    <div class="aw-why-item">
+                        <div class="aw-why-icon"><i class="fas fa-bolt"></i></div>
+                        <div>
+                            <h4>Ejecución rápida</h4>
+                            <p>Equipo pequeño = decisiones rápidas. Sin capas de aprobación, sin juntas innecesarias.</p>
+                        </div>
+                    </div>
+                    <div class="aw-why-item">
+                        <div class="aw-why-icon"><i class="fas fa-code"></i></div>
+                        <div>
+                            <h4>Código limpio</h4>
+                            <p>Arquitectura clara, patrones probados, código que el siguiente dev puede entender y mantener.</p>
+                        </div>
+                    </div>
+                    <div class="aw-why-item">
+                        <div class="aw-why-icon"><i class="fas fa-shield-halved"></i></div>
+                        <div>
+                            <h4>Compromiso total</h4>
+                            <p>Tu proyecto es nuestro proyecto. Nos involucramos desde el día cero hasta el deploy final.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="aw-why-visual">
+                <div class="aw-terminal">
+                    <div class="aw-terminal-bar">
+                        <span class="aw-terminal-dot"></span>
+                        <span class="aw-terminal-dot"></span>
+                        <span class="aw-terminal-dot"></span>
+                        <span>awakt.dev — zsh</span>
+                    </div>
+                    <div class="aw-terminal-body">
+                        <span class="green">awakt</span> <span class="dim">~</span> $ dotnet new mvc<br>
+                        <span class="dim">// Template created successfully.</span><br><br>
+                        <span class="green">awakt</span> <span class="dim">~</span> $ git init && git add .<br>
+                        <span class="dim">// Initialized repository.</span><br><br>
+                        <span class="green">awakt</span> <span class="dim">~</span> $ dotnet build<br>
+                        <span class="cream">Build succeeded. 0 errors.</span><br><br>
+                        <span class="green">awakt</span> <span class="dim">~</span> $ dotnet run<br>
+                        <span class="cream">🚀 Listening on https://localhost:7125</span><br><br>
+                        <span class="green">awakt</span> <span class="dim">~</span> $ <span class="green" style="animation:pulse 1.5s infinite;">_</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="aw-divider"></div>
+
+<!-- ═══════ SECCIÓN 5: CTA ═══════ -->
+<section class="aw-section aw-cta" id="contact">
+    <div class="aw-container">
+        <div class="aw-cta-box">
+            <span class="aw-section-label">// Contacto</span>
+            <h2 class="aw-section-title">¿Tenés una idea?<br>Hagámosla realidad.</h2>
+            <p class="aw-section-subtitle center">Escribinos y en 24 horas te respondemos con una propuesta técnica inicial. Sin compromiso.</p>
+            <div class="aw-cta-actions">
+                <a href="mailto:hello@awakt.dev" class="aw-btn-primary"><i class="fas fa-envelope"></i> hello@awakt.dev</a>
+                <a href="#" class="aw-btn-outline"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════ FOOTER ═══════ -->
+<footer class="aw-footer">
+    <div class="aw-container">
+        <div class="aw-footer-grid">
+            <div>
+                <div class="aw-footer-brand">Awakt<span>.</span></div>
+                <p class="aw-footer-desc">Software studio costarricense. Construimos productos digitales con código limpio, diseño intencional y compromiso real.</p>
+            </div>
+            <div>
+                <h5>Servicios</h5>
+                <ul class="aw-footer-links">
+                    <li><a href="#">Aplicaciones Web</a></li>
+                    <li><a href="#">Apps Móviles</a></li>
+                    <li><a href="#">APIs & Backends</a></li>
+                    <li><a href="#">Consultoría</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5>Compañía</h5>
+                <ul class="aw-footer-links">
+                    <li><a href="#">Proyectos</a></li>
+                    <li><a href="#">Equipo</a></li>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Contacto</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5>Legal</h5>
+                <ul class="aw-footer-links">
+                    <li><a href="#">Términos</a></li>
+                    <li><a href="#">Privacidad</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="aw-footer-bottom">
+            <span>© 2026 Awakt Technologies · Costa Rica</span>
+            <div class="aw-footer-socials">
+                <a href="#"><i class="fab fa-github"></i></a>
+                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-x-twitter"></i></a>
+            </div>
+        </div>
+    </div>
+</footer>

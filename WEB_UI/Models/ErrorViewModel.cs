@@ -1,4 +1,4 @@
-namespace WEB_UI.Models
+namespace LandingPageAwaktTechnologies.Models
 {
     public class ErrorViewModel
     {

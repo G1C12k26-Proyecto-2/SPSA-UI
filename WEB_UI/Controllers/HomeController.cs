@@ -1,8 +1,8 @@
+using LandingPageAwaktTechnologies.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using WEB_UI.Models;
 
-namespace WEB_UI.Controllers
+namespace LandingPageAwaktTechnologies.Controllers
 {
     public class HomeController : Controller
     {
