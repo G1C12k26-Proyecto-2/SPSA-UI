@@ -387,6 +387,7 @@ function mostrarToastRL(mensaje, esError = false) {
     toast._t = setTimeout(() => toast.classList.remove('visible'), 3800);
 }
 
+
 /* ═══════════════════════════════════════════════════
    8. INIT
 ═══════════════════════════════════════════════════ */

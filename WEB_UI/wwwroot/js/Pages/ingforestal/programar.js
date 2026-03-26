@@ -336,6 +336,128 @@ function mostrarToastPR(mensaje, esError = false) {
     toast._t = setTimeout(() => toast.classList.remove('visible'), 3500);
 }
 
+// Función para manejar la selección de solicitudes
+function inicializarSeleccionSolicitudes() {
+    const items = document.querySelectorAll('.pr-solicitud-item');
+    const errorElement = document.getElementById('pr-sol-err');
+
+    items.forEach(item => {
+        item.addEventListener('click', function (e) {
+            // Remover selección de todos
+            items.forEach(i => i.classList.remove('seleccionada'));
+            // Agregar selección al actual
+            this.classList.add('seleccionada');
+
+            // Ocultar error si existe
+            if (errorElement) errorElement.style.display = 'none';
+
+            // Actualizar resumen con los datos seleccionados
+            actualizarResumenSeleccion(this);
+        });
+    });
+}
+
+// Función para actualizar el resumen con la finca seleccionada
+function actualizarResumenSeleccion(item) {
+    const nombre = item.dataset.nombre;
+    const propietario = item.dataset.propietario;
+    const ubicacion = item.dataset.ubicacion;
+
+    const resFinca = document.getElementById('pr-res-finca');
+    const resProp = document.getElementById('pr-res-prop');
+    const resUbic = document.getElementById('pr-res-ubic');
+
+    if (resFinca) {
+        resFinca.textContent = nombre;
+        resFinca.classList.remove('vacio');
+    }
+    if (resProp) {
+        resProp.textContent = propietario;
+        resProp.classList.remove('vacio');
+    }
+    if (resUbic) {
+        resUbic.textContent = ubicacion;
+        resUbic.classList.remove('vacio');
+    }
+}
+
+// Función para obtener la solicitud seleccionada
+function getSolicitudSeleccionada() {
+    const seleccionada = document.querySelector('.pr-solicitud-item.seleccionada');
+    if (!seleccionada) return null;
+
+    return {
+        id: seleccionada.dataset.id,
+        nombre: seleccionada.dataset.nombre,
+        propietario: seleccionada.dataset.propietario,
+        ubicacion: seleccionada.dataset.ubicacion,
+        hectareas: seleccionada.dataset.hectareas,
+        vegetacion: seleccionada.dataset.vegetacion,
+        estado: seleccionada.dataset.estado
+    };
+}
+
+// Inicializar al cargar la página
+document.addEventListener('DOMContentLoaded', function () {
+    inicializarSeleccionSolicitudes();
+});
+
+// Función para el paso siguiente (validar selección)
+function pasoSiguiente() {
+    const pasoActual = document.querySelector('.pr-seccion.activa');
+    const pasoActualId = pasoActual.id;
+
+    if (pasoActualId === 'pr-seccion-1') {
+        const seleccionada = getSolicitudSeleccionada();
+        if (!seleccionada) {
+            const errorElement = document.getElementById('pr-sol-err');
+            if (errorElement) errorElement.style.display = 'block';
+            return;
+        }
+    }
+
+    // Cambiar de paso
+    const pasos = document.querySelectorAll('.pr-seccion');
+    const steps = document.querySelectorAll('.pr-step');
+
+    for (let i = 0; i < pasos.length; i++) {
+        if (pasos[i].id === pasoActualId && i + 1 < pasos.length) {
+            pasos[i].classList.remove('activa');
+            pasos[i + 1].classList.add('activa');
+
+            steps[i].classList.remove('activo');
+            steps[i + 1].classList.add('activo');
+
+            // Actualizar botones
+            document.getElementById('pr-btn-anterior').style.display = i + 1 === 1 ? 'none' : 'inline-flex';
+            document.getElementById('pr-btn-siguiente').style.display = i + 2 === pasos.length ? 'none' : 'inline-flex';
+            document.getElementById('pr-btn-guardar').style.display = i + 2 === pasos.length ? 'inline-flex' : 'none';
+            break;
+        }
+    }
+}
+
+function pasoAnterior() {
+    const pasoActual = document.querySelector('.pr-seccion.activa');
+    const pasoActualId = pasoActual.id;
+    const pasos = document.querySelectorAll('.pr-seccion');
+    const steps = document.querySelectorAll('.pr-step');
+
+    for (let i = 0; i < pasos.length; i++) {
+        if (pasos[i].id === pasoActualId && i - 1 >= 0) {
+            pasos[i].classList.remove('activa');
+            pasos[i - 1].classList.add('activa');
+
+            steps[i].classList.remove('activo');
+            steps[i - 1].classList.add('activo');
+
+            document.getElementById('pr-btn-anterior').style.display = i - 1 === 0 ? 'none' : 'inline-flex';
+            document.getElementById('pr-btn-siguiente').style.display = 'inline-flex';
+            document.getElementById('pr-btn-guardar').style.display = 'none';
+            break;
+        }
+    }
+}
 /* ═══════════════════════════════════════════════════
    8. INIT
 ═══════════════════════════════════════════════════ */
