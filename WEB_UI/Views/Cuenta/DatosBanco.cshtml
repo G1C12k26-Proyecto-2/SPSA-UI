@@ -1,0 +1,204 @@
+@{
+    ViewData["Title"] = "Datos Bancarios";
+    ViewData["Breadcrumb"] = "Datos Bancarios";
+}
+
+<div class="psa-page-header">
+    <div>
+        <span class="subtitle">Mi Cuenta</span>
+        <h1>Datos Bancarios</h1>
+        <p>Información de la cuenta bancaria asociada para recibir pagos PSA</p>
+    </div>
+    <a class="btn btn-psa btn-sm" asp-controller="Cuenta" asp-action="ActualizarBanco"><i class="fas fa-pen"></i> Actualizar Datos Bancarios</a>
+</div>
+
+<!-- ESTADO BANNER -->
+<div class="d-flex align-items-center gap-3 p-3 rounded mb-3" style="background:var(--psa-pale);border:1px solid #b8dfc8;">
+    <div class="rounded-circle d-flex align-items-center justify-content-center" style="width:44px;height:44px;background:var(--psa-leaf);color:#fff;font-size:1rem;">
+        <i class="fas fa-check"></i>
+    </div>
+    <div>
+        <div style="font-family:'Fraunces',serif;font-size:1.05rem;font-weight:600;color:var(--psa-forest);">Cuenta Bancaria Registrada</div>
+        <div style="font-size:0.78rem;color:var(--psa-muted);">Última actualización: 15 ene 2026 · Próximo depósito: 15 abr 2026</div>
+    </div>
+    <div class="ms-auto text-end">
+        <div style="font-family:'Fraunces',serif;font-size:1.5rem;font-weight:700;color:var(--psa-forest);">₡3.8M</div>
+        <div style="font-size:0.68rem;color:var(--psa-muted);">Pago mensual activo</div>
+    </div>
+</div>
+
+<div class="row g-3">
+    <!-- COLUMNA IZQUIERDA: DATOS DE LA CUENTA -->
+    <div class="col-lg-7">
+        <div class="psa-card">
+            <div class="psa-card-header">
+                <div class="psa-card-title"><i class="fas fa-building-columns"></i> Cuenta Bancaria</div>
+                <span class="psa-badge psa-badge-green">Verificada</span>
+            </div>
+            <div class="psa-detail-grid">
+                <div class="psa-detail-item">
+                    <div class="psa-detail-label">Titular</div>
+                    <div class="psa-detail-value">Carlos Fonseca Salas</div>
+                </div>
+                <div class="psa-detail-item">
+                    <div class="psa-detail-label">Cédula del Titular</div>
+                    <div class="psa-detail-value">1-1234-5678</div>
+                </div>
+                <div class="psa-detail-item">
+                    <div class="psa-detail-label">Banco</div>
+                    <div class="psa-detail-value">Banco Nacional de Costa Rica</div>
+                </div>
+                <div class="psa-detail-item">
+                    <div class="psa-detail-label">Tipo de Cuenta</div>
+                    <div class="psa-detail-value">Cuenta Corriente (Colones)</div>
+                </div>
+                <div class="psa-detail-item">
+                    <div class="psa-detail-label">Número de Cuenta / IBAN</div>
+                    <div class="psa-detail-value" style="font-family:monospace;font-size:0.82rem;">CR0601520200010012****</div>
+                </div>
+                <div class="psa-detail-item">
+                    <div class="psa-detail-label">Fecha de Registro</div>
+                    <div class="psa-detail-value">15 ene 2026</div>
+                </div>
+            </div>
+            <div class="psa-card-body border-top">
+                <div class="d-flex gap-2">
+                    <a class="btn btn-psa btn-sm" asp-controller="Cuenta" asp-action="ActualizarBanco"><i class="fas fa-pen"></i> Editar Información Bancaria</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- HISTORIAL DE PAGOS RECIENTES -->
+        <div class="psa-card">
+            <div class="psa-card-header">
+                <div class="psa-card-title"><i class="fas fa-circle-dollar-to-slot"></i> Últimos Depósitos</div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Período</th>
+                            <th>Finca</th>
+                            <th>Monto</th>
+                            <th>Estado</th>
+                            <th>Fecha</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Mar 2026</td>
+                            <td style="font-weight:500;">Finca La Catarata</td>
+                            <td class="fw-bold">₡3,800,000</td>
+                            <td><span class="psa-badge psa-badge-green">Depositado</span></td>
+                            <td>10 mar 2026</td>
+                        </tr>
+                        <tr>
+                            <td>Feb 2026</td>
+                            <td style="font-weight:500;">Finca La Catarata</td>
+                            <td class="fw-bold">₡3,800,000</td>
+                            <td><span class="psa-badge psa-badge-green">Depositado</span></td>
+                            <td>10 feb 2026</td>
+                        </tr>
+                        <tr>
+                            <td>Ene 2026</td>
+                            <td style="font-weight:500;">Finca La Catarata</td>
+                            <td class="fw-bold">₡3,800,000</td>
+                            <td><span class="psa-badge psa-badge-green">Depositado</span></td>
+                            <td>10 ene 2026</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- COLUMNA DERECHA -->
+    <div class="col-lg-5">
+        <!-- INFO DE SEGURIDAD -->
+        <div class="psa-card">
+            <div class="psa-card-header">
+                <div class="psa-card-title"><i class="fas fa-shield-halved"></i> Seguridad</div>
+            </div>
+            <div class="psa-card-body">
+                <div class="d-flex gap-3 align-items-start mb-3">
+                    <div class="psa-tl-dot green"><i class="fas fa-lock"></i></div>
+                    <div>
+                        <div style="font-size:0.82rem;font-weight:500;">Datos encriptados</div>
+                        <div style="font-size:0.72rem;color:var(--psa-muted);">Su información bancaria se almacena con cifrado AES-256.</div>
+                    </div>
+                </div>
+                <div class="d-flex gap-3 align-items-start mb-3">
+                    <div class="psa-tl-dot gold"><i class="fas fa-user-check"></i></div>
+                    <div>
+                        <div style="font-size:0.82rem;font-weight:500;">Titular verificado</div>
+                        <div style="font-size:0.72rem;color:var(--psa-muted);">La cuenta coincide con el nombre registrado en el sistema.</div>
+                    </div>
+                </div>
+                <div class="d-flex gap-3 align-items-start">
+                    <div class="psa-tl-dot blue"><i class="fas fa-calendar-check"></i></div>
+                    <div>
+                        <div style="font-size:0.82rem;font-weight:500;">Depósito automático</div>
+                        <div style="font-size:0.72rem;color:var(--psa-muted);">Los pagos se depositan el día 15 de cada mes.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RESUMEN MENSUAL -->
+        <div class="psa-card">
+            <div class="psa-card-header">
+                <div class="psa-card-title"><i class="fas fa-receipt"></i> Resumen Mensual</div>
+            </div>
+            <div class="psa-card-body">
+                <div class="d-flex justify-content-between mb-2">
+                    <span style="font-size:0.82rem;color:var(--psa-muted);">Fincas activas en PSA</span>
+                    <span style="font-size:0.82rem;font-weight:600;color:var(--psa-ink);">2</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span style="font-size:0.82rem;color:var(--psa-muted);">Total hectáreas activas</span>
+                    <span style="font-size:0.82rem;font-weight:600;color:var(--psa-ink);">62 ha</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span style="font-size:0.82rem;color:var(--psa-muted);">Monto base</span>
+                    <span style="font-size:0.82rem;font-weight:600;color:var(--psa-ink);">₡3,100,000</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span style="font-size:0.82rem;color:var(--psa-muted);">Ajustes (+40%)</span>
+                    <span style="font-size:0.82rem;font-weight:600;color:var(--psa-leaf);">+₡1,240,000</span>
+                </div>
+                <hr style="margin:0.8rem 0;" />
+                <div class="p-3 rounded text-center" style="background:var(--psa-pale);">
+                    <div class="form-label-psa">Total Pago Mensual</div>
+                    <div style="font-family:'Fraunces',serif;font-size:1.8rem;font-weight:700;color:var(--psa-forest);">₡3,800,000</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- HISTORIAL DE CAMBIOS -->
+        <div class="psa-card">
+            <div class="psa-card-header">
+                <div class="psa-card-title"><i class="fas fa-clock-rotate-left"></i> Historial de Cambios</div>
+            </div>
+            <div class="psa-card-body">
+                <div class="psa-timeline">
+                    <div class="psa-tl-item">
+                        <div class="psa-tl-dot gold"><i class="fas fa-pen"></i></div>
+                        <div class="psa-tl-body">
+                            <div class="psa-tl-title">Cuenta actualizada</div>
+                            <div class="psa-tl-desc">Cambio a Banco Nacional de Costa Rica</div>
+                            <div class="psa-tl-time">15 ene 2026</div>
+                        </div>
+                    </div>
+                    <div class="psa-tl-item">
+                        <div class="psa-tl-dot green"><i class="fas fa-check"></i></div>
+                        <div class="psa-tl-body">
+                            <div class="psa-tl-title">Cuenta registrada por primera vez</div>
+                            <div class="psa-tl-desc">BAC Credomatic · IBAN verificado</div>
+                            <div class="psa-tl-time">20 jul 2023</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,157 @@
+@{
+    ViewData["Title"] = "Mi Perfil";
+    ViewData["Breadcrumb"] = "Mi Perfil";
+}
+
+<div class="psa-page-header">
+    <div>
+        <span class="subtitle">Mi Cuenta</span>
+        <h1>Mi Perfil</h1>
+        <p>Información personal asociada a su cuenta</p>
+    </div>
+</div>
+
+<div class="row g-3">
+    <!-- COLUMNA IZQUIERDA -->
+    <div class="col-lg-7">
+        <!-- DATOS DEL USUARIO -->
+        <div class="psa-card">
+            <div class="psa-card-header">
+                <div class="psa-card-title"><i class="fas fa-user-circle"></i> Datos del Usuario</div>
+            </div>
+            <div class="psa-detail-grid">
+                <div class="psa-detail-item">
+                    <div class="psa-detail-label">ID</div>
+                    <div class="psa-detail-value" style="font-family:monospace;">USR-00142</div>
+                </div>
+                <div class="psa-detail-item">
+                    <div class="psa-detail-label">Nombre</div>
+                    <div class="psa-detail-value">Carlos Fonseca Salas</div>
+                </div>
+                <div class="psa-detail-item">
+                    <div class="psa-detail-label">Correo Electrónico</div>
+                    <div class="psa-detail-value">carlos.fonseca@email.com</div>
+                </div>
+                <div class="psa-detail-item">
+                    <div class="psa-detail-label">Rol</div>
+                    <div class="psa-detail-value"><span class="psa-badge psa-badge-green">Propietario</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEGURIDAD Y CONTRASEÑA -->
+        <div class="psa-card">
+            <div class="psa-card-header">
+                <div class="psa-card-title"><i class="fas fa-shield-halved"></i> Seguridad</div>
+            </div>
+            <div class="psa-card-body">
+                <div class="d-flex align-items-center justify-content-between p-3 rounded" style="background:var(--psa-cream);border:1px solid var(--psa-border);">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="psa-tl-dot gold"><i class="fas fa-lock"></i></div>
+                        <div>
+                            <div style="font-size:0.85rem;font-weight:500;color:var(--psa-ink);">Contraseña</div>
+                            <div style="font-size:0.78rem;color:var(--psa-muted);">••••••••••••</div>
+                        </div>
+                    </div>
+                    <a class="btn btn-outline-psa btn-sm" href="/Login/RecuperarContrasena"><i class="fas fa-key"></i> Cambiar Contraseña</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- COLUMNA DERECHA -->
+    <div class="col-lg-5">
+        <!-- AVATAR Y RESUMEN -->
+        <div class="psa-card">
+            <div class="psa-card-body text-center" style="padding:2rem;">
+                <div class="psa-avatar mx-auto" style="width:72px;height:72px;font-size:1.5rem;margin-bottom:1rem;">CF</div>
+                <div style="font-family:'Fraunces',serif;font-size:1.15rem;font-weight:600;color:var(--psa-forest);">Carlos Fonseca Salas</div>
+                <div style="font-size:0.78rem;color:var(--psa-muted);margin-top:0.2rem;">carlos.fonseca@email.com</div>
+                <div style="margin-top:0.6rem;"><span class="psa-badge psa-badge-green">Propietario</span></div>
+                <hr style="margin:1.2rem 0;" />
+                <div class="d-flex justify-content-around">
+                    <div class="text-center">
+                        <div style="font-family:'Fraunces',serif;font-size:1.4rem;font-weight:700;color:var(--psa-forest);">4</div>
+                        <div style="font-size:0.68rem;color:var(--psa-muted);">Fincas</div>
+                    </div>
+                    <div class="text-center">
+                        <div style="font-family:'Fraunces',serif;font-size:1.4rem;font-weight:700;color:var(--psa-forest);">2</div>
+                        <div style="font-size:0.68rem;color:var(--psa-muted);">PSA Activo</div>
+                    </div>
+                    <div class="text-center">
+                        <div style="font-family:'Fraunces',serif;font-size:1.4rem;font-weight:700;color:var(--psa-forest);">344</div>
+                        <div style="font-size:0.68rem;color:var(--psa-muted);">Hectáreas</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACCESOS RAPIDOS -->
+        <div class="psa-card">
+            <div class="psa-card-header">
+                <div class="psa-card-title"><i class="fas fa-link"></i> Accesos Rápidos</div>
+            </div>
+            <div class="psa-card-body">
+                <a href="/Cuenta/DatosBanco" class="d-flex align-items-center gap-3 p-2 rounded mb-2" style="text-decoration:none;transition:background 0.2s;" onmouseover="this.style.background='var(--psa-pale)'" onmouseout="this.style.background='transparent'">
+                    <div class="psa-tl-dot green"><i class="fas fa-building-columns"></i></div>
+                    <div>
+                        <div style="font-size:0.82rem;font-weight:500;color:var(--psa-ink);">Datos Bancarios</div>
+                        <div style="font-size:0.68rem;color:var(--psa-muted);">Ver o actualizar cuenta bancaria</div>
+                    </div>
+                    <i class="fas fa-chevron-right ms-auto" style="font-size:0.65rem;color:var(--psa-muted);"></i>
+                </a>
+                <a href="/Fincas" class="d-flex align-items-center gap-3 p-2 rounded mb-2" style="text-decoration:none;transition:background 0.2s;" onmouseover="this.style.background='var(--psa-pale)'" onmouseout="this.style.background='transparent'">
+                    <div class="psa-tl-dot green"><i class="fas fa-tree"></i></div>
+                    <div>
+                        <div style="font-size:0.82rem;font-weight:500;color:var(--psa-ink);">Mis Fincas</div>
+                        <div style="font-size:0.68rem;color:var(--psa-muted);">Administrar propiedades registradas</div>
+                    </div>
+                    <i class="fas fa-chevron-right ms-auto" style="font-size:0.65rem;color:var(--psa-muted);"></i>
+                </a>
+                <a href="/Fincas/Crear" class="d-flex align-items-center gap-3 p-2 rounded" style="text-decoration:none;transition:background 0.2s;" onmouseover="this.style.background='var(--psa-pale)'" onmouseout="this.style.background='transparent'">
+                    <div class="psa-tl-dot gold"><i class="fas fa-file-circle-plus"></i></div>
+                    <div>
+                        <div style="font-size:0.82rem;font-weight:500;color:var(--psa-ink);">Registrar Finca</div>
+                        <div style="font-size:0.68rem;color:var(--psa-muted);">Solicitar ingreso al programa PSA</div>
+                    </div>
+                    <i class="fas fa-chevron-right ms-auto" style="font-size:0.65rem;color:var(--psa-muted);"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- ACTIVIDAD RECIENTE -->
+        <div class="psa-card">
+            <div class="psa-card-header">
+                <div class="psa-card-title"><i class="fas fa-clock-rotate-left"></i> Actividad Reciente</div>
+            </div>
+            <div class="psa-card-body">
+                <div class="psa-timeline">
+                    <div class="psa-tl-item">
+                        <div class="psa-tl-dot green"><i class="fas fa-circle-dollar-to-slot"></i></div>
+                        <div class="psa-tl-body">
+                            <div class="psa-tl-title">Pago mensual recibido</div>
+                            <div class="psa-tl-desc">Finca La Catarata · ₡3,800,000</div>
+                            <div class="psa-tl-time">10 mar 2026</div>
+                        </div>
+                    </div>
+                    <div class="psa-tl-item">
+                        <div class="psa-tl-dot blue"><i class="fas fa-tree"></i></div>
+                        <div class="psa-tl-body">
+                            <div class="psa-tl-title">Finca El Roble registrada</div>
+                            <div class="psa-tl-desc">Estado: En Evaluación</div>
+                            <div class="psa-tl-time">08 mar 2026</div>
+                        </div>
+                    </div>
+                    <div class="psa-tl-item">
+                        <div class="psa-tl-dot gold"><i class="fas fa-building-columns"></i></div>
+                        <div class="psa-tl-body">
+                            <div class="psa-tl-title">Datos bancarios actualizados</div>
+                            <div class="psa-tl-desc">Banco Nacional de Costa Rica</div>
+                            <div class="psa-tl-time">15 ene 2026</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
