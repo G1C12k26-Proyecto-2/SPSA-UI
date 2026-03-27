@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using WEB_UI.Models;
@@ -6,20 +7,18 @@ namespace WEB_UI.Controllers
 {
     public class HomeController : Controller
     {
+     //   [Authorize]
         public IActionResult Index()
         {
-            return View();
-        }
+            var rol = User.Claims.FirstOrDefault(c => c.Type == "Rol")?.Value;
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return rol?.ToLower() switch
+            {
+                "Admin" => RedirectToAction("Dashboard", "Admin"),
+                "Funcionario" => RedirectToAction("Index", "IngForestal"),
+                "Propietario" => RedirectToAction("Index", "Fincas"),
+                _ => View()
+            };
         }
     }
 }
