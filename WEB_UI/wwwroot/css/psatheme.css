@@ -88,6 +88,9 @@ h6,
   color: var(--psa-forest);
 }
 
+.Juan2{
+    display:none !important;
+}	   					
 /* ── LAYOUT ───────────────────────────────────────────────── */
 .psa-layout {
   display: flex;
