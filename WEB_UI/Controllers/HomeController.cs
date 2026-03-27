@@ -14,9 +14,9 @@ namespace WEB_UI.Controllers
 
             return rol?.ToLower() switch
             {
-                "administrador" or "admin" => RedirectToAction("Dashboard", "Admin"),
-                "ingenieroforestal" or "ingeniero" or "ingforestal" => RedirectToAction("Index", "IngForestal"),
-                "dueño" or "propietario" or "owner" => RedirectToAction("Index", "Fincas"),
+                "Admin" => RedirectToAction("Dashboard", "Admin"),
+                "Funcionario" => RedirectToAction("Index", "IngForestal"),
+                "Propietario" => RedirectToAction("Index", "Fincas"),
                 _ => View()
             };
         }
