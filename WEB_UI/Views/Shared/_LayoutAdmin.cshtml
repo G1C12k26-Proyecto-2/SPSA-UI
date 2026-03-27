@@ -85,7 +85,7 @@
             </nav>
 
             <div class="psa-sidebar-footer">
-                <a class="psa-logout" href="#">
+                <a class="psa-logout" href="#" onclick="cerrarSesion()">
                     <i class="fas fa-right-from-bracket"></i> Cerrar sesión
                 </a>
             </div>
@@ -129,5 +129,6 @@
         }
     </script>
     @await RenderSectionAsync("Scripts", required: false)
+    <script src="~/js/Pages/Shared/layout.js" asp-append-version="true"></script>
 </body>
 </html>

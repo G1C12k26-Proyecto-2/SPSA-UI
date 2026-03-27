@@ -59,7 +59,7 @@
             </a>
         </nav>
         <div class="psa-sidebar-footer">
-            <a class="psa-logout" href="#"><i class="fas fa-right-from-bracket"></i> Cerrar sesión</a>
+                <a class="psa-logout" href="#" onclick="cerrarSesion()"><i class="fas fa-right-from-bracket"></i> Cerrar sesión</a>
         </div>
     </aside>
 
@@ -89,11 +89,12 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.js"></script>
 <script>
-    const API_URL_BASE = "https://localhost:44360";
+        const API_URL_BASE = "https://spsaapi.azurewebsites.net";
     function ShowSuccess(t, x) { Swal.fire({ icon: 'success', title: t, text: x, timer: 2000 }); }
     function ShowError(t, x) { Swal.fire({ icon: 'error', title: t, text: x }); }
     function ShowConfirm(t, x, cb) { Swal.fire({ title: t, text: x, icon: 'warning', showCancelButton: true, confirmButtonColor: '#2d8653', cancelButtonColor: '#b83232', confirmButtonText: 'Confirmar', cancelButtonText: 'Cancelar' }).then(r => { if (r.isConfirmed) cb(); }); }
 </script>
+    <script src="~/js/Pages/Shared/layout.js" asp-append-version="true"></script>
 @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
