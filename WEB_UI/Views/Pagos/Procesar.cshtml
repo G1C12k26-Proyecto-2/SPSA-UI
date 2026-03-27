@@ -1,0 +1,53 @@
+﻿@{
+    ViewData["Title"] = "Procesar Pagos";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="psa-page-header">
+    <div>
+        <span class="subtitle">Pagos</span>
+        <h1>Procesar Pagos</h1>
+        <p>Ejecuta pagos pendientes del programa PSA</p>
+    </div>
+    <a asp-controller="Pagos" asp-action="Historial" class="btn btn-outline-psa btn-sm"><i class="fas fa-receipt"></i> Historial</a>
+</div>
+
+<div class="psa-card">
+    <div class="psa-card-header">
+        <div class="psa-card-title"><i class="fas fa-circle-dollar-to-slot"></i> Pagos Pendientes de Procesar</div>
+    </div>
+    <table class="table table-hover mb-0" style="font-size:0.82rem;">
+        <thead style="background:#fafaf8;">
+            <tr>
+                <th style="padding:0.8rem 1.3rem;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--psa-muted);font-weight:600;border-bottom:1px solid var(--psa-border);">Finca</th>
+                <th style="padding:0.8rem 1.3rem;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--psa-muted);font-weight:600;border-bottom:1px solid var(--psa-border);">Propietario</th>
+                <th style="padding:0.8rem 1.3rem;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--psa-muted);font-weight:600;border-bottom:1px solid var(--psa-border);">Monto</th>
+                <th style="padding:0.8rem 1.3rem;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--psa-muted);font-weight:600;border-bottom:1px solid var(--psa-border);">Período</th>
+                <th style="padding:0.8rem 1.3rem;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--psa-muted);font-weight:600;border-bottom:1px solid var(--psa-border);">Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="padding:0.9rem 1.3rem;">Finca El Roble</td>
+                <td style="padding:0.9rem 1.3rem;">Carlos Fonseca</td>
+                <td style="padding:0.9rem 1.3rem;"><strong>₡4,200,000</strong></td>
+                <td style="padding:0.9rem 1.3rem;">Ene–Mar 2026</td>
+                <td style="padding:0.9rem 1.3rem;"><a asp-controller="Pagos" asp-action="Factura" class="btn btn-psa btn-sm" style="font-size:0.75rem;">Procesar</a></td>
+            </tr>
+            <tr>
+                <td style="padding:0.9rem 1.3rem;">Finca Las Palmas</td>
+                <td style="padding:0.9rem 1.3rem;">Ana Solano</td>
+                <td style="padding:0.9rem 1.3rem;"><strong>₡3,100,000</strong></td>
+                <td style="padding:0.9rem 1.3rem;">Ene–Mar 2026</td>
+                <td style="padding:0.9rem 1.3rem;"><a asp-controller="Pagos" asp-action="Factura" class="btn btn-psa btn-sm" style="font-size:0.75rem;">Procesar</a></td>
+            </tr>
+            <tr>
+                <td style="padding:0.9rem 1.3rem;">Finca Cerro Verde</td>
+                <td style="padding:0.9rem 1.3rem;">Pedro Vargas</td>
+                <td style="padding:0.9rem 1.3rem;"><strong>₡2,800,000</strong></td>
+                <td style="padding:0.9rem 1.3rem;">Ene–Mar 2026</td>
+                <td style="padding:0.9rem 1.3rem;"><a asp-controller="Pagos" asp-action="Factura" class="btn btn-psa btn-sm" style="font-size:0.75rem;">Procesar</a></td>
+            </tr>
+        </tbody>
+    </table>
+</div>

@@ -1,14 +1,14 @@
-using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using WEB_UI.Models;
+using Microsoft.AspNetCore.Mvc;
+using WebApplication1.Models;
 
-namespace WEB_UI.Controllers
+namespace WebApplication1.Controllers
 {
     public class HomeController : Controller
     {
         public IActionResult Index()
         {
-            return View();
+            return RedirectToAction("AdminDashboard", "Admin");
         }
 
         public IActionResult Privacy()

@@ -1,0 +1,259 @@
+﻿@{
+    ViewData["Title"] = "Configuración";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="psa-page-header">
+    <div>
+        <span class="subtitle">Sistema</span>
+        <h1>Configuración del Sistema</h1>
+        <p>Parámetros globales, tarifas y listas configurables del programa PSA</p>
+    </div>
+</div>
+
+<div class="row g-3">
+
+    <div class="col-lg-6">
+        <div class="psa-card">
+            <div class="psa-card-header">
+                <div class="psa-card-title"><i class="fas fa-sliders"></i> Parámetros Generales</div>
+            </div>
+            <div class="psa-card-body">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label class="form-label-psa">Nombre del Sistema</label>
+                        <input type="text" class="form-control" value="Sistema PSA - FONAFIFO" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label-psa">Año Fiscal Activo</label>
+                        <input type="number" class="form-control" value="2026" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label-psa">Día de Pago Mensual</label>
+                        <input type="number" class="form-control" value="15" min="1" max="28" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label-psa">Precio Base por Hectárea (₡) — RF5.1</label>
+                        <input type="number" class="form-control" value="50000" />
+                        <small class="text-muted" style="font-size:0.75rem;">Aplica también para fracciones menores a 1 ha</small>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label-psa">Tope Máximo de Ajuste (%) — RF5.5</label>
+                        <input type="number" class="form-control" value="40" />
+                        <small class="text-muted" style="font-size:0.75rem;">Inicial 40%, configurable</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="psa-card">
+            <div class="psa-card-header">
+                <div class="psa-card-title"><i class="fas fa-percent"></i> Ajustes de Tarifa — RF5.2, RF5.3, RF5.4</div>
+            </div>
+            <div class="psa-card-body">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label class="form-label-psa">Bosque Primario (%) — RF5.2</label>
+                        <input type="number" class="form-control" value="30" />
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label-psa">Bosque Secundario (%) — RF5.2</label>
+                        <input type="number" class="form-control" value="20" />
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label-psa">Plantación Forestal (%) — RF5.2</label>
+                        <input type="number" class="form-control" value="10" />
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label-psa">Ríos o Quebradas (%) — RF5.3</label>
+                        <input type="number" class="form-control" value="10" />
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label-psa">Por cada Naciente (%) — RF5.3</label>
+                        <input type="number" class="form-control" value="5" />
+                        <small class="text-muted" style="font-size:0.75rem;">Se multiplica por la cantidad de nacientes</small>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label-psa">Pendiente Inclinada (%) — RF5.4</label>
+                        <input type="number" class="form-control" value="10" />
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label-psa">Pendiente Muy Inclinada (%) — RF5.4</label>
+                        <input type="number" class="form-control" value="20" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="psa-card">
+            <div class="psa-card-header">
+                <div class="psa-card-title"><i class="fas fa-list"></i> Tipos de Superficie — RF2.8, RF3.5</div>
+                <button class="btn btn-psa btn-sm" style="font-size:0.75rem;padding:4px 10px;">
+                    <i class="fas fa-plus"></i> Agregar
+                </button>
+            </div>
+            <table class="table table-hover mb-0" style="font-size:0.82rem;">
+                <thead style="background:#fafaf8;">
+                    <tr>
+                        <th style="padding:0.7rem 1.3rem;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--psa-muted);font-weight:600;border-bottom:1px solid var(--psa-border);">Nombre</th>
+                        <th style="padding:0.7rem 1.3rem;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--psa-muted);font-weight:600;border-bottom:1px solid var(--psa-border);">Estado</th>
+                        <th style="padding:0.7rem 1.3rem;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--psa-muted);font-weight:600;border-bottom:1px solid var(--psa-border);">Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="padding:0.8rem 1.3rem;">Plana</td>
+                        <td style="padding:0.8rem 1.3rem;"><span class="psa-badge psa-badge-green">Activo</span></td>
+                        <td style="padding:0.8rem 1.3rem;"><a href="#" class="psa-card-action">Editar</a></td>
+                    </tr>
+                    <tr>
+                        <td style="padding:0.8rem 1.3rem;">Inclinada</td>
+                        <td style="padding:0.8rem 1.3rem;"><span class="psa-badge psa-badge-green">Activo</span></td>
+                        <td style="padding:0.8rem 1.3rem;"><a href="#" class="psa-card-action">Editar</a></td>
+                    </tr>
+                    <tr>
+                        <td style="padding:0.8rem 1.3rem;">Muy Inclinada</td>
+                        <td style="padding:0.8rem 1.3rem;"><span class="psa-badge psa-badge-green">Activo</span></td>
+                        <td style="padding:0.8rem 1.3rem;"><a href="#" class="psa-card-action">Editar</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="psa-card">
+            <div class="psa-card-header">
+                <div class="psa-card-title"><i class="fas fa-tree"></i> Tipos de Vegetación — RF2.8, RF3.7</div>
+                <button class="btn btn-psa btn-sm" style="font-size:0.75rem;padding:4px 10px;">
+                    <i class="fas fa-plus"></i> Agregar
+                </button>
+            </div>
+            <table class="table table-hover mb-0" style="font-size:0.82rem;">
+                <thead style="background:#fafaf8;">
+                    <tr>
+                        <th style="padding:0.7rem 1.3rem;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--psa-muted);font-weight:600;border-bottom:1px solid var(--psa-border);">Nombre</th>
+                        <th style="padding:0.7rem 1.3rem;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--psa-muted);font-weight:600;border-bottom:1px solid var(--psa-border);">Estado</th>
+                        <th style="padding:0.7rem 1.3rem;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--psa-muted);font-weight:600;border-bottom:1px solid var(--psa-border);">Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="padding:0.8rem 1.3rem;">Bosque Primario</td>
+                        <td style="padding:0.8rem 1.3rem;"><span class="psa-badge psa-badge-green">Activo</span></td>
+                        <td style="padding:0.8rem 1.3rem;"><a href="#" class="psa-card-action">Editar</a></td>
+                    </tr>
+                    <tr>
+                        <td style="padding:0.8rem 1.3rem;">Bosque Secundario</td>
+                        <td style="padding:0.8rem 1.3rem;"><span class="psa-badge psa-badge-green">Activo</span></td>
+                        <td style="padding:0.8rem 1.3rem;"><a href="#" class="psa-card-action">Editar</a></td>
+                    </tr>
+                    <tr>
+                        <td style="padding:0.8rem 1.3rem;">Plantación Forestal</td>
+                        <td style="padding:0.8rem 1.3rem;"><span class="psa-badge psa-badge-green">Activo</span></td>
+                        <td style="padding:0.8rem 1.3rem;"><a href="#" class="psa-card-action">Editar</a></td>
+                    </tr>
+                    <tr>
+                        <td style="padding:0.8rem 1.3rem;">Pasto / Escasa</td>
+                        <td style="padding:0.8rem 1.3rem;"><span class="psa-badge psa-badge-green">Activo</span></td>
+                        <td style="padding:0.8rem 1.3rem;"><a href="#" class="psa-card-action">Editar</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="psa-card">
+            <div class="psa-card-header">
+                <div class="psa-card-title"><i class="fas fa-droplet"></i> Recursos Hídricos — RF2.8, RF3.6</div>
+                <button class="btn btn-psa btn-sm" style="font-size:0.75rem;padding:4px 10px;">
+                    <i class="fas fa-plus"></i> Agregar
+                </button>
+            </div>
+            <table class="table table-hover mb-0" style="font-size:0.82rem;">
+                <thead style="background:#fafaf8;">
+                    <tr>
+                        <th style="padding:0.7rem 1.3rem;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--psa-muted);font-weight:600;border-bottom:1px solid var(--psa-border);">Nombre</th>
+                        <th style="padding:0.7rem 1.3rem;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--psa-muted);font-weight:600;border-bottom:1px solid var(--psa-border);">Estado</th>
+                        <th style="padding:0.7rem 1.3rem;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--psa-muted);font-weight:600;border-bottom:1px solid var(--psa-border);">Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="padding:0.8rem 1.3rem;">Ríos o Quebradas</td>
+                        <td style="padding:0.8rem 1.3rem;"><span class="psa-badge psa-badge-green">Activo</span></td>
+                        <td style="padding:0.8rem 1.3rem;"><a href="#" class="psa-card-action">Editar</a></td>
+                    </tr>
+                    <tr>
+                        <td style="padding:0.8rem 1.3rem;">Nacientes</td>
+                        <td style="padding:0.8rem 1.3rem;"><span class="psa-badge psa-badge-green">Activo</span></td>
+                        <td style="padding:0.8rem 1.3rem;"><a href="#" class="psa-card-action">Editar</a></td>
+                    </tr>
+                    <tr>
+                        <td style="padding:0.8rem 1.3rem;">Sin Recurso Hídrico</td>
+                        <td style="padding:0.8rem 1.3rem;"><span class="psa-badge psa-badge-green">Activo</span></td>
+                        <td style="padding:0.8rem 1.3rem;"><a href="#" class="psa-card-action">Editar</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="psa-card">
+            <div class="psa-card-header">
+                <div class="psa-card-title"><i class="fas fa-seedling"></i> Uso de Suelo — RF2.8, RF3.8</div>
+                <button class="btn btn-psa btn-sm" style="font-size:0.75rem;padding:4px 10px;">
+                    <i class="fas fa-plus"></i> Agregar
+                </button>
+            </div>
+            <table class="table table-hover mb-0" style="font-size:0.82rem;">
+                <thead style="background:#fafaf8;">
+                    <tr>
+                        <th style="padding:0.7rem 1.3rem;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--psa-muted);font-weight:600;border-bottom:1px solid var(--psa-border);">Nombre</th>
+                        <th style="padding:0.7rem 1.3rem;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--psa-muted);font-weight:600;border-bottom:1px solid var(--psa-border);">Estado</th>
+                        <th style="padding:0.7rem 1.3rem;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--psa-muted);font-weight:600;border-bottom:1px solid var(--psa-border);">Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="padding:0.8rem 1.3rem;">Conservación</td>
+                        <td style="padding:0.8rem 1.3rem;"><span class="psa-badge psa-badge-green">Activo</span></td>
+                        <td style="padding:0.8rem 1.3rem;"><a href="#" class="psa-card-action">Editar</a></td>
+                    </tr>
+                    <tr>
+                        <td style="padding:0.8rem 1.3rem;">Producción Forestal</td>
+                        <td style="padding:0.8rem 1.3rem;"><span class="psa-badge psa-badge-green">Activo</span></td>
+                        <td style="padding:0.8rem 1.3rem;"><a href="#" class="psa-card-action">Editar</a></td>
+                    </tr>
+                    <tr>
+                        <td style="padding:0.8rem 1.3rem;">Agroforestal</td>
+                        <td style="padding:0.8rem 1.3rem;"><span class="psa-badge psa-badge-green">Activo</span></td>
+                        <td style="padding:0.8rem 1.3rem;"><a href="#" class="psa-card-action">Editar</a></td>
+                    </tr>
+                    <tr>
+                        <td style="padding:0.8rem 1.3rem;">Ganadería</td>
+                        <td style="padding:0.8rem 1.3rem;"><span class="psa-badge psa-badge-green">Activo</span></td>
+                        <td style="padding:0.8rem 1.3rem;"><a href="#" class="psa-card-action">Editar</a></td>
+                    </tr>
+                    <tr>
+                        <td style="padding:0.8rem 1.3rem;">Uso Mixto</td>
+                        <td style="padding:0.8rem 1.3rem;"><span class="psa-badge psa-badge-green">Activo</span></td>
+                        <td style="padding:0.8rem 1.3rem;"><a href="#" class="psa-card-action">Editar</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<div class="d-flex gap-2 mt-2">
+    <button type="button" class="btn btn-psa"><i class="fas fa-save"></i> Guardar Cambios</button>
+    <button type="button" class="btn btn-outline-psa">Cancelar</button>
+</div>

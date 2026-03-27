@@ -1,0 +1,67 @@
+﻿@{
+    ViewData["Title"] = "Usuarios";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="psa-page-header">
+    <div>
+        <span class="subtitle">Usuarios</span>
+        <h1>Gestión de Usuarios</h1>
+        <p>Administra usuarios, roles, permisos y estado de acceso — RF2.1 al RF2.5</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a asp-controller="Usuarios" asp-action="Crear" class="btn btn-psa btn-sm">
+            <i class="fas fa-user-plus"></i> Nuevo Usuario
+        </a>
+    </div>
+</div>
+
+<div class="psa-card">
+    <div class="psa-card-header">
+        <div class="psa-card-title"><i class="fas fa-users"></i> Listado de Usuarios</div>
+    </div>
+    <table class="table table-hover mb-0" style="font-size:0.82rem;">
+        <thead style="background:#fafaf8;">
+            <tr>
+                <th style="padding:0.8rem 1.3rem;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--psa-muted);font-weight:600;border-bottom:1px solid var(--psa-border);">Usuario</th>
+                <th style="padding:0.8rem 1.3rem;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--psa-muted);font-weight:600;border-bottom:1px solid var(--psa-border);">Correo</th>
+                <th style="padding:0.8rem 1.3rem;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--psa-muted);font-weight:600;border-bottom:1px solid var(--psa-border);">Rol — RF2.4</th>
+                <th style="padding:0.8rem 1.3rem;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--psa-muted);font-weight:600;border-bottom:1px solid var(--psa-border);">Permisos — RF2.5</th>
+                <th style="padding:0.8rem 1.3rem;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--psa-muted);font-weight:600;border-bottom:1px solid var(--psa-border);">Estado — RF2.3</th>
+                <th style="padding:0.8rem 1.3rem;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--psa-muted);font-weight:600;border-bottom:1px solid var(--psa-border);">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="padding:0.9rem 1.3rem;">María González</td>
+                <td style="padding:0.9rem 1.3rem;">maria.gonzalez@psa.cr</td>
+                <td style="padding:0.9rem 1.3rem;"><span class="psa-badge psa-badge-green">Administrador</span></td>
+                <td style="padding:0.9rem 1.3rem;">Acceso total</td>
+                <td style="padding:0.9rem 1.3rem;"><span class="psa-badge psa-badge-blue">Activo</span></td>
+                <td style="padding:0.9rem 1.3rem;">
+                    <a asp-controller="Usuarios" asp-action="Editar" class="psa-card-action">Editar →</a>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding:0.9rem 1.3rem;">Juan Pérez</td>
+                <td style="padding:0.9rem 1.3rem;">juan.perez@psa.cr</td>
+                <td style="padding:0.9rem 1.3rem;"><span class="psa-badge psa-badge-gold">Ingeniero</span></td>
+                <td style="padding:0.9rem 1.3rem;">Evaluación, reportes</td>
+                <td style="padding:0.9rem 1.3rem;"><span class="psa-badge psa-badge-blue">Activo</span></td>
+                <td style="padding:0.9rem 1.3rem;">
+                    <a asp-controller="Usuarios" asp-action="Editar" class="psa-card-action">Editar →</a>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding:0.9rem 1.3rem;">Ana Rodríguez</td>
+                <td style="padding:0.9rem 1.3rem;">ana.rodriguez@psa.cr</td>
+                <td style="padding:0.9rem 1.3rem;"><span class="psa-badge psa-badge-blue">Dueño</span></td>
+                <td style="padding:0.9rem 1.3rem;">Ver fincas y pagos propios</td>
+                <td style="padding:0.9rem 1.3rem;"><span class="psa-badge psa-badge-muted">Inactivo</span></td>
+                <td style="padding:0.9rem 1.3rem;">
+                    <a asp-controller="Usuarios" asp-action="Editar" class="psa-card-action">Editar →</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
