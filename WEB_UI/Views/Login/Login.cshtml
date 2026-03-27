@@ -226,66 +226,13 @@
             </button>
 
             <div class="forgot-link">
-                <a href="/Cuenta/RecuperarContrasena">¿Olvidaste tu contraseña?</a>
+                <a href="/Login/RecuperarContrasena">¿Olvidaste tu contraseña?</a>
             </div>
             <div class="forgot-link" style="margin-top:0.5rem;">
-                ¿No tenés cuenta? <a href="/Cuenta/Registro">Registrate</a>
+                ¿No tenés cuenta? <a href="/Login/Registro">Registrate</a>
             </div>
         </div>
     </div>
-
-    <script>
-        const API_URL = "https://spsaapi.azurewebsites.net";
-
-        async function doLogin() {
-            const usuario   = document.getElementById('txtUsuario').value.trim();
-            const password  = document.getElementById('txtPassword').value;
-            const errorMsg  = document.getElementById('errorMsg');
-            const errorText = document.getElementById('errorText');
-            const btn       = document.getElementById('btnLogin');
-
-            errorMsg.style.display = 'none';
-
-            if (!usuario || !password) {
-                errorText.textContent = 'Por favor completá todos los campos.';
-                errorMsg.style.display = 'block';
-                return;
-            }
-
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Ingresando...';
-
-            try {
-                const response = await fetch(`${API_URL}/api/Auth/Login`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ userName: usuario, password: password })
-                });
-
-                const data = await response.json();
-
-                if (data.result === 'ok') {
-                    sessionStorage.setItem('user', JSON.stringify(data.data));
-                    const user = data.data;
-                    if (user.role === 'Administrador') {
-                        window.location.href = 'https://localhost:XXXX/Admin/AdminDashboard';
-                    } else if (user.role === 'Ingeniero') {
-                        window.location.href = 'https://localhost:YYYY/Home/Index';
-                    } else {
-                        window.location.href = 'https://localhost:ZZZZ/Home/Index';
-                    }
-                } else {
-                    errorText.textContent = 'Usuario o contraseña incorrectos.';
-                    errorMsg.style.display = 'block';
-                }
-            } catch (e) {
-                errorText.textContent = 'No se pudo conectar con el servidor.';
-                errorMsg.style.display = 'block';
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = 'Iniciar Sesión';
-            }
-        }
-    </script>
+    <script src="~/js/pages/login/rolesdashboard.js"></script>
 </body>
 </html>
