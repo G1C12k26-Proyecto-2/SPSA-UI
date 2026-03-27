@@ -1,0 +1,137 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="psa-page-header">
+    <div>
+        <span class="subtitle">Panel de Administración</span>
+        <h1>Dashboard General</h1>
+        <p>Resumen del sistema PSA al día de hoy</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="#" class="btn btn-outline-psa btn-sm"><i class="fas fa-chart-bar"></i> Ver Reportes</a>
+        <a asp-controller="Usuarios" asp-action="Crear" class="btn btn-psa btn-sm"><i class="fas fa-user-plus"></i> Nuevo Usuario</a>
+    </div>
+</div>
+
+<div class="psa-stats">
+    <div class="psa-stat-card">
+        <div class="psa-stat-header">
+            <div class="psa-stat-label">Total Usuarios</div>
+            <div class="psa-stat-icon blue"><i class="fas fa-users"></i></div>
+        </div>
+        <div class="psa-stat-value">142</div>
+        <div class="psa-stat-sub"><b>12 nuevos</b> este mes</div>
+    </div>
+
+    <div class="psa-stat-card">
+        <div class="psa-stat-header">
+            <div class="psa-stat-label">Fincas Registradas</div>
+            <div class="psa-stat-icon green"><i class="fas fa-tree"></i></div>
+        </div>
+        <div class="psa-stat-value">87</div>
+        <div class="psa-stat-sub"><b>34 activas</b> en programa PSA</div>
+    </div>
+
+    <div class="psa-stat-card">
+        <div class="psa-stat-header">
+            <div class="psa-stat-label">Pagos del mes</div>
+            <div class="psa-stat-icon gold"><i class="fas fa-circle-dollar-to-slot"></i></div>
+        </div>
+        <div class="psa-stat-value">₡18.4M</div>
+        <div class="psa-stat-sub"><b>15 pagos</b> ejecutados</div>
+    </div>
+
+    <div class="psa-stat-card">
+        <div class="psa-stat-header">
+            <div class="psa-stat-label">Solicitudes Pendientes</div>
+            <div class="psa-stat-icon gold"><i class="fas fa-file-circle-exclamation"></i></div>
+        </div>
+        <div class="psa-stat-value">9</div>
+        <div class="psa-stat-sub"><b>3 urgentes</b> por asignar</div>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-7">
+        <div class="psa-card">
+            <div class="psa-card-header">
+                <div class="psa-card-title"><i class="fas fa-file-lines"></i> Solicitudes Recientes</div>
+                <a href="#" class="psa-card-action">Ver todas →</a>
+            </div>
+            <table class="table table-hover mb-0" style="font-size:0.82rem;">
+                <thead style="background:#fafaf8;">
+                    <tr>
+                        <th style="padding:0.8rem 1.3rem;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--psa-muted);font-weight:600;border-bottom:1px solid var(--psa-border);">Finca</th>
+                        <th style="padding:0.8rem 1.3rem;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--psa-muted);font-weight:600;border-bottom:1px solid var(--psa-border);">Dueño</th>
+                        <th style="padding:0.8rem 1.3rem;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--psa-muted);font-weight:600;border-bottom:1px solid var(--psa-border);">Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="padding:0.9rem 1.3rem;">
+                            Finca El Roble<br />
+                            <span style="color:var(--psa-muted);font-size:0.75rem;">120 ha · Alajuela</span>
+                        </td>
+                        <td style="padding:0.9rem 1.3rem;">Carlos Fonseca</td>
+                        <td style="padding:0.9rem 1.3rem;"><span class="psa-badge psa-badge-gold">En evaluación</span></td>
+                    </tr>
+                    <tr>
+                        <td style="padding:0.9rem 1.3rem;">
+                            Finca Las Palmas<br />
+                            <span style="color:var(--psa-muted);font-size:0.75rem;">85 ha · San Carlos</span>
+                        </td>
+                        <td style="padding:0.9rem 1.3rem;">Ana Rodríguez</td>
+                        <td style="padding:0.9rem 1.3rem;"><span class="psa-badge psa-badge-blue">En revisión</span></td>
+                    </tr>
+                    <tr>
+                        <td style="padding:0.9rem 1.3rem;">
+                            Finca Monte Verde<br />
+                            <span style="color:var(--psa-muted);font-size:0.75rem;">64 ha · Cartago</span>
+                        </td>
+                        <td style="padding:0.9rem 1.3rem;">José Jiménez</td>
+                        <td style="padding:0.9rem 1.3rem;"><span class="psa-badge psa-badge-gold">Pendiente</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="col-lg-5">
+        <div class="psa-card">
+            <div class="psa-card-header">
+                <div class="psa-card-title"><i class="fas fa-clock-rotate-left"></i> Actividad del Sistema</div>
+                <a href="#" class="psa-card-action">Ver log →</a>
+            </div>
+            <div class="psa-card-body">
+                <div class="psa-timeline">
+                    <div class="psa-tl-item">
+                        <div class="psa-tl-dot green"><i class="fas fa-check"></i></div>
+                        <div class="psa-tl-body">
+                            <div class="psa-tl-title">Pago ejecutado — Finca La Catarata</div>
+                            <div class="psa-tl-desc">₡3.8M · Admin Sistema</div>
+                            <div class="psa-tl-time">Hace 2 horas</div>
+                        </div>
+                    </div>
+                    <div class="psa-tl-item">
+                        <div class="psa-tl-dot blue"><i class="fas fa-user-plus"></i></div>
+                        <div class="psa-tl-body">
+                            <div class="psa-tl-title">Usuario creado — Ing. María López</div>
+                            <div class="psa-tl-desc">Rol: Ingeniero Forestal</div>
+                            <div class="psa-tl-time">Hace 4 horas</div>
+                        </div>
+                    </div>
+                    <div class="psa-tl-item">
+                        <div class="psa-tl-dot gold"><i class="fas fa-sliders"></i></div>
+                        <div class="psa-tl-body">
+                            <div class="psa-tl-title">Tarifa PSA actualizada</div>
+                            <div class="psa-tl-desc">Configuración del sistema</div>
+                            <div class="psa-tl-time">Hoy</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,39 @@
+﻿@{
+    ViewData["Title"] = "Reportes";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="psa-page-header">
+    <div>
+        <span class="subtitle">Reportes</span>
+        <h1>Reportes del Sistema</h1>
+        <p>Generación de reportes y estadísticas PSA</p>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-md-6">
+        <div class="psa-card">
+            <div class="psa-card-body text-center" style="padding:1.5rem;">
+                <div class="psa-stat-icon gold mx-auto mb-3" style="width:48px;height:48px;font-size:1.2rem;border-radius:12px;">
+                    <i class="fas fa-circle-dollar-to-slot"></i>
+                </div>
+                <div style="font-family:'Fraunces',serif;font-size:1rem;color:var(--psa-forest);font-weight:500;margin-bottom:0.3rem;">Reporte de Pagos</div>
+                <p style="font-size:0.78rem;color:var(--psa-muted);margin-bottom:1rem;">Total pagado mensual y anual con filtros por provincia, cantón y distrito</p>
+                <a asp-controller="Reportes" asp-action="Pagos" class="btn btn-outline-psa btn-sm w-100">Ver Reporte</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="psa-card">
+            <div class="psa-card-body text-center" style="padding:1.5rem;">
+                <div class="psa-stat-icon blue mx-auto mb-3" style="width:48px;height:48px;font-size:1.2rem;border-radius:12px;">
+                    <i class="fas fa-file-lines"></i>
+                </div>
+                <div style="font-family:'Fraunces',serif;font-size:1rem;color:var(--psa-forest);font-weight:500;margin-bottom:0.3rem;">Reporte de Solicitudes</div>
+                <p style="font-size:0.78rem;color:var(--psa-muted);margin-bottom:1rem;">Estado de todas las solicitudes al programa PSA</p>
+                <a asp-controller="Reportes" asp-action="Solicitudes" class="btn btn-outline-psa btn-sm w-100">Ver Reporte</a>
+            </div>
+        </div>
+    </div>
+</div>
