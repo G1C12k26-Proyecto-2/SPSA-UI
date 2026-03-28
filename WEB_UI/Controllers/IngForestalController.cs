@@ -35,8 +35,16 @@ namespace WEB_UI.Controllers
         }
         public IActionResult Realizar()
         {
+            ViewData["Title"] = "Evaluación técnica";
+            ViewData["Breadcrumb"] = "Evaluación técnica";
             return View();
         }
-        
+        public IActionResult Perfil()
+        {
+            ViewData["Title"] = "Perfil";
+            ViewData["Breadcrumb"] = "Perfil";
+            return View();
+        }
+
     }
 }

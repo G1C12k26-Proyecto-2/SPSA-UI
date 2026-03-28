@@ -43,8 +43,8 @@
                     <i class="fa-regular fa-calendar-plus"></i> Programar visita
                 </a>
                 <div class="psa-nav-section">Cuenta</div>
-                <a class="psa-nav-item" href="#">
-                    <i class="fas fa-user-circle"></i> Mi Perfil
+                <a class="psa-nav-item @(controller == "IngForestal" && action == "Mi Perfil" ? "active" : "")" asp-controller="IngForestal" asp-action="Perfil">
+                    <i class="fa-regular fa-calendar-plus"></i> Mi Perfil
                 </a>
             </nav>
             <div class="psa-sidebar-footer">
