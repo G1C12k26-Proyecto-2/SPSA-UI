@@ -1,14 +1,15 @@
 @{
-    ViewData["Title"] = "Datos Bancarios";
-    ViewData["Breadcrumb"] = "Datos Bancarios";
+    ViewData["Title"] = "Actualizar Datos Bancarios";
+    ViewData["Breadcrumb"] = "Actualizar Datos Bancarios";
 }
 
 <div class="psa-page-header">
     <div>
         <span class="subtitle">Mi Cuenta</span>
-        <h1>Datos Bancarios</h1>
+        <h1>Actualizar Datos Bancarios</h1>
         <p>Ingrese o actualice su cuenta bancaria para recibir pagos PSA</p>
     </div>
+    <a class="btn btn-outline-psa btn-sm" asp-controller="Cuenta" asp-action="DatosBanco"><i class="fas fa-arrow-left"></i> Volver</a>
 </div>
 
 
@@ -65,7 +66,7 @@
                     <hr />
                     <div class="d-flex gap-2">
                         <button type="button" class="btn btn-psa" id="btnGuardar"><i class="fas fa-save"></i> Guardar Datos Bancarios</button>
-                        <button type="button" class="btn btn-outline-psa">Cancelar</button>
+                        <a class="btn btn-outline-psa" href="/Cuenta/DatosBanco">Cancelar</a>
                     </div>
                 </form>
             </div>

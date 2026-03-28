@@ -44,14 +44,14 @@
                 <i class="fas fa-file-lines"></i> Documentos
             </a>
             <div class="psa-nav-section">Pagos</div>
-            <a class="psa-nav-item" href="#">
+            <a class="psa-nav-item @(controller == "Cuenta" && action == "HistorialPagos" ? "active" : "")" asp-controller="Cuenta" asp-action="HistorialPagos">
                 <i class="fas fa-circle-dollar-to-slot"></i> Historial de Pagos
             </a>
             <div class="psa-nav-section">Cuenta</div>
-            <a class="psa-nav-item" href="#">
+            <a class="psa-nav-item @(controller == "Cuenta" && action == "Perfil" ? "active" : "")" asp-controller="Cuenta" asp-action="Perfil">
                 <i class="fas fa-user-circle"></i> Mi Perfil
             </a>
-            <a class="psa-nav-item @(controller == "Cuenta" && action == "ActualizarBanco" ? "active" : "")" asp-controller="Cuenta" asp-action="ActualizarBanco">
+            <a class="psa-nav-item @(controller == "Cuenta" && (action == "DatosBanco" || action == "ActualizarBanco") ? "active" : "")" asp-controller="Cuenta" asp-action="DatosBanco">
                 <i class="fas fa-building-columns"></i> Datos Bancarios
             </a>
             <a class="psa-nav-item Jean " href="#">
