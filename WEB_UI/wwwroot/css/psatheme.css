@@ -957,6 +957,10 @@ h6,
     transition: border-color 0.2s, background 0.2s;
 }
 
+.Juan3{
+    display:None;
+}
+
     .psa-upload:hover {
         border-color: var(--psa-leaf);
         background: var(--psa-pale);
