@@ -62,9 +62,66 @@
                     <span class="current">@ViewData["Breadcrumb"]</span>
                 </div>
                 <div class="psa-topbar-right">
-                    <div class="psa-topbar-icon"><i class="fas fa-bell"></i><div class="dot"></div></div>
-                    <div class="psa-topbar-icon"><i class="fas fa-circle-question"></i></div>
-                    <div class="psa-avatar" style="width:30px;height:30px;font-size:0.7rem;">CF</div>
+                    <!-- NOTIFICACIONES DROPDOWN -->
+                    <div class="psa-notif-wrapper" style="position:relative;">
+                        <div class="psa-topbar-icon" id="btnNotif" onclick="toggleNotif()" style="cursor:pointer;">
+                            <i class="fas fa-bell"></i>
+                            <div class="dot"></div>
+                        </div>
+                        <div class="psa-notif-panel" id="notifPanel" style="display:none;position:absolute;top:calc(100% + 8px);right:0;width:360px;background:#fff;border-radius:var(--psa-r);border:1px solid var(--psa-border);box-shadow:0 12px 40px rgba(13,43,26,0.12);z-index:999;overflow:hidden;">
+                            <div style="padding:0.9rem 1.2rem;border-bottom:1px solid var(--psa-border);display:flex;align-items:center;justify-content:space-between;background:#fefefe;">
+                                <div style="font-family:'Fraunces',serif;font-size:0.95rem;font-weight:500;color:var(--psa-forest);display:flex;align-items:center;gap:0.4rem;">
+                                    <i class="fas fa-bell" style="font-size:0.82rem;color:var(--psa-leaf);"></i> Notificaciones
+                                </div>
+                                <span style="font-size:0.6rem;font-weight:600;background:var(--psa-pale);color:var(--psa-leaf);padding:0.15rem 0.5rem;border-radius:99px;">2 nuevas</span>
+                            </div>
+                            <div style="max-height:340px;overflow-y:auto;">
+                                <div style="padding:0.9rem 1.2rem;border-bottom:1px solid #f5f3ef;background:var(--psa-pale);cursor:pointer;transition:background 0.15s;" onmouseover="this.style.background='#ddf0e5'" onmouseout="this.style.background='var(--psa-pale)'">
+                                    <div style="display:flex;gap:0.7rem;align-items:flex-start;">
+                                        <div style="width:32px;height:32px;border-radius:50%;background:var(--psa-pale);border:1.5px solid var(--psa-leaf);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                                            <i class="fas fa-calendar-plus" style="font-size:0.7rem;color:var(--psa-leaf);"></i>
+                                        </div>
+                                        <div style="flex:1;min-width:0;">
+                                            <div style="font-size:0.8rem;font-weight:500;color:var(--psa-ink);">Nueva visita asignada</div>
+                                            <div style="font-size:0.72rem;color:var(--psa-muted);margin-top:1px;">Finca El Roble · Carlos Fonseca · 28 mar 2026</div>
+                                            <div style="font-size:0.65rem;color:var(--psa-leaf);margin-top:3px;font-weight:500;">Hace 30 min</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="padding:0.9rem 1.2rem;border-bottom:1px solid #f5f3ef;background:var(--psa-pale);cursor:pointer;transition:background 0.15s;" onmouseover="this.style.background='#ddf0e5'" onmouseout="this.style.background='var(--psa-pale)'">
+                                    <div style="display:flex;gap:0.7rem;align-items:flex-start;">
+                                        <div style="width:32px;height:32px;border-radius:50%;background:var(--psa-gold-bg);border:1.5px solid var(--psa-gold);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                                            <i class="fas fa-file-lines" style="font-size:0.7rem;color:var(--psa-gold);"></i>
+                                        </div>
+                                        <div style="flex:1;min-width:0;">
+                                            <div style="font-size:0.8rem;font-weight:500;color:var(--psa-ink);">Solicitud pendiente de evaluación</div>
+                                            <div style="font-size:0.72rem;color:var(--psa-muted);margin-top:1px;">Finca Las Palmas · Ana Solano · 78 ha</div>
+                                            <div style="font-size:0.65rem;color:var(--psa-leaf);margin-top:3px;font-weight:500;">Hace 2 horas</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="padding:0.9rem 1.2rem;border-bottom:1px solid #f5f3ef;cursor:pointer;transition:background 0.15s;" onmouseover="this.style.background='#fafaf8'" onmouseout="this.style.background='transparent'">
+                                    <div style="display:flex;gap:0.7rem;align-items:flex-start;">
+                                        <div style="width:32px;height:32px;border-radius:50%;background:var(--psa-sand);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                                            <i class="fas fa-clipboard-check" style="font-size:0.7rem;color:var(--psa-muted);"></i>
+                                        </div>
+                                        <div style="flex:1;min-width:0;">
+                                            <div style="font-size:0.8rem;font-weight:400;color:var(--psa-muted);">Evaluación enviada</div>
+                                            <div style="font-size:0.72rem;color:var(--psa-muted);margin-top:1px;">Finca La Catarata · Aprobada</div>
+                                            <div style="font-size:0.65rem;color:var(--psa-muted);margin-top:3px;">15 mar 2026</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="padding:0.7rem 1.2rem;border-top:1px solid var(--psa-border);text-align:center;background:#fefefe;">
+                                <a href="#" style="font-size:0.78rem;color:var(--psa-leaf);font-weight:500;text-decoration:none;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Ver todas las notificaciones</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="psa-topbar-icon Juan4"><i class="fas fa-circle-question"></i></div>
+                    <a asp-controller="IngForestal" asp-action="Perfil" style="text-decoration:none;">
+                        <div class="psa-avatar" style="width:30px;height:30px;font-size:0.7rem;cursor:pointer;">CF</div>
+                    </a>
                 </div>
             </div>
             <div class="psa-content">
@@ -83,6 +140,18 @@
         function ShowSuccess(t, x) { Swal.fire({ icon: 'success', title: t, text: x, timer: 2000 }); }
         function ShowError(t, x) { Swal.fire({ icon: 'error', title: t, text: x }); }
         function ShowConfirm(t, x, cb) { Swal.fire({ title: t, text: x, icon: 'warning', showCancelButton: true, confirmButtonColor: '#2d8653', cancelButtonColor: '#b83232', confirmButtonText: 'Confirmar', cancelButtonText: 'Cancelar' }).then(r => { if (r.isConfirmed) cb(); }); }
+
+        function toggleNotif() {
+            var panel = document.getElementById('notifPanel');
+            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+        }
+        document.addEventListener('click', function(e) {
+            var wrapper = document.querySelector('.psa-notif-wrapper');
+            var panel = document.getElementById('notifPanel');
+            if (wrapper && panel && !wrapper.contains(e.target)) {
+                panel.style.display = 'none';
+            }
+        });
     </script>
     <script src="~/js/Pages/Shared/layout.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
