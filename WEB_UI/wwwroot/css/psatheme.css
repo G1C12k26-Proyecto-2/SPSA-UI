@@ -961,6 +961,10 @@ h6,
     display:None;
 }
 
+.Juan4{
+    display:none;
+}
+
     .psa-upload:hover {
         border-color: var(--psa-leaf);
         background: var(--psa-pale);
