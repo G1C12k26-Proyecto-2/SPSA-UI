@@ -7,7 +7,7 @@
     <div>
         <span class="subtitle">Pagos</span>
         <h1>Calcular Pagos</h1>
-        <p>Simulación del monto PSA según características de la finca — RF5.1 al RF5.5</p>
+        <p>Simulación del monto PSA según características de la finca — </p>
     </div>
 </div>
 
@@ -20,7 +20,7 @@
             <div class="psa-card-body">
                 <div class="row g-3">
                     <div class="col-12">
-                        <label class="form-label-psa">Hectáreas — RF5.1</label>
+                        <label class="form-label-psa">Hectáreas — </label>
                         <input type="number" class="form-control" id="hectareas"
                                placeholder="Ej: 0.5 o 85.5" min="0.01" step="0.01" />
                         <small class="text-muted" style="font-size:0.75rem;">
@@ -28,7 +28,7 @@
                         </small>
                     </div>
                     <div class="col-12">
-                        <label class="form-label-psa">Tipo de Vegetación — RF5.2</label>
+                        <label class="form-label-psa">Tipo de Vegetación — </label>
                         <select class="form-select" id="vegetacion">
                             <option value="0" disabled selected>Seleccione</option>
                             <option value="30">Bosque Primario (+30%)</option>
@@ -38,7 +38,7 @@
                         </select>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label-psa">Recurso Hídrico — RF5.3</label>
+                        <label class="form-label-psa">Recurso Hídrico — </label>
                         <select class="form-select" id="hidrico">
                             <option value="0" disabled selected>Seleccione</option>
                             <option value="10">Ríos o Quebradas (+10%)</option>
@@ -53,7 +53,7 @@
                         <small class="text-muted" style="font-size:0.75rem;">+5% por cada naciente</small>
                     </div>
                     <div class="col-12">
-                        <label class="form-label-psa">Pendiente del Terreno — RF5.4</label>
+                        <label class="form-label-psa">Pendiente del Terreno — </label>
                         <select class="form-select" id="pendiente">
                             <option value="0" disabled selected>Seleccione</option>
                             <option value="20">Muy Inclinada (+20%)</option>
@@ -97,7 +97,7 @@
                     <div class="psa-detail-value" id="res-ajuste">0%</div>
                 </div>
                 <div class="psa-detail-item">
-                    <div class="psa-detail-label">Tope Máximo — RF5.5</div>
+                    <div class="psa-detail-label">Tope Máximo — </div>
                     <div class="psa-detail-value">40%</div>
                 </div>
             </div>
@@ -138,10 +138,10 @@
 
             const base = precioBase * ha;
 
-            // RF5.3 — nacientes es +5% por cada naciente
+            //  — nacientes es +5% por cada naciente
             const hidReal = hidPct === 5 ? hidPct * nacientes : hidPct;
 
-            // RF5.5 — tope máximo 40%
+            //  — tope máximo 40%
             let totalAjuste = vegPct + hidReal + penPct;
             const topeMaximo = 40;
             const topeAplicado = totalAjuste > topeMaximo;
