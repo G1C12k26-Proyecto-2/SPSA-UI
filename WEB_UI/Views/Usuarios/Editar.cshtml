@@ -1,0 +1,104 @@
+﻿@{
+    ViewData["Title"] = "Editar Usuario";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="psa-page-header">
+    <div>
+        <span class="subtitle">Usuarios</span>
+        <h1>Editar Usuario</h1>
+        <p>Modificá los datos, rol y estado del usuario — </p>
+    </div>
+    <a asp-controller="Usuarios" asp-action="Index" class="btn btn-outline-psa btn-sm">
+        <i class="fas fa-arrow-left"></i> Volver
+    </a>
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-7">
+        <div class="psa-card">
+            <div class="psa-card-header">
+                <div class="psa-card-title"><i class="fas fa-user-pen"></i> Datos del Usuario</div>
+                <span class="psa-badge psa-badge-blue">Activo</span>
+            </div>
+            <div class="psa-card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label-psa">Nombre</label>
+                        <input type="text" class="form-control" value="María" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label-psa">Apellidos</label>
+                        <input type="text" class="form-control" value="González" />
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label-psa">Correo Electrónico</label>
+                        <input type="email" class="form-control" value="maria.gonzalez@psa.cr" />
+                        <small class="text-muted" style="font-size:0.75rem;">No se permiten correos duplicados — </small>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label-psa">Rol — </label>
+                        <select class="form-select">
+                            <option selected>Administrador</option>
+                            <option>Ingeniero</option>
+                            <option>Dueño</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label-psa">Estado — </label>
+                        <select class="form-select">
+                            <option selected>Activo</option>
+                            <option>Inactivo</option>
+                        </select>
+                        <small class="text-muted" style="font-size:0.75rem;">Inactivar no elimina el usuario</small>
+                    </div>
+                </div>
+                <hr />
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-psa">
+                        <i class="fas fa-save"></i> Guardar Cambios
+                    </button>
+                    <a asp-controller="Usuarios" asp-action="Index" class="btn btn-outline-psa">
+                        Cancelar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="psa-card">
+            <div class="psa-card-header">
+                <div class="psa-card-title"><i class="fas fa-clock-rotate-left"></i> Actividad Reciente</div>
+            </div>
+            <div class="psa-card-body">
+                <div class="psa-timeline">
+                    <div class="psa-tl-item">
+                        <div class="psa-tl-dot green"><i class="fas fa-right-to-bracket"></i></div>
+                        <div class="psa-tl-body">
+                            <div class="psa-tl-title">Inicio de sesión</div>
+                            <div class="psa-tl-desc">192.168.1.10</div>
+                            <div class="psa-tl-time">Hoy, 8:30 AM</div>
+                        </div>
+                    </div>
+                    <div class="psa-tl-item">
+                        <div class="psa-tl-dot blue"><i class="fas fa-user-pen"></i></div>
+                        <div class="psa-tl-body">
+                            <div class="psa-tl-title">Datos actualizados</div>
+                            <div class="psa-tl-desc">Admin Sistema</div>
+                            <div class="psa-tl-time">20/03/2026</div>
+                        </div>
+                    </div>
+                    <div class="psa-tl-item">
+                        <div class="psa-tl-dot gold"><i class="fas fa-user-plus"></i></div>
+                        <div class="psa-tl-body">
+                            <div class="psa-tl-title">Usuario creado</div>
+                            <div class="psa-tl-desc">Admin Sistema</div>
+                            <div class="psa-tl-time">15/01/2026</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

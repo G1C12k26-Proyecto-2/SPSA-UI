@@ -1,8 +1,284 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@{
+    ViewData["Title"] = "Gestión de Pagos por Servicios Ambientales";
+    Layout = "~/Views/Shared/_LayoutLanding.cshtml";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<!-- ═══════ HEADER ═══════ -->
+<header class="bp-header" id="bpHeader">
+    <div class="bp-container">
+        <div class="bp-header-inner">
+            <a class="bp-logo" href="#">
+                <i class="fas fa-leaf"></i> Bio<span>Pagos</span>
+            </a>
+            <button class="bp-menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+            <ul class="bp-nav" id="bpNav">
+                <li><a href="#features">Beneficios</a></li>
+                <li><a href="#process">Proceso</a></li>
+                <li><a href="#impact">Impacto</a></li>
+                <li><a href="#testimonials">Testimonios</a></li>
+                <li><a href="#cta" class="bp-nav-cta">Comenzar Ahora</a></li>
+            </ul>
+        </div>
+    </div>
+</header>
+
+<!-- ═══════ HERO ═══════ -->
+<section class="bp-hero">
+    <i class="fas fa-leaf bp-hero-leaf"></i>
+    <i class="fas fa-tree bp-hero-leaf"></i>
+    <i class="fas fa-seedling bp-hero-leaf"></i>
+    <div class="bp-container">
+        <div class="bp-hero-content">
+            <div class="bp-hero-badge"><i class="fas fa-shield-halved"></i> SINAC · FONAFIFO · Costa Rica</div>
+            <h1>Protegé el bosque,<br>recibí tu <em>pago</em></h1>
+            <p class="bp-hero-text">
+                BioPagos digitaliza la gestión de Pagos por Servicios Ambientales. Registrá tus fincas,
+                dá seguimiento a solicitudes y recibí depósitos automáticos — todo desde una sola plataforma.
+            </p>
+            <div class="bp-hero-actions">
+                <a href="#cta" class="bp-btn-primary"><i class="fas fa-rocket"></i> Registrar Mi Finca</a>
+                <a href="#process" class="bp-btn-ghost"><i class="fas fa-play-circle"></i> Cómo Funciona</a>
+            </div>
+            <div class="bp-hero-stats">
+                <div>
+                    <div class="bp-hero-stat-value">12,400+</div>
+                    <div class="bp-hero-stat-label">Hectáreas protegidas</div>
+                </div>
+                <div>
+                    <div class="bp-hero-stat-value">₡4.2B</div>
+                    <div class="bp-hero-stat-label">Pagos procesados</div>
+                </div>
+                <div>
+                    <div class="bp-hero-stat-value">860</div>
+                    <div class="bp-hero-stat-label">Fincas activas</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════ SECCIÓN 1: BENEFICIOS ═══════ -->
+<section class="bp-section bp-features" id="features">
+    <div class="bp-container">
+        <div class="text-center">
+            <div class="bp-section-label">Beneficios</div>
+            <h2 class="bp-section-title">Todo lo que necesitás, en un solo lugar</h2>
+            <p class="bp-section-subtitle center">Simplificamos cada paso del proceso PSA para que te enfoqués en lo que importa: conservar.</p>
+        </div>
+        <div class="bp-features-grid">
+            <div class="bp-feature-card">
+                <div class="bp-feature-icon green"><i class="fas fa-tree"></i></div>
+                <h3>Registro Digital de Fincas</h3>
+                <p>Registrá tus propiedades con ubicación GPS, tipo de vegetación, recursos hídricos y documentos legales. Sin papeleos.</p>
+            </div>
+            <div class="bp-feature-card">
+                <div class="bp-feature-icon gold"><i class="fas fa-calculator"></i></div>
+                <h3>Cálculo Automático de Pagos</h3>
+                <p>El sistema calcula tu pago mensual según hectáreas, tipo de bosque, recursos hídricos y pendiente del terreno.</p>
+            </div>
+            <div class="bp-feature-card">
+                <div class="bp-feature-icon blue"><i class="fas fa-chart-line"></i></div>
+                <h3>Seguimiento en Tiempo Real</h3>
+                <p>Consultá el estado de tus solicitudes, evaluaciones técnicas, historial de pagos y próximos depósitos al instante.</p>
+            </div>
+            <div class="bp-feature-card">
+                <div class="bp-feature-icon green"><i class="fas fa-building-columns"></i></div>
+                <h3>Depósitos Automáticos</h3>
+                <p>Configurá tu cuenta bancaria una sola vez. Los pagos se depositan el día 15 de cada mes de forma automática y segura.</p>
+            </div>
+            <div class="bp-feature-card">
+                <div class="bp-feature-icon gold"><i class="fas fa-shield-halved"></i></div>
+                <h3>Datos Protegidos</h3>
+                <p>Tu información personal y bancaria se almacena con cifrado AES-256. Seguridad de nivel bancario para tu tranquilidad.</p>
+            </div>
+            <div class="bp-feature-card">
+                <div class="bp-feature-icon blue"><i class="fas fa-file-lines"></i></div>
+                <h3>Documentación Centralizada</h3>
+                <p>Planos catastrados, escrituras, fotografías y planes de manejo forestal organizados y accesibles desde cualquier dispositivo.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════ SECCIÓN 2: PROCESO ═══════ -->
+<section class="bp-section bp-process" id="process">
+    <div class="bp-container">
+        <div class="text-center">
+            <div class="bp-section-label">Proceso</div>
+            <h2 class="bp-section-title">Cuatro pasos para recibir tu pago</h2>
+            <p class="bp-section-subtitle center">Desde el registro hasta el depósito, el proceso es simple y transparente.</p>
+        </div>
+        <div class="bp-process-steps">
+            <div class="bp-step">
+                <div class="bp-step-number">1</div>
+                <h4>Registrá tu Finca</h4>
+                <p>Completá los datos de ubicación, vegetación, recursos hídricos y subí los documentos legales requeridos.</p>
+            </div>
+            <div class="bp-step">
+                <div class="bp-step-number">2</div>
+                <h4>Evaluación Técnica</h4>
+                <p>Un ingeniero forestal realiza la visita de campo y verifica las condiciones ambientales de tu propiedad.</p>
+            </div>
+            <div class="bp-step">
+                <div class="bp-step-number">3</div>
+                <h4>Aprobación PSA</h4>
+                <p>FONAFIFO revisa el informe técnico y aprueba tu finca para el programa de Pagos por Servicios Ambientales.</p>
+            </div>
+            <div class="bp-step">
+                <div class="bp-step-number">4</div>
+                <h4>Recibí tu Pago</h4>
+                <p>Configurá tu cuenta bancaria y comenzá a recibir depósitos mensuales automáticos por conservar tu bosque.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════ SECCIÓN 3: IMPACTO ═══════ -->
+<section class="bp-section bp-impact" id="impact">
+    <div class="bp-container">
+        <div class="text-center" style="position:relative;z-index:2;">
+            <div class="bp-section-label">Impacto</div>
+            <h2 class="bp-section-title">Conservación que se mide en resultados</h2>
+            <p class="bp-section-subtitle center">Cada hectárea protegida genera impacto real para Costa Rica y el planeta.</p>
+        </div>
+        <div class="bp-impact-grid">
+            <div class="bp-impact-card">
+                <i class="fas fa-tree"></i>
+                <div class="bp-impact-value">12,400</div>
+                <div class="bp-impact-label">Hectáreas de bosque protegidas</div>
+            </div>
+            <div class="bp-impact-card">
+                <i class="fas fa-droplet"></i>
+                <div class="bp-impact-value">340</div>
+                <div class="bp-impact-label">Nacientes de agua resguardadas</div>
+            </div>
+            <div class="bp-impact-card">
+                <i class="fas fa-users"></i>
+                <div class="bp-impact-value">860</div>
+                <div class="bp-impact-label">Familias beneficiadas</div>
+            </div>
+            <div class="bp-impact-card">
+                <i class="fas fa-cloud"></i>
+                <div class="bp-impact-value">28K</div>
+                <div class="bp-impact-label">Toneladas de CO₂ capturadas/año</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════ SECCIÓN 4: TESTIMONIOS ═══════ -->
+<section class="bp-section bp-testimonials" id="testimonials">
+    <div class="bp-container">
+        <div class="text-center">
+            <div class="bp-section-label">Testimonios</div>
+            <h2 class="bp-section-title">Lo que dicen nuestros usuarios</h2>
+            <p class="bp-section-subtitle center">Dueños de finca que ya gestionan sus pagos con BioPagos.</p>
+        </div>
+        <div class="bp-testimonials-grid">
+            <div class="bp-testimonial-card">
+                <div class="quote-icon">"</div>
+                <div class="bp-testimonial-stars">
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                </div>
+                <blockquote>Antes el proceso duraba meses con papeleos. Con BioPagos registré mi finca en 20 minutos y ya estoy recibiendo pagos mensuales de forma automática.</blockquote>
+                <div class="bp-testimonial-author">
+                    <div class="bp-testimonial-avatar">CF</div>
+                    <div>
+                        <div class="bp-testimonial-name">Carlos Fonseca</div>
+                        <div class="bp-testimonial-role">Finca La Catarata · Guanacaste</div>
+                    </div>
+                </div>
+            </div>
+            <div class="bp-testimonial-card">
+                <div class="quote-icon">"</div>
+                <div class="bp-testimonial-stars">
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                </div>
+                <blockquote>La transparencia es lo mejor. Puedo ver exactamente cómo se calcula mi pago: por hectárea, tipo de bosque y los ajustes. Todo claro, sin sorpresas.</blockquote>
+                <div class="bp-testimonial-author">
+                    <div class="bp-testimonial-avatar">MR</div>
+                    <div>
+                        <div class="bp-testimonial-name">María Rodríguez</div>
+                        <div class="bp-testimonial-role">Finca El Quetzal · Alajuela</div>
+                    </div>
+                </div>
+            </div>
+            <div class="bp-testimonial-card">
+                <div class="quote-icon">"</div>
+                <div class="bp-testimonial-stars">
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-stroke"></i>
+                </div>
+                <blockquote>Tengo 3 fincas en distintas provincias y las gestiono todas desde la plataforma. Los documentos, pagos e historial están organizados en un solo lugar.</blockquote>
+                <div class="bp-testimonial-author">
+                    <div class="bp-testimonial-avatar">JV</div>
+                    <div>
+                        <div class="bp-testimonial-name">José Vargas</div>
+                        <div class="bp-testimonial-role">3 fincas · Puntarenas y Cartago</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════ SECCIÓN 5: CTA FINAL ═══════ -->
+<section class="bp-section bp-cta" id="cta">
+    <div class="bp-container">
+        <div class="bp-cta-box">
+            <div class="bp-section-label">Comenzá Hoy</div>
+            <h2 class="bp-section-title">Tu bosque tiene valor.<br>Empezá a recibir por conservarlo.</h2>
+            <p class="bp-section-subtitle center">Registrá tu finca en minutos y unite a cientos de propietarios que ya protegen el bosque costarricense con el respaldo del programa PSA.</p>
+            <div class="bp-cta-actions">
+                <a href="#" class="bp-btn-primary"><i class="fas fa-rocket"></i> Registrar Mi Finca</a>
+                <a href="#" class="bp-btn-ghost"><i class="fas fa-envelope"></i> Contactar a un Asesor</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════ FOOTER ═══════ -->
+<footer class="bp-footer">
+    <div class="bp-container">
+        <div class="bp-footer-grid">
+            <div>
+                <div class="bp-footer-brand"><i class="fas fa-leaf" style="color:var(--psa-mint);"></i> Bio<span>Pagos</span></div>
+                <p class="bp-footer-desc">Plataforma digital de gestión de Pagos por Servicios Ambientales para propietarios de fincas en Costa Rica.</p>
+            </div>
+            <div>
+                <h5>Plataforma</h5>
+                <ul class="bp-footer-links">
+                    <li><a href="#">Registrar Finca</a></li>
+                    <li><a href="#">Mis Solicitudes</a></li>
+                    <li><a href="#">Historial de Pagos</a></li>
+                    <li><a href="#">Datos Bancarios</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5>Recursos</h5>
+                <ul class="bp-footer-links">
+                    <li><a href="#">Guía del Programa PSA</a></li>
+                    <li><a href="#">Preguntas Frecuentes</a></li>
+                    <li><a href="#">Documentación Requerida</a></li>
+                    <li><a href="#">Contacto</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5>Legal</h5>
+                <ul class="bp-footer-links">
+                    <li><a href="#">Términos de Uso</a></li>
+                    <li><a href="#">Política de Privacidad</a></li>
+                    <li><a href="#">Aviso Legal</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="bp-footer-bottom">
+            <span>© 2026 BioPagos · FONAFIFO · SINAC · Costa Rica</span>
+            <div class="bp-footer-socials">
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                <a href="#"><i class="fab fa-youtube"></i></a>
+            </div>
+        </div>
+    </div>
+</footer>

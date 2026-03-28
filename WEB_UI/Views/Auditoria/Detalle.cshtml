@@ -1,0 +1,55 @@
+﻿@{
+    ViewData["Title"] = "Detalle de Auditoría";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="psa-page-header">
+    <div>
+        <span class="subtitle">Sistema</span>
+        <h1>Detalle de Auditoría</h1>
+    </div>
+    <a asp-controller="Auditoria" asp-action="Index" class="btn btn-outline-psa btn-sm"><i class="fas fa-arrow-left"></i> Volver</a>
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-7">
+        <div class="psa-card">
+            <div class="psa-card-header">
+                <div class="psa-card-title"><i class="fas fa-circle-info"></i> Información del Evento</div>
+                <span class="psa-badge psa-badge-green">Pago ejecutado</span>
+            </div>
+            <div class="psa-detail-grid">
+                <div class="psa-detail-item">
+                    <div class="psa-detail-label">Fecha y Hora</div>
+                    <div class="psa-detail-value">22/03/2026 10:14</div>
+                </div>
+                <div class="psa-detail-item">
+                    <div class="psa-detail-label">Usuario</div>
+                    <div class="psa-detail-value">Admin Sistema</div>
+                </div>
+                <div class="psa-detail-item">
+                    <div class="psa-detail-label">Módulo</div>
+                    <div class="psa-detail-value">Pagos</div>
+                </div>
+                <div class="psa-detail-item">
+                    <div class="psa-detail-label">IP</div>
+                    <div class="psa-detail-value" style="font-family:monospace;">192.168.1.10</div>
+                </div>
+                <div class="psa-detail-item">
+                    <div class="psa-detail-label">Acción</div>
+                    <div class="psa-detail-value">Pago ejecutado</div>
+                </div>
+                <div class="psa-detail-item">
+                    <div class="psa-detail-label">Resultado</div>
+                    <div class="psa-detail-value"><span class="psa-badge psa-badge-green">Exitoso</span></div>
+                </div>
+            </div>
+            <div class="psa-card-body border-top">
+                <div class="form-label-psa mb-2">Descripción</div>
+                <p class="p-3 bg-light rounded mb-0" style="font-size:0.82rem;line-height:1.6;">
+                    Pago ejecutado para Finca La Catarata. Monto: ₡3,800,000. Período: Marzo 2026. Cuenta destino: CR12 0001 0001 2345 6789 00.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,327 @@
+.rl-alerta-contexto {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: var(--psa-pale);
+    border-radius: var(--psa-r);
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border-left: 3px solid var(--psa-leaf);
+}
+
+.rl-alerta-contexto-icon {
+    font-size: 1.5rem;
+}
+
+.rl-alerta-contexto-info {
+    flex: 1;
+}
+
+.rl-alerta-contexto-titulo {
+    font-weight: 600;
+    color: var(--psa-forest);
+    margin-bottom: 0.25rem;
+}
+
+.rl-alerta-contexto-sub {
+    font-size: 0.75rem;
+    color: var(--psa-muted);
+}
+
+/* Formulario grid */
+.rl-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+.rl-field {
+    grid-column: span 1;
+}
+
+    .rl-field.span-2 {
+        grid-column: span 2;
+    }
+
+    .rl-field label {
+        font-size: 0.7rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--psa-muted);
+        margin-bottom: 0.25rem;
+        display: block;
+    }
+
+        .rl-field label .orig {
+            font-size: 0.65rem;
+            font-weight: normal;
+            text-transform: none;
+            color: var(--psa-muted);
+            margin-left: 0.5rem;
+        }
+
+    .rl-field .req {
+        color: var(--psa-red);
+    }
+
+.rl-orig-tag {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: var(--psa-leaf);
+    font-size: 0.8rem;
+    display: none;
+}
+
+.rl-field {
+    position: relative;
+}
+
+.rl-field-error {
+    font-size: 0.7rem;
+    color: var(--psa-red);
+    display: none;
+    margin-top: 0.25rem;
+}
+
+    .rl-field-error.visible {
+        display: block;
+    }
+
+/* Badge de cambios */
+.rl-cambios-badge {
+    font-size: 0.7rem;
+    background: var(--psa-pale);
+    padding: 0.2rem 0.6rem;
+    border-radius: 99px;
+    color: var(--psa-muted);
+}
+
+/* Zona de upload */
+.rl-upload-zona {
+    border: 2px dashed var(--psa-border);
+    border-radius: var(--psa-r);
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    position: relative;
+}
+
+    .rl-upload-zona:hover {
+        border-color: var(--psa-leaf);
+        background: var(--psa-pale);
+    }
+
+    .rl-upload-zona input {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+.rl-upload-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.rl-upload-txt {
+    font-size: 0.85rem;
+    color: var(--psa-muted);
+    margin: 0;
+}
+
+.rl-upload-sub {
+    font-size: 0.7rem;
+    color: var(--psa-leaf);
+    margin-top: 0.25rem;
+}
+
+/* Preview de fotos */
+.rl-fotos-preview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+.rl-foto-preview-item {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    border-radius: var(--psa-r);
+    overflow: hidden;
+    border: 1px solid var(--psa-border);
+}
+
+    .rl-foto-preview-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+.rl-foto-preview-remove {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background: rgba(0,0,0,0.6);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 0.7rem;
+}
+
+/* Decisión buttons */
+.rl-decision-wrap {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.rl-decision-btn {
+    padding: 1rem;
+    border: 2px solid var(--psa-border);
+    border-radius: var(--psa-r);
+    background: #fff;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+}
+
+    .rl-decision-btn:hover {
+        border-color: var(--psa-leaf);
+        background: var(--psa-pale);
+    }
+
+    .rl-decision-btn.seleccionado {
+        border-color: var(--psa-leaf);
+        background: var(--psa-pale);
+    }
+
+.rl-decision-icon {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.rl-decision-label {
+    font-weight: 600;
+    color: var(--psa-forest);
+    margin-bottom: 0.25rem;
+}
+
+.rl-decision-sub {
+    font-size: 0.7rem;
+    color: var(--psa-muted);
+}
+
+.rl-decision-err {
+    font-size: 0.75rem;
+    color: var(--psa-red);
+    display: none;
+    margin-top: 0.5rem;
+}
+
+    .rl-decision-err.visible {
+        display: block;
+    }
+
+/* Acciones finales */
+.rl-acciones-finales {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1.5rem;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.rl-acciones-right {
+    display: flex;
+    gap: 0.75rem;
+}
+
+/* Panel de progreso */
+.rl-progreso-panel {
+    background: #fff;
+    border-radius: var(--psa-r);
+    border: 1px solid var(--psa-border);
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+}
+
+.rl-progreso-header {
+    padding: 1rem;
+    background: var(--psa-pale);
+    border-bottom: 1px solid var(--psa-border);
+}
+
+    .rl-progreso-header p {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        color: var(--psa-muted);
+        margin-bottom: 0.5rem;
+    }
+
+.rl-progreso-pct {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--psa-leaf);
+    margin-bottom: 0.5rem;
+}
+
+.rl-progreso-bar-wrap {
+    height: 6px;
+    background: var(--psa-sand);
+    border-radius: 99px;
+    overflow: hidden;
+}
+
+.rl-progreso-bar {
+    height: 100%;
+    background: var(--psa-leaf);
+    border-radius: 99px;
+    transition: width 0.3s ease;
+}
+
+.rl-progreso-body {
+    padding: 1rem;
+}
+
+.rl-check-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--psa-border);
+}
+
+    .rl-check-item:last-child {
+        border-bottom: none;
+    }
+
+.rl-check-dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--psa-sand);
+    transition: background 0.2s;
+}
+
+    .rl-check-dot.completado {
+        background: var(--psa-leaf);
+    }
+
+.rl-check-label {
+    font-size: 0.75rem;
+    color: var(--psa-ink);
+}

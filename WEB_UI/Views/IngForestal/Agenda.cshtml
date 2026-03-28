@@ -1,0 +1,104 @@
+@{
+    ViewData["Title"] = "Agenda de Visitas - Ingeniero Forestal";
+    Layout = "~/Views/Shared/_LayoutIngForestal.cshtml";
+}
+
+@section Styles {
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/ingforestal/dashboard.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/ingforestal/agenda.css"    asp-append-version="true" />
+}
+
+<div class="tecnico-dashboard">
+
+    <!-- ===== PAGE HEADER ===== -->
+    <div class="ag-page-header">
+        <div>
+            <h1>
+                <i class="fa-solid fa-calendar-days" style="color:var(--verde-claro);font-size:1.4rem;"></i>
+                Agenda de Visitas
+            </h1>
+            <p>Visualiza y gestiona tus visitas técnicas en el calendario mensual.</p>
+        </div>
+        <div style="display: flex; gap: 0.75rem;">
+            <button class="btn btn-outline-psa btn-sm" onclick="irHoy()">
+                <i class="fas fa-crosshairs"></i> Hoy
+            </button>
+            <button class="btn btn-psa btn-sm" onclick="programarVisita()">
+                <i class="fas fa-calendar-plus"></i> Programar Visita
+            </button>
+        </div>
+    </div>
+
+    <!-- ===== LAYOUT PRINCIPAL ===== -->
+    <div class="ag-body">
+
+        <!-- CALENDARIO -->
+        <div class="ag-panel">
+            <div class="ag-panel-header">
+                <h2><i class="fa-solid fa-calendar"></i> Calendario</h2>
+                <nav class="ag-cal-nav" aria-label="Navegación de mes">
+                    <button class="ag-cal-nav-btn" onclick="mesAnterior()" title="Mes anterior" aria-label="Mes anterior">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+                    <span class="ag-cal-mes-label" id="ag-mes-label" aria-live="polite">—</span>
+                    <button class="ag-cal-nav-btn" onclick="mesSiguiente()" title="Mes siguiente" aria-label="Mes siguiente">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </nav>
+            </div>
+
+            <div class="ag-cal-grid">
+                <!-- Encabezados días de semana -->
+                <div class="ag-cal-dias-semana" role="row">
+                    <div class="ag-cal-dia-semana" aria-label="Domingo">Dom</div>
+                    <div class="ag-cal-dia-semana" aria-label="Lunes">Lun</div>
+                    <div class="ag-cal-dia-semana" aria-label="Martes">Mar</div>
+                    <div class="ag-cal-dia-semana" aria-label="Miércoles">Mié</div>
+                    <div class="ag-cal-dia-semana" aria-label="Jueves">Jue</div>
+                    <div class="ag-cal-dia-semana" aria-label="Viernes">Vie</div>
+                    <div class="ag-cal-dia-semana" aria-label="Sábado">Sáb</div>
+                </div>
+                <!-- Semanas generadas por JS -->
+                <div class="ag-cal-semanas" id="ag-semanas" role="grid" aria-label="Días del mes"></div>
+            </div>
+
+            <!-- Leyenda -->
+            <div class="ag-leyenda" aria-label="Leyenda de estados">
+                <div class="ag-leyenda-item">
+                    <div class="ag-leyenda-dot pendiente"></div> Pendiente
+                </div>
+                <div class="ag-leyenda-item">
+                    <div class="ag-leyenda-dot proceso"></div> En Proceso
+                </div>
+                <div class="ag-leyenda-item">
+                    <div class="ag-leyenda-dot aprobada"></div> Aprobada
+                </div>
+            </div>
+        </div>
+
+        <!-- PANEL DERECHO: DETALLE DEL DÍA -->
+        <div class="ag-panel">
+            <div class="ag-panel-header">
+                <h2><i class="fa-solid fa-list-ul"></i> Visitas del Día</h2>
+                <span class="ag-dia-seleccionado-label" id="ag-dia-label" aria-live="polite">—</span>
+            </div>
+            <div class="ag-lista-dia" id="ag-lista-dia" role="list" aria-label="Visitas del día seleccionado">
+                <!-- Renderizado por JS -->
+            </div>
+        </div>
+
+    </div><!-- /ag-body -->
+
+</div><!-- /tecnico-dashboard -->
+
+<!-- ===== TOAST ===== -->
+<div class="td-toast" id="ag-toast" role="alert" aria-live="polite">
+    <i class="fa-solid fa-circle-check"></i>
+    <span id="ag-toast-msg">Acción realizada.</span>
+</div>
+
+@section Scripts {
+    <script src="~/js/pages/ingforestal/agenda.js" asp-append-version="true"></script>
+}

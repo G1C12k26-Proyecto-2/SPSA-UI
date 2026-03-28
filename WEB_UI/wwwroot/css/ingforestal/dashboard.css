@@ -1,0 +1,200 @@
+/* Ajuste para que las tarjetas de estadísticas sean más compactas */
+.psa-stats {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.psa-stat-card {
+    background: #fff;
+    border-radius: var(--psa-r);
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--psa-border);
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    transition: box-shadow 0.2s, transform 0.2s;
+    cursor: pointer;
+}
+
+.psa-stat-card:hover {
+    box-shadow: 0 4px 12px rgba(13, 43, 26, 0.1);
+    transform: translateY(-2px);
+}
+
+.psa-stat-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.25rem;
+}
+
+.psa-stat-label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--psa-muted);
+}
+
+.psa-stat-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+}
+
+.psa-stat-icon.green {
+    background: var(--psa-pale);
+    color: var(--psa-leaf);
+}
+
+.psa-stat-icon.gold {
+    background: var(--psa-gold-bg);
+    color: var(--psa-gold);
+}
+
+.psa-stat-icon.blue {
+    background: var(--psa-blue-bg);
+    color: var(--psa-blue);
+}
+
+.psa-stat-icon.red {
+    background: var(--psa-red-bg);
+    color: var(--psa-red);
+}
+
+.psa-stat-value {
+    font-family: 'Fraunces', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--psa-forest);
+    line-height: 1;
+}
+
+.psa-stat-sub {
+    font-size: 0.65rem;
+    color: var(--psa-muted);
+    white-space: nowrap;
+}
+
+/* Responsive: si no caben en una línea, se ajustan */
+@media (max-width: 1100px) {
+    .psa-stats {
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .psa-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .psa-stat-sub {
+        white-space: normal;
+    }
+}
+/* Ajuste para que las tarjetas de estadísticas sean más compactas */
+.psa-stats {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.psa-stat-card {
+    background: #fff;
+    border-radius: var(--psa-r);
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--psa-border);
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    transition: box-shadow 0.2s, transform 0.2s;
+    cursor: pointer;
+}
+
+    .psa-stat-card:hover {
+        box-shadow: 0 4px 12px rgba(13, 43, 26, 0.1);
+        transform: translateY(-2px);
+    }
+
+.psa-stat-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.25rem;
+}
+
+.psa-stat-label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--psa-muted);
+}
+
+.psa-stat-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+}
+
+    .psa-stat-icon.green {
+        background: var(--psa-pale);
+        color: var(--psa-leaf);
+    }
+
+    .psa-stat-icon.gold {
+        background: var(--psa-gold-bg);
+        color: var(--psa-gold);
+    }
+
+    .psa-stat-icon.blue {
+        background: var(--psa-blue-bg);
+        color: var(--psa-blue);
+    }
+
+    .psa-stat-icon.red {
+        background: var(--psa-red-bg);
+        color: var(--psa-red);
+    }
+
+.psa-stat-value {
+    font-family: 'Fraunces', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--psa-forest);
+    line-height: 1;
+}
+
+.psa-stat-sub {
+    font-size: 0.65rem;
+    color: var(--psa-muted);
+    white-space: nowrap;
+}
+
+/* Responsive: si no caben en una línea, se ajustan */
+@media (max-width: 1100px) {
+    .psa-stats {
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .psa-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .psa-stat-sub {
+        white-space: normal;
+    }
+}

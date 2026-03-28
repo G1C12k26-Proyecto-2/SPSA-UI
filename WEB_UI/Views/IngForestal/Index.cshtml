@@ -1,0 +1,318 @@
+@{
+    Layout = "~/Views/Shared/_LayoutIngForestal.cshtml";
+}
+
+@section Styles {
+    <!-- Ya no necesitas fuentes adicionales porque psatheme.css ya las define -->
+    <!-- <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"> -->
+    <!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet"> -->
+}
+
+<div class="IngForestal-dashboard">
+
+    <!-- ===== HEADER - Usando clases del tema ===== -->
+    <div class="psa-page-header">
+        <div>
+            <span class="subtitle">Panel Técnico</span>
+            <h1>🌿 Panel del Ingeniero Forestal</h1>
+            <p>Bienvenido, <strong>Ing. Carlos Pérez</strong> — @DateTime.Now.ToString("dddd, dd 'de' MMMM 'de' yyyy")</p>
+        </div>
+        <span class="psa-badge psa-badge-green">
+            <i class="fas fa-hard-hat"></i>&nbsp;Ingeniero Forestal
+        </span>
+    </div>
+
+    <!-- ===== TARJETAS DE RESUMEN - Usando psa-stats del tema ===== -->
+        <div class="psa-tabs" style="margin-bottom: 1.5rem;">
+            <a href="#" class="psa-tab active" data-tab="todos" onclick="cambiarTab('todos'); return false;">
+                <i class="fas fa-layer-group"></i> Todas
+                <span class="psa-badge psa-badge-grey" style="margin-left: 6px;" id="badge-todos">39</span>
+            </a>
+            <a href="#" class="psa-tab" data-tab="pendiente" onclick="cambiarTab('pendiente'); return false;">
+                <i class="fas fa-hourglass-half"></i> Pendientes
+                <span class="psa-badge psa-badge-gold" style="margin-left: 6px;" id="badge-pendiente">8</span>
+            </a>
+            <a href="#" class="psa-tab" data-tab="proceso" onclick="cambiarTab('proceso'); return false;">
+                <i class="fas fa-spinner"></i> En Proceso
+                <span class="psa-badge psa-badge-blue" style="margin-left: 6px;" id="badge-proceso">3</span>
+            </a>
+            <a href="#" class="psa-tab" data-tab="aprobada" onclick="cambiarTab('aprobada'); return false;">
+                <i class="fas fa-circle-check"></i> Aprobadas
+                <span class="psa-badge psa-badge-green" style="margin-left: 6px;" id="badge-aprobada">24</span>
+            </a>
+            <a href="#" class="psa-tab" data-tab="rechazada" onclick="cambiarTab('rechazada'); return false;">
+                <i class="fas fa-circle-xmark"></i> Rechazadas
+                <span class="psa-badge psa-badge-red" style="margin-left: 6px;" id="badge-rechazada">4</span>
+            </a>
+        </div>
+    <!-- ===== CUERPO PRINCIPAL ===== -->
+    <div class="td-body" style="display: grid; grid-template-columns: 1fr 340px; gap: 28px; align-items: start;">
+
+        <!-- TABLA DE SOLICITUDES - Usando psa-card del tema -->
+        <div class="psa-card">
+            <div class="psa-card-header">
+                <div class="psa-card-title">
+                    <i class="fas fa-list-check"></i> Solicitudes Técnicas
+                </div>
+            </div>
+
+            <!-- Filtros - Usando psa-filters -->
+            <div class="psa-filters">
+                <div style="position: relative; flex: 1;">
+                    <i class="fas fa-search" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 0.75rem; color: var(--psa-muted);"></i>
+                    <input type="text" id="buscador" placeholder="Buscar finca, dueño, cantón..."
+                           style="padding-left: 30px; width: 100%;"
+                           class="form-control form-control-sm"
+                           oninput="filtrarTabla()">
+                </div>
+                <select class="form-select form-select-sm" id="filtroEstado" onchange="filtrarTabla()" style="max-width: 160px;">
+                    <option value="">Todos los estados</option>
+                    <option value="pendiente">Pendiente</option>
+                    <option value="proceso">En Proceso</option>
+                    <option value="aprobada">Aprobada</option>
+                    <option value="rechazada">Rechazada</option>
+                </select>
+                <select class="form-select form-select-sm" id="filtroOrden" onchange="filtrarTabla()" style="max-width: 180px;">
+                    <option value="fecha-desc">Más recientes</option>
+                    <option value="fecha-asc">Más antiguas</option>
+                    <option value="nombre-asc">Nombre A–Z</option>
+                    <option value="hectareas-desc">Mayor hectáreas</option>
+                </select>
+            </div>
+
+            <!-- Tabla - Usando estilos del tema para tablas -->
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.82rem;" id="tablaSolicitudes">
+                    <thead>
+                        <tr style="background: var(--psa-pale); border-bottom: 2px solid var(--psa-border);">
+                            <th style="padding: 12px 20px; text-align: left; font-weight: 600; color: var(--psa-forest);">Finca / Propietario</th>
+                            <th style="padding: 12px 20px; text-align: left; font-weight: 600; color: var(--psa-forest);">Ubicación</th>
+                            <th style="padding: 12px 20px; text-align: left; font-weight: 600; color: var(--psa-forest);">Hectáreas</th>
+                            <th style="padding: 12px 20px; text-align: left; font-weight: 600; color: var(--psa-forest);">Tipo de Vegetación</th>
+                            <th style="padding: 12px 20px; text-align: left; font-weight: 600; color: var(--psa-forest);">Estado</th>
+                            <th style="padding: 12px 20px; text-align: left; font-weight: 600; color: var(--psa-forest);">Fecha Solicitud</th>
+                            <th style="padding: 12px 20px; text-align: left; font-weight: 600; color: var(--psa-forest);">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cuerpoTabla">
+                        <tr data-estado="pendiente" data-nombre="Finca Los Robles" data-fecha="2026-03-18" data-hectareas="12.5" style="border-bottom: 1px solid var(--psa-border);">
+                            <td style="padding: 14px 20px;">
+                                <div style="font-weight: 600; color: var(--psa-forest);">Finca Los Robles</div>
+                                <div style="font-size: 0.75rem; color: var(--psa-muted);">José Ángel Mora</div>
+                            </td>
+                            <td style="padding: 14px 20px;">Turrialba, Cartago</td>
+                            <td style="padding: 14px 20px;">12.50 ha</td>
+                            <td style="padding: 14px 20px;">Bosque Secundario</td>
+                            <td style="padding: 14px 20px;"><span class="psa-badge psa-badge-gold">Pendiente</span></td>
+                            <td style="padding: 14px 20px;">18/03/2026</td>
+                            <td style="padding: 14px 20px;">
+                                <button class="btn-icon" style="background: none; border: none; cursor: pointer; color: var(--psa-leaf); font-size: 0.9rem; padding: 4px 8px; border-radius: 6px;" title="Ver detalle" onclick="verDetalle(1)">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr data-estado="pendiente" data-nombre="Hacienda Verde" data-fecha="2026-03-15" data-hectareas="28.0" style="border-bottom: 1px solid var(--psa-border);">
+                            <td style="padding: 14px 20px;">
+                                <div style="font-weight: 600; color: var(--psa-forest);">Hacienda Verde</div>
+                                <div style="font-size: 0.75rem; color: var(--psa-muted);">María Solano Vega</div>
+                            </td>
+                            <td style="padding: 14px 20px;">Sarapiquí, Heredia</td>
+                            <td style="padding: 14px 20px;">28.00 ha</td>
+                            <td style="padding: 14px 20px;">Bosque Primario</td>
+                            <td style="padding: 14px 20px;"><span class="psa-badge psa-badge-gold">Pendiente</span></td>
+                            <td style="padding: 14px 20px;">15/03/2026</td>
+                            <td style="padding: 14px 20px;">
+                                <button class="btn-icon" style="background: none; border: none; cursor: pointer; color: var(--psa-leaf); font-size: 0.9rem; padding: 4px 8px; border-radius: 6px;" title="Ver detalle" onclick="verDetalle(2)">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr data-estado="proceso" data-nombre="Finca El Cedro" data-fecha="2026-03-10" data-hectareas="9.75" style="border-bottom: 1px solid var(--psa-border);">
+                            <td style="padding: 14px 20px;">
+                                <div style="font-weight: 600; color: var(--psa-forest);">Finca El Cedro</div>
+                                <div style="font-size: 0.75rem; color: var(--psa-muted);">Roberto Chaves</div>
+                            </td>
+                            <td style="padding: 14px 20px;">Pérez Zeledón, San José</td>
+                            <td style="padding: 14px 20px;">9.75 ha</td>
+                            <td style="padding: 14px 20px;">Plantación Forestal</td>
+                            <td style="padding: 14px 20px;"><span class="psa-badge psa-badge-blue">En Proceso</span></td>
+                            <td style="padding: 14px 20px;">10/03/2026</td>
+                            <td style="padding: 14px 20px;">
+                                <button class="btn-icon" style="background: none; border: none; cursor: pointer; color: var(--psa-leaf); font-size: 0.9rem; padding: 4px 8px; border-radius: 6px;" title="Ver detalle" onclick="verDetalle(3)">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr data-estado="aprobada" data-nombre="Lote Montañés" data-fecha="2026-03-05" data-hectareas="45.0" style="border-bottom: 1px solid var(--psa-border);">
+                            <td style="padding: 14px 20px;">
+                                <div style="font-weight: 600; color: var(--psa-forest);">Lote Montañés</div>
+                                <div style="font-size: 0.75rem; color: var(--psa-muted);">Ana Chinchilla</div>
+                            </td>
+                            <td style="padding: 14px 20px;">Tarrazú, San José</td>
+                            <td style="padding: 14px 20px;">45.00 ha</td>
+                            <td style="padding: 14px 20px;">Bosque Primario</td>
+                            <td style="padding: 14px 20px;"><span class="psa-badge psa-badge-green">Aprobada</span></td>
+                            <td style="padding: 14px 20px;">05/03/2026</td>
+                            <td style="padding: 14px 20px;">
+                                <button class="btn-icon" style="background: none; border: none; cursor: pointer; color: var(--psa-leaf); font-size: 0.9rem; padding: 4px 8px; border-radius: 6px;" title="Ver detalle" onclick="verDetalle(4)">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr data-estado="rechazada" data-nombre="Finca San Marcos" data-fecha="2026-02-28" data-hectareas="5.0" style="border-bottom: 1px solid var(--psa-border);">
+                            <td style="padding: 14px 20px;">
+                                <div style="font-weight: 600; color: var(--psa-forest);">Finca San Marcos</div>
+                                <div style="font-size: 0.75rem; color: var(--psa-muted);">Luis Blanco</div>
+                            </td>
+                            <td style="padding: 14px 20px;">Alajuela, Alajuela</td>
+                            <td style="padding: 14px 20px;">5.00 ha</td>
+                            <td style="padding: 14px 20px;">Pasto</td>
+                            <td style="padding: 14px 20px;"><span class="psa-badge psa-badge-red">Rechazada</span></td>
+                            <td style="padding: 14px 20px;">28/02/2026</td>
+                            <td style="padding: 14px 20px;">
+                                <button class="btn-icon" style="background: none; border: none; cursor: pointer; color: var(--psa-leaf); font-size: 0.9rem; padding: 4px 8px; border-radius: 6px;" title="Ver detalle" onclick="verDetalle(5)">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Estado vacío -->
+                <div class="td-empty" id="estadoVacio" style="display:none; text-align: center; padding: 48px 20px;">
+                    <div style="font-size: 2.5rem; margin-bottom: 12px; opacity: 0.4;">🔍</div>
+                    <p style="color: var(--psa-muted);">No se encontraron solicitudes con esos criterios.</p>
+                </div>
+            </div>
+
+            <!-- Paginación -->
+            <div class="psa-filters" style="justify-content: space-between; border-top: 1px solid var(--psa-border); border-bottom: none;">
+                <span style="font-size: 0.75rem; color: var(--psa-muted);">Mostrando 5 de 39 solicitudes</span>
+                <div style="display: flex; gap: 6px;">
+                    <button class="btn btn-outline-psa btn-sm" style="padding: 4px 10px;"><i class="fas fa-chevron-left"></i></button>
+                    <button class="btn btn-psa btn-sm" style="padding: 4px 10px;">1</button>
+                    <button class="btn btn-outline-psa btn-sm" style="padding: 4px 10px;">2</button>
+                    <button class="btn btn-outline-psa btn-sm" style="padding: 4px 10px;">3</button>
+                    <button class="btn btn-outline-psa btn-sm" style="padding: 4px 10px;"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- PANEL DERECHO -->
+        <div style="display: flex; flex-direction: column; gap: 24px;">
+
+            <!-- Agenda próxima -->
+            <div class="psa-card">
+                <div class="psa-card-header">
+                    <div class="psa-card-title">
+                        <i class="fas fa-calendar-days"></i> Agenda Próxima
+                    </div>
+                    <a href="@Url.Action("Agenda", "IngForestal")" class="psa-card-action">Ver todo</a>
+                </div>
+                <div class="psa-card-body" style="padding: 0;">
+                    <div class="psa-timeline">
+                        <div class="psa-tl-item" style="cursor: pointer;" onclick="location.href='@Url.Action("Detalle", "IngForestal")?id=1'">
+                            <div class="psa-tl-dot green" style="display: flex; flex-direction: column; justify-content: center;">
+                                <span style="font-weight: 700; font-size: 1rem;">23</span>
+                                <span style="font-size: 0.6rem;">Mar</span>
+                            </div>
+                            <div class="psa-tl-body">
+                                <div class="psa-tl-title">Finca Los Robles</div>
+                                <div class="psa-tl-desc"><i class="fas fa-location-dot"></i> Turrialba, Cartago</div>
+                                <div class="psa-tl-time">08:00 AM</div>
+                            </div>
+                        </div>
+                        <div class="psa-tl-item" style="cursor: pointer;" onclick="location.href='@Url.Action("Detalle", "IngForestal")?id=2'">
+                            <div class="psa-tl-dot green" style="display: flex; flex-direction: column; justify-content: center;">
+                                <span style="font-weight: 700; font-size: 1rem;">25</span>
+                                <span style="font-size: 0.6rem;">Mar</span>
+                            </div>
+                            <div class="psa-tl-body">
+                                <div class="psa-tl-title">Hacienda Verde</div>
+                                <div class="psa-tl-desc"><i class="fas fa-location-dot"></i> Sarapiquí, Heredia</div>
+                                <div class="psa-tl-time">10:30 AM</div>
+                            </div>
+                        </div>
+                        <div class="psa-tl-item" style="cursor: pointer;" onclick="location.href='@Url.Action("Detalle", "IngForestal")?id=3'">
+                            <div class="psa-tl-dot green" style="display: flex; flex-direction: column; justify-content: center;">
+                                <span style="font-weight: 700; font-size: 1rem;">28</span>
+                                <span style="font-size: 0.6rem;">Mar</span>
+                            </div>
+                            <div class="psa-tl-body">
+                                <div class="psa-tl-title">Lote El Pinar</div>
+                                <div class="psa-tl-desc"><i class="fas fa-location-dot"></i> San Ramón, Alajuela</div>
+                                <div class="psa-tl-time">07:00 AM</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resumen del mes -->
+            <div class="psa-card">
+                <div class="psa-card-header">
+                    <div class="psa-card-title">
+                        <i class="fas fa-chart-pie"></i> Resumen del Mes
+                    </div>
+                </div>
+                <div class="psa-card-body">
+                    <div class="psa-progress-item">
+                        <div class="psa-progress-row">
+                            <span class="psa-progress-label"><i class="fas fa-tree"></i> Fincas evaluadas</span>
+                            <span class="psa-progress-pct">14 / 20</span>
+                        </div>
+                        <div class="psa-progress-bar">
+                            <div class="psa-progress-fill" style="width: 70%; background: var(--psa-leaf);"></div>
+                        </div>
+                    </div>
+                    <div class="psa-detail-item" style="padding: 0.6rem 0;">
+                        <div class="psa-detail-label"><i class="fas fa-ruler-combined"></i> Ha. evaluadas</div>
+                        <div class="psa-detail-value">218.5 ha</div>
+                    </div>
+                    <div class="psa-detail-item" style="padding: 0.6rem 0;">
+                        <div class="psa-detail-label"><i class="fas fa-check-circle"></i> Tasa aprobación</div>
+                        <div class="psa-detail-value">85%</div>
+                    </div>
+                    <div class="psa-detail-item" style="padding: 0.6rem 0;">
+                        <div class="psa-detail-label"><i class="fas fa-clock"></i> Tiempo promedio</div>
+                        <div class="psa-detail-value">3.2 días</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== MODAL: Cambiar a "En Proceso" ===== -->
+<div class="td-modal-overlay" id="modalProceso" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 1000; align-items: center; justify-content: center;">
+    <div class="psa-card" style="max-width: 460px; width: 100%; margin: 20px;">
+        <div class="psa-card-header" style="border-bottom: none;">
+            <div class="psa-card-title">
+                <i class="fas fa-hourglass-half" style="color: var(--psa-gold);"></i> Iniciar evaluación técnica
+            </div>
+        </div>
+        <div class="psa-card-body">
+            <p>¿Desea cambiar el estado de esta solicitud a <strong>"En Proceso"</strong>? Esta acción quedará registrada en la auditoría del sistema.</p>
+            <div style="background: var(--psa-pale); border-radius: 8px; padding: 14px 18px; margin: 16px 0;">
+                <strong>Finca:</strong> <span id="modal-finca">—</span><br>
+                <strong>Propietario:</strong> <span id="modal-propietario">—</span>
+            </div>
+            <div style="display: flex; gap: 12px; justify-content: flex-end;">
+                <button class="btn btn-outline-psa" onclick="cerrarModal()">Cancelar</button>
+                <button class="btn btn-psa" onclick="confirmarIniciarProceso()">
+                    <i class="fas fa-play"></i> Sí, iniciar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== TOAST ===== -->
+<div id="toast" style="position: fixed; bottom: 28px; right: 28px; background: var(--psa-leaf); color: white; padding: 14px 22px; border-radius: 10px; font-size: 0.9rem; z-index: 2000; display: flex; align-items: center; gap: 10px; transform: translateY(80px); opacity: 0; transition: transform 0.3s ease, opacity 0.3s ease;">
+    <i class="fas fa-check-circle"></i>
+    <span id="toast-msg">Acción realizada correctamente.</span>
+</div>
+
+@section Scripts {
+    <script src="~/js/pages/ingforestal/dashboard.js" asp-append-version="true"></script>
+}

@@ -1,0 +1,160 @@
+@{
+    ViewData["Title"] = "Detalle Finca";
+    ViewData["Breadcrumb"] = "Finca La Catarata";
+}
+
+<div class="psa-page-header">
+    <div>
+        <span class="subtitle">Mis Propiedades</span>
+        <h1>Finca La Catarata</h1>
+        <p>Guanacaste · Hojancha, Nandayure · 62 hectáreas</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a class="btn btn-outline-psa btn-sm" asp-controller="Fincas" asp-action="Editar"><i class="fas fa-pen"></i> Editar</a>
+        <a class="btn btn-outline-psa btn-sm" asp-controller="Fincas" asp-action="Index"><i class="fas fa-arrow-left"></i> Volver</a>
+    </div>
+</div>
+
+<!-- Banner de estado -->
+<div class="d-flex align-items-center gap-3 p-3 rounded mb-3" style="background:var(--psa-pale);border:1px solid #b8dfc8;">
+    <div class="rounded-circle d-flex align-items-center justify-content-center" style="width:44px;height:44px;background:var(--psa-leaf);color:#fff;font-size:1rem;">
+        <i class="fas fa-check"></i>
+    </div>
+    <div>
+        <div style="font-family:'Fraunces',serif;font-size:1.05rem;font-weight:600;color:var(--psa-forest);">PSA Activo — Recibiendo Pagos Mensuales</div>
+        <div style="font-size:0.78rem;color:var(--psa-muted);">Aprobada el 15 jul 2023 · Próximo pago: 15 abr 2026</div>
+    </div>
+    <div class="ms-auto text-end">
+        <div style="font-family:'Fraunces',serif;font-size:1.5rem;font-weight:700;color:var(--psa-forest);">₡3.8M</div>
+        <div style="font-size:0.68rem;color:var(--psa-muted);">Pago mensual</div>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-6">
+        <div class="psa-card">
+            <div class="psa-card-header">
+                <div class="psa-card-title"><i class="fas fa-tree"></i> Datos de la Propiedad</div>
+            </div>
+            <div class="psa-detail-grid">
+                <div class="psa-detail-item"><div class="psa-detail-label">Nombre</div><div class="psa-detail-value">Finca La Catarata</div></div>
+                <div class="psa-detail-item"><div class="psa-detail-label">Hectáreas</div><div class="psa-detail-value large">62 ha</div></div>
+                <div class="psa-detail-item"><div class="psa-detail-label">Provincia</div><div class="psa-detail-value">Guanacaste</div></div>
+                <div class="psa-detail-item"><div class="psa-detail-label">Cantón / Distrito</div><div class="psa-detail-value">Hojancha / Nandayure</div></div>
+                <div class="psa-detail-item"><div class="psa-detail-label">Vegetación</div><div class="psa-detail-value"><span class="psa-badge psa-badge-green">Bosque Primario</span></div></div>
+                <div class="psa-detail-item"><div class="psa-detail-label">Recursos Hídricos</div><div class="psa-detail-value"><span class="psa-badge psa-badge-blue">Ríos o Quebradas</span></div></div>
+                <div class="psa-detail-item"><div class="psa-detail-label">Pendiente</div><div class="psa-detail-value">Plana</div></div>
+                <div class="psa-detail-item"><div class="psa-detail-label">Uso de Suelo</div><div class="psa-detail-value">Conservación, Protección Hídrica</div></div>
+                <div class="psa-detail-item"><div class="psa-detail-label">GPS</div><div class="psa-detail-value" style="font-family:monospace;font-size:0.8rem;">10.0724° N, -85.3542° W</div></div>
+                <div class="psa-detail-item"><div class="psa-detail-label">Registro</div><div class="psa-detail-value">05 jun 2023</div></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="psa-card">
+            <div class="psa-card-header">
+                <div class="psa-card-title"><i class="fas fa-receipt"></i> Desglose del Pago Mensual</div>
+            </div>
+            <div class="psa-card-body">
+                <table class="table mb-3">
+                    <thead class="table-light">
+                        <tr><th>Concepto</th><th class="text-end">Monto</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Monto Base <small class="text-muted">(₡50,000 × 62 ha)</small></td><td class="text-end fw-medium">₡3,100,000</td></tr>
+                        <tr><td>Ajuste Vegetación <span class="psa-badge psa-badge-green" style="font-size:0.58rem;">+30%</span></td><td class="text-end text-success fw-medium">+₡930,000</td></tr>
+                        <tr><td>Ajuste Hídrico <span class="psa-badge psa-badge-blue" style="font-size:0.58rem;">+10%</span></td><td class="text-end text-success fw-medium">+₡310,000</td></tr>
+                        <tr><td>Ajuste Pendiente <small class="text-muted">(Plana = 0%)</small></td><td class="text-end">₡0</td></tr>
+                        <tr><td colspan="2"><small class="text-muted">Total ajustes: 40% · Tope aplicado: 40%</small></td></tr>
+                    </tbody>
+                </table>
+                <div class="p-3 rounded text-center" style="background:var(--psa-pale);">
+                    <div class="form-label-psa">Total Mensual</div>
+                    <div style="font-family:'Fraunces',serif;font-size:2rem;font-weight:700;color:var(--psa-forest);">₡3,800,000</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3 mt-1">
+    <div class="col-lg-6">
+        <div class="psa-card">
+            <div class="psa-card-header">
+                <div class="psa-card-title"><i class="fas fa-folder-open"></i> Documentos Adjuntos</div>
+            </div>
+            <div class="psa-card-body">
+                <div class="d-flex align-items-center gap-3 p-2 bg-light rounded mb-2">
+                    <i class="fas fa-file-pdf text-danger fs-5"></i>
+                    <div class="flex-grow-1">
+                        <div style="font-size:0.82rem;font-weight:500;">Plano Catastrado</div>
+                        <div style="font-size:0.68rem;color:var(--psa-muted);">plano_catarata.pdf · 2.4 MB</div>
+                    </div>
+                    <button class="btn btn-outline-psa btn-sm"><i class="fas fa-download"></i></button>
+                </div>
+                <div class="d-flex align-items-center gap-3 p-2 bg-light rounded mb-2">
+                    <i class="fas fa-file-pdf text-danger fs-5"></i>
+                    <div class="flex-grow-1">
+                        <div style="font-size:0.82rem;font-weight:500;">Escritura de Propiedad</div>
+                        <div style="font-size:0.68rem;color:var(--psa-muted);">escritura_001.pdf · 1.8 MB</div>
+                    </div>
+                    <button class="btn btn-outline-psa btn-sm"><i class="fas fa-download"></i></button>
+                </div>
+                <div class="d-flex align-items-center gap-3 p-2 bg-light rounded mb-2">
+                    <i class="fas fa-file-image text-primary fs-5"></i>
+                    <div class="flex-grow-1">
+                        <div style="font-size:0.82rem;font-weight:500;">Fotografías (4)</div>
+                        <div style="font-size:0.68rem;color:var(--psa-muted);">fotos_catarata.zip · 12 MB</div>
+                    </div>
+                    <button class="btn btn-outline-psa btn-sm"><i class="fas fa-download"></i></button>
+                </div>
+                <div class="d-flex align-items-center gap-3 p-2 bg-light rounded">
+                    <i class="fas fa-file-pdf" style="color:var(--psa-gold);font-size:1.2rem;"></i>
+                    <div class="flex-grow-1">
+                        <div style="font-size:0.82rem;font-weight:500;">Plan de Manejo Forestal</div>
+                        <div style="font-size:0.68rem;color:var(--psa-muted);">plan_manejo.pdf · 4.1 MB</div>
+                    </div>
+                    <button class="btn btn-outline-psa btn-sm"><i class="fas fa-download"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="psa-card">
+            <div class="psa-card-header">
+                <div class="psa-card-title"><i class="fas fa-clipboard-check"></i> Evaluación Técnica</div>
+            </div>
+            <div class="psa-detail-grid">
+                <div class="psa-detail-item"><div class="psa-detail-label">Ingeniero</div><div class="psa-detail-value">Ing. Roberto Rojas</div></div>
+                <div class="psa-detail-item"><div class="psa-detail-label">Fecha Visita</div><div class="psa-detail-value">10 jul 2023</div></div>
+                <div class="psa-detail-item"><div class="psa-detail-label">Resultado</div><div class="psa-detail-value"><span class="psa-badge psa-badge-green">Aprobada</span></div></div>
+                <div class="psa-detail-item"><div class="psa-detail-label">Fecha Aprobación</div><div class="psa-detail-value">15 jul 2023</div></div>
+            </div>
+            <div class="psa-card-body border-top">
+                <div class="form-label-psa mb-2">Observaciones del Ingeniero</div>
+                <p class="p-3 bg-light rounded mb-0" style="font-size:0.82rem;line-height:1.6;">Propiedad en excelente estado de conservación. Bosque primario bien preservado con alta biodiversidad. Presencia de quebrada principal con caudal constante. Se recomienda aprobación para programa PSA modalidad conservación. Área verificada: 62 ha coinciden con plano catastrado.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- HISTORIAL PAGOS -->
+<div class="psa-card mt-3">
+    <div class="psa-card-header">
+        <div class="psa-card-title"><i class="fas fa-circle-dollar-to-slot"></i> Historial de Pagos</div>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+                <tr><th>Período</th><th>Monto</th><th>Estado</th><th>Fecha Ejecución</th><th></th></tr>
+            </thead>
+            <tbody>
+                <tr><td>Mar 2026</td><td class="fw-bold">₡3,800,000</td><td><span class="psa-badge psa-badge-green">Ejecutado</span></td><td>10 mar 2026</td><td><button class="btn btn-psa btn-sm" style="font-size:0.68rem;padding:1px 8px;">Factura</button></td></tr>
+                <tr><td>Feb 2026</td><td class="fw-bold">₡3,800,000</td><td><span class="psa-badge psa-badge-green">Ejecutado</span></td><td>10 feb 2026</td><td><button class="btn btn-psa btn-sm" style="font-size:0.68rem;padding:1px 8px;">Factura</button></td></tr>
+                <tr><td>Ene 2026</td><td class="fw-bold">₡3,800,000</td><td><span class="psa-badge psa-badge-green">Ejecutado</span></td><td>10 ene 2026</td><td><button class="btn btn-psa btn-sm" style="font-size:0.68rem;padding:1px 8px;">Factura</button></td></tr>
+                <tr><td>Dic 2025</td><td class="fw-bold">₡3,500,000</td><td><span class="psa-badge psa-badge-green">Ejecutado</span></td><td>10 dic 2025</td><td><button class="btn btn-outline-psa btn-sm" style="font-size:0.68rem;padding:1px 8px;">Factura</button></td></tr>
+                <tr><td>Nov 2025</td><td class="fw-bold">₡3,500,000</td><td><span class="psa-badge psa-badge-green">Ejecutado</span></td><td>10 nov 2025</td><td><button class="btn btn-outline-psa btn-sm" style="font-size:0.68rem;padding:1px 8px;">Factura</button></td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,84 @@
+﻿@{
+    ViewData["Title"] = "Nuevo Usuario";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="psa-page-header">
+    <div>
+        <span class="subtitle">Usuarios</span>
+        <h1>Nuevo Usuario</h1>
+        <p>Registra un nuevo usuario en el sistema — </p>
+    </div>
+    <a asp-controller="Usuarios" asp-action="Index" class="btn btn-outline-psa btn-sm">
+        <i class="fas fa-arrow-left"></i> Volver
+    </a>
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-7">
+        <div class="psa-card">
+            <div class="psa-card-header">
+                <div class="psa-card-title"><i class="fas fa-user-plus"></i> Datos del Usuario</div>
+            </div>
+            <div class="psa-card-body">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label class="form-label-psa">Nombre Completo</label>
+                        <input type="text" class="form-control" id="txtNombre"
+                               placeholder="Nombre y apellidos" />
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label-psa">Correo Electrónico</label>
+                        <input type="email" class="form-control" id="txtEmail"
+                               placeholder="correo@psa.cr" />
+                        <small class="text-muted" style="font-size:0.75rem;">
+                            No se permiten correos duplicados — 
+                        </small>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label-psa">Usuario</label>
+                        <input type="text" class="form-control" id="txtUsuario"
+                               placeholder="nombre.apellido" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label-psa">Contraseña</label>
+                        <input type="password" class="form-control" id="txtPassword" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label-psa">Confirmar Contraseña</label>
+                        <input type="password" class="form-control" id="txtConfirmar" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label-psa">Rol — </label>
+                        <select class="form-select" id="ddRol">
+                            <option value="" disabled selected>Seleccione un rol</option>
+                            <option value="Admin">Administrador</option>
+                            <option value="Funcionario">Ingeniero Forestal</option>
+                            <option value="Propietario">Dueño de Finca</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label-psa">Estado — </label>
+                        <select class="form-select" id="ddEstado">
+                            <option value="true">Activo</option>
+                            <option value="false">Inactivo</option>
+                        </select>
+                    </div>
+                </div>
+                <hr />
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-psa" id="btnCrear" onclick="crearUsuario()">
+                        <i class="fas fa-save"></i> Crear Usuario
+                    </button>
+                    <a asp-controller="Usuarios" asp-action="Index" class="btn btn-outline-psa">
+                        Cancelar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/Pages/Usuarios/crearUsuario.js" asp-append-version="true"></script>
+}

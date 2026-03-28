@@ -1,0 +1,46 @@
+﻿@{
+    ViewData["Title"] = "Reporte de Solicitudes";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="psa-page-header">
+    <div>
+        <span class="subtitle">Reportes</span>
+        <h1>Reporte de Solicitudes</h1>
+        <p>Estado de todas las solicitudes al programa PSA</p>
+    </div>
+    <a asp-controller="Reportes" asp-action="Index" class="btn btn-outline-psa btn-sm"><i class="fas fa-arrow-left"></i> Volver</a>
+</div>
+
+<div class="psa-card">
+    <div class="psa-card-header">
+        <div class="psa-card-title"><i class="fas fa-file-lines"></i> Solicitudes Registradas</div>
+    </div>
+    <table class="table table-hover mb-0" style="font-size:0.82rem;">
+        <thead style="background:#fafaf8;">
+            <tr>
+                <th style="padding:0.8rem 1.3rem;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--psa-muted);font-weight:600;border-bottom:1px solid var(--psa-border);">Finca</th>
+                <th style="padding:0.8rem 1.3rem;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--psa-muted);font-weight:600;border-bottom:1px solid var(--psa-border);">Propietario</th>
+                <th style="padding:0.8rem 1.3rem;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--psa-muted);font-weight:600;border-bottom:1px solid var(--psa-border);">Fecha</th>
+                <th style="padding:0.8rem 1.3rem;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--psa-muted);font-weight:600;border-bottom:1px solid var(--psa-border);">Técnico</th>
+                <th style="padding:0.8rem 1.3rem;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--psa-muted);font-weight:600;border-bottom:1px solid var(--psa-border);">Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="padding:0.9rem 1.3rem;">Finca El Roble<br><span style="font-size:0.75rem;color:var(--psa-muted);">120 ha · Alajuela</span></td>
+                <td style="padding:0.9rem 1.3rem;">Carlos Fonseca</td>
+                <td style="padding:0.9rem 1.3rem;">15/03/2026</td>
+                <td style="padding:0.9rem 1.3rem;">Ing. María López</td>
+                <td style="padding:0.9rem 1.3rem;"><span class="psa-badge psa-badge-gold">En evaluación</span></td>
+            </tr>
+            <tr>
+                <td style="padding:0.9rem 1.3rem;">Finca Las Palmas<br><span style="font-size:0.75rem;color:var(--psa-muted);">85 ha · San Carlos</span></td>
+                <td style="padding:0.9rem 1.3rem;">Ana Rodríguez</td>
+                <td style="padding:0.9rem 1.3rem;">01/03/2026</td>
+                <td style="padding:0.9rem 1.3rem;">Ing. Carlos Rojas</td>
+                <td style="padding:0.9rem 1.3rem;"><span class="psa-badge psa-badge-blue">En revisión</span></td>
+            </tr>
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,369 @@
+@{
+    ViewData["Title"] = "Realizar Visita Técnica - Ingeniero Forestal";
+    Layout = "~/Views/Shared/_LayoutIngForestal.cshtml";
+
+    // En producción estos valores vendrán del modelo: @Model.NombreFinca, etc.
+    var nombreFinca      = "Finca El Cedro";
+    var propietario      = "Roberto Chaves";
+    var ubicacion        = "Pérez Zeledón, San José";
+    var fechaVisitaProg  = "28/03/2026";
+    var horaVisitaProg   = "07:00";
+
+    // Valores originales del registro (para comparación)
+    var origHectareas    = "9.75";
+    var origVegetacion   = "plantacion-forestal";
+    var origPendiente    = "inclinada";
+    var origRecursos     = "quebrada";
+    var origUsoSuelo     = "conservacion";
+}
+
+@section Styles {
+
+    <link rel="stylesheet" href="~/css/ingforestal/realizar.css" asp-append-version="true" />
+}
+
+<div class="IngForestal-dashboard">
+
+
+    <!-- ===== PAGE HEADER ===== -->
+    <div class="psa-page-header">
+        <div>
+            <span class="subtitle">Visita Técnica</span>
+            <h1>
+                <i class="fas fa-clipboard-check" style="color: var(--psa-leaf); font-size: 1.4rem;"></i>
+                Evaluación Técnica
+            </h1>
+            <p>Complete el formulario con los datos observados en campo. Los cambios respecto al registro original quedarán resaltados.</p>
+        </div>
+        <div>
+            <a class="btn btn-outline-psa btn-sm" href="@Url.Action("Detalle","IngForestal")">
+                <i class="fas fa-arrow-left"></i> Cancelar
+            </a>
+        </div>
+    </div>
+
+    <!-- ===== ALERTA DE CONTEXTO ===== -->
+    <div class="rl-alerta-contexto" role="note">
+        <div class="rl-alerta-contexto-icon">
+            <i class="fas fa-tree"></i>
+        </div>
+        <div class="rl-alerta-contexto-info">
+            <div class="rl-alerta-contexto-titulo">@nombreFinca — @propietario</div>
+            <div class="rl-alerta-contexto-sub">
+                <i class="fas fa-location-dot"></i> @ubicacion &nbsp;·&nbsp;
+                <i class="fas fa-calendar"></i> Visita programada: @fechaVisitaProg &nbsp;·&nbsp;
+                <i class="fas fa-clock"></i> @horaVisitaProg
+            </div>
+        </div>
+        <span class="psa-badge psa-badge-blue">En Proceso</span>
+    </div>
+
+    <!-- ===== LAYOUT ===== -->
+    <div style="display: grid; grid-template-columns: 1fr 300px; gap: 1.5rem; align-items: start;">
+
+        <!-- ══════ COLUMNA PRINCIPAL ══════ -->
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+
+            <!-- ── 1. DATOS DEL DÍA ── -->
+            <div class="psa-card">
+                <div class="psa-card-header">
+                    <div class="psa-card-title">
+                        <i class="fas fa-calendar-check"></i> Datos de la Visita Real
+                    </div>
+                </div>
+                <div class="psa-card-body">
+                    <div class="rl-form-grid">
+                        <div class="rl-field">
+                            <label>Fecha real de visita <span class="req">*</span></label>
+                            <input type="date" id="rl-fecha-visita" class="form-control form-control-sm">
+                            <span class="rl-field-error" id="rl-fecha-visita-err" role="alert">
+                                <i class="fas fa-triangle-exclamation"></i>
+                                Ingrese la fecha real de la visita.
+                            </span>
+                        </div>
+                        <div class="rl-field">
+                            <label>Hora de inicio real <span class="req">*</span></label>
+                            <input type="time" id="rl-hora-visita" class="form-control form-control-sm" value="@horaVisitaProg">
+                            <span class="rl-field-error" id="rl-hora-visita-err" role="alert">
+                                <i class="fas fa-triangle-exclamation"></i>
+                                Ingrese la hora de inicio.
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── 2. DATOS OBSERVADOS EN CAMPO ── -->
+            <div class="psa-card">
+                <div class="psa-card-header">
+                    <div class="psa-card-title">
+                        <i class="fas fa-magnifying-glass"></i> Datos Observados en Campo
+                    </div>
+                    <span class="rl-cambios-badge" id="rl-badge-cambios">
+                        <i class="fas fa-pen"></i> 0 cambios
+                    </span>
+                </div>
+                <div class="psa-card-body">
+                    <div class="rl-form-grid">
+                        <div class="rl-field">
+                            <label>Hectáreas verificadas <span class="req">*</span> <span class="orig">Orig: @origHectareas ha</span></label>
+                            <input type="number" id="rl-hectareas" class="form-control form-control-sm"
+                                   value="@origHectareas" step="0.01" min="0.01"
+                                   onchange="onCampoChange('rl-hectareas')"
+                                   oninput="onCampoChange('rl-hectareas')">
+                            <span class="rl-field-error" id="rl-hectareas-err" role="alert">
+                                <i class="fas fa-triangle-exclamation"></i>
+                                Las hectáreas deben ser un número mayor a 0.
+                            </span>
+                        </div>
+
+                        <div class="rl-field">
+                            <label>Tipo de vegetación <span class="req">*</span> <span class="orig">Orig: Plantación Forestal</span></label>
+                            <select id="rl-vegetacion" class="form-select form-select-sm"
+                                    onchange="onCampoChange('rl-vegetacion')">
+                                <option value="">Seleccione...</option>
+                                <option value="bosque-primario">Bosque Primario</option>
+                                <option value="bosque-secundario">Bosque Secundario</option>
+                                <option value="plantacion-forestal" selected>Plantación Forestal</option>
+                                <option value="pasto">Pasto o escasa vegetación</option>
+                            </select>
+                            <span class="rl-field-error" id="rl-vegetacion-err" role="alert">
+                                <i class="fas fa-triangle-exclamation"></i>
+                                Seleccione el tipo de vegetación observado.
+                            </span>
+                        </div>
+
+                        <div class="rl-field">
+                            <label>Pendiente del terreno <span class="req">*</span> <span class="orig">Orig: Inclinada</span></label>
+                            <select id="rl-pendiente" class="form-select form-select-sm"
+                                    onchange="onCampoChange('rl-pendiente')">
+                                <option value="">Seleccione...</option>
+                                <option value="plana">Plana</option>
+                                <option value="inclinada" selected>Inclinada</option>
+                                <option value="muy-inclinada">Muy inclinada</option>
+                            </select>
+                            <span class="rl-field-error" id="rl-pendiente-err" role="alert">
+                                <i class="fas fa-triangle-exclamation"></i>
+                                Seleccione el tipo de pendiente observada.
+                            </span>
+                        </div>
+
+                        <div class="rl-field">
+                            <label>Recursos hídricos <span class="req">*</span> <span class="orig">Orig: Quebrada</span></label>
+                            <select id="rl-recursos" class="form-select form-select-sm"
+                                    onchange="onCampoChange('rl-recursos')">
+                                <option value="">Seleccione...</option>
+                                <option value="ninguno">Ninguno</option>
+                                <option value="quebrada" selected>Quebrada</option>
+                                <option value="rio">Río</option>
+                                <option value="naciente">Naciente</option>
+                                <option value="rio-naciente">Río y naciente</option>
+                            </select>
+                            <span class="rl-field-error" id="rl-recursos-err" role="alert">
+                                <i class="fas fa-triangle-exclamation"></i>
+                                Seleccione los recursos hídricos observados.
+                            </span>
+                        </div>
+
+                        <div class="rl-field span-2">
+                            <label>Uso de suelo verificado <span class="orig">Orig: Conservación</span></label>
+                            <select id="rl-uso-suelo" class="form-select form-select-sm"
+                                    onchange="onCampoChange('rl-uso-suelo')">
+                                <option value="">Seleccione...</option>
+                                <option value="conservacion" selected>Conservación / Reforestación</option>
+                                <option value="agropecuario">Agropecuario</option>
+                                <option value="mixto">Mixto</option>
+                                <option value="sin-uso">Sin uso definido</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── 3. OBSERVACIONES TÉCNICAS ── -->
+            <div class="psa-card">
+                <div class="psa-card-header">
+                    <div class="psa-card-title">
+                        <i class="fas fa-pen-nib"></i> Observaciones Técnicas
+                    </div>
+                </div>
+                <div class="psa-card-body">
+                    <div class="rl-field">
+                        <label>Observaciones técnicas del ingeniero <span class="req">*</span> <span class="orig">(mín. 20 caracteres)</span></label>
+                        <textarea id="rl-observaciones" rows="5" class="form-control form-control-sm"
+                                  placeholder="Describa detalladamente las condiciones observadas en campo: estado de la vegetación, condición de los recursos hídricos, hallazgos relevantes, discrepancias con el registro original..."></textarea>
+                        <span class="rl-field-error" id="rl-observaciones-err" role="alert">
+                            <i class="fas fa-triangle-exclamation"></i>
+                            Las observaciones técnicas son obligatorias (mín. 20 caracteres).
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── 4. FOTOGRAFÍAS ── -->
+            <div class="psa-card">
+                <div class="psa-card-header">
+                    <div class="psa-card-title">
+                        <i class="fas fa-camera"></i> Fotografías de Campo
+                    </div>
+                    <span style="font-size: 0.7rem; color: var(--psa-muted);">Máx. 8 imágenes · JPG, PNG, WEBP</span>
+                </div>
+                <div class="psa-card-body">
+                    <div class="rl-upload-zona" id="rl-upload-zona" role="button" tabindex="0">
+                        <input type="file" id="rl-input-fotos" accept="image/*" multiple onchange="onFotosSeleccionadas(event)">
+                        <div class="rl-upload-icon">📷</div>
+                        <p class="rl-upload-txt"><strong>Haga clic</strong> o arrastre las fotos aquí</p>
+                        <p class="rl-upload-sub">JPG, PNG, WEBP · Máximo 8 fotografías</p>
+                    </div>
+                    <div class="rl-fotos-preview" id="rl-fotos-preview"></div>
+                </div>
+            </div>
+
+            <!-- ── 5. DECISIÓN FINAL ── -->
+            <div class="psa-card">
+                <div class="psa-card-header">
+                    <div class="psa-card-title">
+                        <i class="fas fa-gavel"></i> Decisión Final
+                    </div>
+                </div>
+                <div class="psa-card-body">
+                    <div class="rl-decision-wrap">
+                        <button class="rl-decision-btn" id="rl-btn-aprobar" onclick="seleccionarDecision('aprobar')" type="button">
+                            <div class="rl-decision-icon">✅</div>
+                            <div class="rl-decision-label">Aprobar</div>
+                            <div class="rl-decision-sub">La finca cumple los requisitos del PSA y se generará el plan de pagos.</div>
+                        </button>
+                        <button class="rl-decision-btn" id="rl-btn-rechazar" onclick="seleccionarDecision('rechazar')" type="button">
+                            <div class="rl-decision-icon">❌</div>
+                            <div class="rl-decision-label">Rechazar</div>
+                            <div class="rl-decision-sub">La finca no cumple los requisitos. Se notificará al propietario.</div>
+                        </button>
+                    </div>
+                    <div class="rl-decision-err" id="rl-decision-err" role="alert">
+                        <i class="fas fa-triangle-exclamation"></i>
+                        Debe seleccionar una decisión (Aprobar o Rechazar) antes de guardar.
+                    </div>
+                    <div id="rl-wrap-motivo" style="display:none; margin-top: 1rem;">
+                        <div class="rl-field">
+                            <label>Motivo del rechazo <span class="req">*</span> <span class="orig">(mín. 15 caracteres)</span></label>
+                            <textarea id="rl-motivo-rechazo" rows="3" class="form-control form-control-sm"
+                                      placeholder="Explique los motivos técnicos por los cuales la solicitud no puede ser aprobada..."></textarea>
+                            <span class="rl-field-error" id="rl-motivo-rechazo-err" role="alert">
+                                <i class="fas fa-triangle-exclamation"></i>
+                                El motivo de rechazo debe tener al menos 15 caracteres.
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== ACCIONES FINALES ===== -->
+            <div class="rl-acciones-finales">
+                <a class="btn btn-outline-psa btn-sm" href="@Url.Action("Detalle","IngForestal")">
+                    <i class="fas fa-xmark"></i> Cancelar
+                </a>
+                <div class="rl-acciones-right">
+                    <a class="btn btn-outline-psa btn-sm" href="@Url.Action("Detalle","IngForestal")">
+                        <i class="fas fa-eye"></i> Ver Detalle
+                    </a>
+                    <button class="btn btn-psa btn-sm" onclick="guardarEvaluacion()">
+                        <i class="fas fa-save"></i> Guardar Evaluación
+                    </button>
+                </div>
+            </div>
+
+        </div><!-- /columna principal -->
+
+        <!-- ══════ ASIDE ══════ -->
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+
+            <!-- Panel de progreso -->
+            <div class="rl-progreso-panel">
+                <div class="rl-progreso-header">
+                    <p>Progreso de la evaluación</p>
+                    <div class="rl-progreso-pct" id="rl-progreso-pct">0%</div>
+                    <div class="rl-progreso-bar-wrap">
+                        <div class="rl-progreso-bar" id="rl-progreso-bar" style="width:0%;"></div>
+                    </div>
+                </div>
+                <div class="rl-progreso-body">
+                    <div class="rl-check-item" id="chk-datos-row">
+                        <div class="rl-check-dot" id="chk-datos-dot"></div>
+                        <span class="rl-check-label">Datos de campo</span>
+                    </div>
+                    <div class="rl-check-item" id="chk-vegetacion-row">
+                        <div class="rl-check-dot" id="chk-vegetacion-dot"></div>
+                        <span class="rl-check-label">Tipo de vegetación</span>
+                    </div>
+                    <div class="rl-check-item" id="chk-pendiente-row">
+                        <div class="rl-check-dot" id="chk-pendiente-dot"></div>
+                        <span class="rl-check-label">Pendiente del terreno</span>
+                    </div>
+                    <div class="rl-check-item" id="chk-recursos-row">
+                        <div class="rl-check-dot" id="chk-recursos-dot"></div>
+                        <span class="rl-check-label">Recursos hídricos</span>
+                    </div>
+                    <div class="rl-check-item" id="chk-observ-row">
+                        <div class="rl-check-dot" id="chk-observ-dot"></div>
+                        <span class="rl-check-label">Observaciones técnicas</span>
+                    </div>
+                    <div class="rl-check-item" id="chk-fotos-row">
+                        <div class="rl-check-dot" id="chk-fotos-dot"></div>
+                        <span class="rl-check-label">Fotografías adjuntas</span>
+                    </div>
+                    <div class="rl-check-item" id="chk-decision-row">
+                        <div class="rl-check-dot" id="chk-decision-dot"></div>
+                        <span class="rl-check-label">Decisión final</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Info de la finca (referencia rápida) -->
+            <div class="psa-card">
+                <div class="psa-card-header">
+                    <div class="psa-card-title">
+                        <i class="fas fa-circle-info"></i> Referencia
+                    </div>
+                </div>
+                <div class="psa-card-body" style="padding: 0;">
+                    <div style="padding: 1rem;">
+                        <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--psa-border);">
+                            <span style="color: var(--psa-muted);">Finca</span>
+                            <span style="font-weight: 700; color: var(--psa-forest);">@nombreFinca</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--psa-border);">
+                            <span style="color: var(--psa-muted);">Propietario</span>
+                            <span style="font-weight: 700;">@propietario</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--psa-border);">
+                            <span style="color: var(--psa-muted);">Ubicación</span>
+                            <span style="font-weight: 700;">@ubicacion</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--psa-border);">
+                            <span style="color: var(--psa-muted);">Ha. declaradas</span>
+                            <span style="font-weight: 700; color: var(--psa-forest);">@origHectareas ha</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; padding: 0.5rem 0;">
+                            <span style="color: var(--psa-muted);">Fecha programada</span>
+                            <span style="font-weight: 700;">@fechaVisitaProg</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- /aside -->
+
+    </div><!-- /layout grid -->
+
+</div><!-- /IngForestal-dashboard -->
+
+<!-- ===== TOAST ===== -->
+<div id="rl-toast" style="position: fixed; bottom: 28px; right: 28px; background: var(--psa-leaf); color: white; padding: 12px 20px; border-radius: 8px; font-size: 0.85rem; z-index: 2000; display: flex; align-items: center; gap: 10px; transform: translateY(80px); opacity: 0; transition: transform 0.3s ease, opacity 0.3s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+    <i class="fas fa-check-circle"></i>
+    <span id="rl-toast-msg">Acción realizada.</span>
+</div>
+
+@section Scripts {
+    <script src="~/js/pages/ingforestal/realizar.js" asp-append-version="true"></script>
+    <script src="~/js/pages/ingforestal/evaluaciones-editar.js" asp-append-version="true"></script>
+}

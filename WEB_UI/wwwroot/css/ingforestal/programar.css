@@ -1,0 +1,434 @@
+/* =====================================================
+   Programar Visita - Estilos mejorados
+   ===================================================== */
+
+/* Stepper */
+.pr-stepper {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    background: #fff;
+    padding: 1rem;
+    border-radius: var(--psa-r);
+    border: 1px solid var(--psa-border);
+}
+
+.pr-step {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    border-radius: var(--psa-r);
+    transition: background 0.2s;
+}
+
+    .pr-step.activo {
+        background: var(--psa-pale);
+    }
+
+.pr-step-num {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    background: var(--psa-sand);
+    color: var(--psa-muted);
+}
+
+.pr-step.activo .pr-step-num {
+    background: var(--psa-leaf);
+    color: #fff;
+}
+
+.pr-step-titulo {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--psa-ink);
+}
+
+.pr-step-sub {
+    font-size: 0.7rem;
+    color: var(--psa-muted);
+}
+
+/* Contenedor de la lista de solicitudes */
+.pr-solicitudes-lista {
+    max-height: 500px;
+    overflow-y: auto;
+    border: 1px solid var(--psa-border);
+    border-radius: var(--psa-r);
+    background: #fff;
+}
+
+/* Tarjeta de solicitud - ESTILO COMO EN LA IMAGEN */
+.pr-solicitud-item {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    border-bottom: 1px solid var(--psa-border);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+    .pr-solicitud-item:last-child {
+        border-bottom: none;
+    }
+
+    .pr-solicitud-item:hover {
+        background: var(--psa-pale);
+    }
+
+    .pr-solicitud-item.seleccionada {
+        background: var(--psa-pale);
+        border-left: 3px solid var(--psa-leaf);
+    }
+
+/* Icono decorativo - árbol */
+.pr-solicitud-icono {
+    width: 48px;
+    height: 48px;
+    background: var(--psa-pale);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+    color: var(--psa-leaf);
+}
+
+.pr-solicitud-item.seleccionada .pr-solicitud-icono {
+    background: var(--psa-leaf);
+    color: white;
+}
+
+/* Contenido principal */
+.pr-solicitud-contenido {
+    flex: 1;
+    min-width: 0;
+}
+
+.pr-solicitud-nombre {
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--psa-forest);
+    margin-bottom: 0.5rem;
+    font-family: 'Fraunces', serif;
+}
+
+.pr-solicitud-detalle {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    font-size: 0.75rem;
+    color: var(--psa-muted);
+    margin-bottom: 0.5rem;
+}
+
+    .pr-solicitud-detalle span {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+    .pr-solicitud-detalle i {
+        width: 14px;
+        color: var(--psa-leaf);
+    }
+
+/* Métricas adicionales - hectáreas y vegetación */
+.pr-solicitud-metricas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+.pr-metrica {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.7rem;
+    background: var(--psa-pale);
+    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+    color: var(--psa-ink);
+}
+
+    .pr-metrica i {
+        font-size: 0.65rem;
+        color: var(--psa-leaf);
+    }
+
+    /* Estado badge */
+    .pr-metrica.estado {
+        background: var(--psa-gold-bg);
+        color: var(--psa-gold);
+    }
+
+        .pr-metrica.estado i {
+            color: var(--psa-gold);
+        }
+
+/* Badge de selección - check circular */
+.pr-solicitud-seleccion {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid var(--psa-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: transparent;
+    transition: all 0.2s;
+}
+
+.pr-solicitud-item.seleccionada .pr-solicitud-seleccion {
+    border-color: var(--psa-leaf);
+    background: var(--psa-leaf);
+    color: white;
+}
+
+    .pr-solicitud-item.seleccionada .pr-solicitud-seleccion i {
+        font-size: 0.7rem;
+    }
+
+/* Buscador mejorado */
+.pr-buscar-solicitud {
+    position: relative;
+    margin-bottom: 1.25rem;
+}
+
+    .pr-buscar-solicitud input {
+        width: 100%;
+        padding: 0.6rem 0.6rem 0.6rem 2.5rem;
+        border: 1px solid var(--psa-border);
+        border-radius: 10px;
+        font-size: 0.85rem;
+        transition: all 0.2s;
+    }
+
+        .pr-buscar-solicitud input:focus {
+            border-color: var(--psa-leaf);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(45, 134, 83, 0.1);
+        }
+
+.pr-search-ic {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--psa-muted);
+    font-size: 0.9rem;
+}
+
+/* Contador de resultados */
+.pr-resultados-count {
+    font-size: 0.7rem;
+    color: var(--psa-muted);
+    margin-bottom: 0.75rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Estado vacío */
+.pr-solicitudes-empty {
+    text-align: center;
+    padding: 2rem;
+    color: var(--psa-muted);
+}
+
+    .pr-solicitudes-empty i {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+        opacity: 0.5;
+    }
+
+    .pr-solicitudes-empty p {
+        margin: 0;
+        font-size: 0.85rem;
+    }
+
+/* Formulario grid */
+.pr-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+.pr-field {
+    grid-column: span 1;
+}
+
+    .pr-field.span-2 {
+        grid-column: span 2;
+    }
+
+    .pr-field label {
+        font-size: 0.7rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--psa-muted);
+        margin-bottom: 0.25rem;
+        display: block;
+    }
+
+    .pr-field .req {
+        color: var(--psa-red);
+    }
+
+    .pr-field .hint {
+        font-size: 0.65rem;
+        font-weight: normal;
+        text-transform: none;
+        color: var(--psa-muted);
+    }
+
+.pr-input-icon-wrap {
+    position: relative;
+}
+
+.pr-input-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--psa-muted);
+    font-size: 0.75rem;
+}
+
+.pr-input-icon-wrap input,
+.pr-input-icon-wrap select {
+    padding-left: 30px;
+}
+
+.pr-field-error {
+    font-size: 0.7rem;
+    color: var(--psa-red);
+    display: none;
+    margin-top: 0.25rem;
+}
+
+    .pr-field-error.visible {
+        display: block;
+    }
+
+/* Divisor */
+.pr-divider {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 1.5rem 0 1rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--psa-muted);
+}
+
+    .pr-divider::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: var(--psa-border);
+    }
+
+/* Confirmación */
+.pr-confirmacion {
+    text-align: center;
+    padding: 1rem;
+}
+
+.pr-confirmacion-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.pr-confirmacion h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.2rem;
+    color: var(--psa-forest);
+    margin-bottom: 0.5rem;
+}
+
+.pr-confirmacion p {
+    font-size: 0.85rem;
+    color: var(--psa-muted);
+    margin-bottom: 1.5rem;
+}
+
+.pr-confirmacion-detalle {
+    background: var(--psa-pale);
+    border-radius: var(--psa-r);
+    padding: 1rem;
+    text-align: left;
+    font-size: 0.85rem;
+}
+
+/* Resumen */
+.pr-resumen-body {
+    padding: 1rem;
+}
+
+.pr-resumen-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--psa-border);
+}
+
+    .pr-resumen-item:last-child {
+        border-bottom: none;
+    }
+
+.pr-resumen-label {
+    font-size: 0.75rem;
+    color: var(--psa-muted);
+}
+
+.pr-resumen-valor {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--psa-ink);
+}
+
+    .pr-resumen-valor.vacio {
+        color: var(--psa-muted);
+        font-style: italic;
+    }
+
+.pr-resumen-alerta {
+    display: flex;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: var(--psa-pale);
+    border-radius: var(--psa-r);
+    font-size: 0.75rem;
+    color: var(--psa-muted);
+}
+
+/* Form actions */
+.pr-form-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1.5rem;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.pr-form-actions-right {
+    display: flex;
+    gap: 0.75rem;
+}

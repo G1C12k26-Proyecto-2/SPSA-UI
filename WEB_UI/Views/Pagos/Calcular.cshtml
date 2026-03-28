@@ -1,0 +1,121 @@
+﻿@{
+    ViewData["Title"] = "Calcular Pagos";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="psa-page-header">
+    <div>
+        <span class="subtitle">Pagos</span>
+        <h1>Calcular Pagos</h1>
+        <p>Simulación del monto PSA según características de la finca — </p>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-6">
+        <div class="psa-card">
+            <div class="psa-card-header">
+                <div class="psa-card-title"><i class="fas fa-calculator"></i> Parámetros de Cálculo</div>
+            </div>
+            <div class="psa-card-body">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label class="form-label-psa">Hectáreas — </label>
+                        <input type="number" class="form-control" id="hectareas"
+                               placeholder="Ej: 0.5 o 85.5" min="0.01" step="0.01" />
+                        <small class="text-muted" style="font-size:0.75rem;">
+                            Permite fracciones menores a 1 ha. Debe ser mayor a 0.
+                        </small>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label-psa">Tipo de Vegetación — </label>
+                        <select class="form-select" id="vegetacion">
+                            <option value="0" disabled selected>Seleccione</option>
+                            <option value="30">Bosque Primario (+30%)</option>
+                            <option value="20">Bosque Secundario (+20%)</option>
+                            <option value="10">Plantación Forestal (+10%)</option>
+                            <option value="0">Pasto / Escasa (0%)</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label-psa">Recurso Hídrico — </label>
+                        <select class="form-select" id="hidrico">
+                            <option value="0" disabled selected>Seleccione</option>
+                            <option value="10">Ríos o Quebradas (+10%)</option>
+                            <option value="5">Nacientes (+5% por naciente)</option>
+                            <option value="0">Sin recurso hídrico (0%)</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6" id="nacientesContainer" style="display:none;">
+                        <label class="form-label-psa">Cantidad de Nacientes</label>
+                        <input type="number" class="form-control" id="nacientes"
+                               value="1" min="1" step="1" />
+                        <small class="text-muted" style="font-size:0.75rem;">+5% por cada naciente</small>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label-psa">Pendiente del Terreno — </label>
+                        <select class="form-select" id="pendiente">
+                            <option value="0" disabled selected>Seleccione</option>
+                            <option value="20">Muy Inclinada (+20%)</option>
+                            <option value="10">Inclinada (+10%)</option>
+                            <option value="0">Plana (0%)</option>
+                        </select>
+                    </div>
+                </div>
+                <hr />
+                <button type="button" class="btn btn-psa" onclick="calcular()">
+                    <i class="fas fa-calculator"></i> Calcular
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="psa-card">
+            <div class="psa-card-header">
+                <div class="psa-card-title"><i class="fas fa-receipt"></i> Resultado del Cálculo</div>
+            </div>
+            <div class="psa-detail-grid">
+                <div class="psa-detail-item">
+                    <div class="psa-detail-label">Precio Base (₡50,000 × ha)</div>
+                    <div class="psa-detail-value" id="res-base">₡0</div>
+                </div>
+                <div class="psa-detail-item">
+                    <div class="psa-detail-label">Ajuste Vegetación</div>
+                    <div class="psa-detail-value" id="res-veg">0%</div>
+                </div>
+                <div class="psa-detail-item">
+                    <div class="psa-detail-label">Ajuste Hídrico</div>
+                    <div class="psa-detail-value" id="res-hid">0%</div>
+                </div>
+                <div class="psa-detail-item">
+                    <div class="psa-detail-label">Ajuste Pendiente</div>
+                    <div class="psa-detail-value" id="res-pen">0%</div>
+                </div>
+                <div class="psa-detail-item">
+                    <div class="psa-detail-label">Total Ajustes Aplicados</div>
+                    <div class="psa-detail-value" id="res-ajuste">0%</div>
+                </div>
+                <div class="psa-detail-item">
+                    <div class="psa-detail-label">Tope Máximo — </div>
+                    <div class="psa-detail-value">40%</div>
+                </div>
+            </div>
+            <div class="psa-card-body border-top text-center">
+                <div class="form-label-psa mb-2">Total Mensual Estimado</div>
+                <div id="res-total"
+                     style="font-family:'Fraunces',serif;font-size:2.2rem;font-weight:700;color:var(--psa-forest);">
+                    ₡0
+                </div>
+                <div id="res-aviso" style="font-size:0.75rem;color:var(--psa-gold);margin-top:0.4rem;display:none;">
+                    <i class="fas fa-triangle-exclamation"></i>
+                    Ajuste limitado al tope máximo del 40%
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/Pages/Pagos/calcular.js" asp-append-version="true"></script>
+}

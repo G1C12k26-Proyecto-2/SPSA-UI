@@ -1,3 +1,19 @@
 ﻿@{
-    Layout = "_Layout";
+    // Determinar el layout según el rol del usuario
+ /*   if (User.IsInRole("Admin"))
+    {
+        Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    }
+    else if (User.IsInRole("Propietario"))
+    {/**/
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    /*}
+    else if (User.IsInRole("Funcionario"))
+    {
+        Layout = "~/Views/Shared/_LayoutIngForestal.cshtml";
+    }
+    else
+    *///{
+        //Layout = "~/Views/Shared/_LayoutLanding.cshtml"; // Layout por defecto
+    //}
 }
