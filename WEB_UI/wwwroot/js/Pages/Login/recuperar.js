@@ -21,7 +21,7 @@ async function enviarLink() {
     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
 
     try {
-        const response = await fetch(`${API_URL}/api/Auth/forgot-password`, {
+        const response = await fetch(`${API_URL}/api/Auth/ForgotPassword`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email: correo })
