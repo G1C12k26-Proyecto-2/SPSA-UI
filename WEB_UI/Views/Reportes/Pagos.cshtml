@@ -43,7 +43,7 @@
 
 <div class="psa-card">
     <div class="psa-filters">
-        <select class="form-select form-select-sm" style="max-width:160px;">
+        <select class="form-select form-select-sm" style="max-width:160px;" id="filtroProvinciaReporte">
             <option value="">Todas las provincias</option>
             <option>Alajuela</option>
             <option>Heredia</option>
@@ -53,24 +53,24 @@
             <option>San José</option>
             <option>Limón</option>
         </select>
-        <select class="form-select form-select-sm" style="max-width:160px;">
+        <select class="form-select form-select-sm" style="max-width:160px;" id="filtroCantonReporte">
             <option value="">Todos los cantones</option>
             <option>San Carlos</option>
             <option>Alajuela</option>
             <option>Hojancha</option>
             <option>Sarapiquí</option>
         </select>
-        <select class="form-select form-select-sm" style="max-width:160px;">
+        <select class="form-select form-select-sm" style="max-width:160px;" id="filtroDistritoReporte">
             <option value="">Todos los distritos</option>
         </select>
-        <select class="form-select form-select-sm" style="max-width:160px;">
+        <select class="form-select form-select-sm" style="max-width:160px;" id="filtroPeriodoReporte">
             <option value="">Todos los períodos</option>
             <option>Mar 2026</option>
             <option>Feb 2026</option>
             <option>Ene 2026</option>
             <option>Dic 2025</option>
         </select>
-        <select class="form-select form-select-sm" style="max-width:160px;">
+        <select class="form-select form-select-sm" style="max-width:160px;" id="filtroEstadoReporte">
             <option value="">Todos los estados</option>
             <option>Ejecutado</option>
             <option>Pendiente</option>
@@ -81,46 +81,9 @@
         </button>
     </div>
 
-    <table class="table table-hover mb-0" style="font-size:0.82rem;">
-        <thead style="background:#fafaf8;">
-            <tr>
-                <th style="padding:0.8rem 1.3rem;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--psa-muted);font-weight:600;border-bottom:1px solid var(--psa-border);">Finca</th>
-                <th style="padding:0.8rem 1.3rem;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--psa-muted);font-weight:600;border-bottom:1px solid var(--psa-border);">Propietario</th>
-                <th style="padding:0.8rem 1.3rem;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--psa-muted);font-weight:600;border-bottom:1px solid var(--psa-border);">Provincia</th>
-                <th style="padding:0.8rem 1.3rem;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--psa-muted);font-weight:600;border-bottom:1px solid var(--psa-border);">Cantón</th>
-                <th style="padding:0.8rem 1.3rem;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--psa-muted);font-weight:600;border-bottom:1px solid var(--psa-border);">Período</th>
-                <th style="padding:0.8rem 1.3rem;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--psa-muted);font-weight:600;border-bottom:1px solid var(--psa-border);">Monto</th>
-                <th style="padding:0.8rem 1.3rem;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--psa-muted);font-weight:600;border-bottom:1px solid var(--psa-border);">Estado</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td style="padding:0.9rem 1.3rem;">Finca La Catarata</td>
-                <td style="padding:0.9rem 1.3rem;">Carlos Fonseca</td>
-                <td style="padding:0.9rem 1.3rem;">Guanacaste</td>
-                <td style="padding:0.9rem 1.3rem;">Hojancha</td>
-                <td style="padding:0.9rem 1.3rem;">Mar 2026</td>
-                <td style="padding:0.9rem 1.3rem;"><strong>₡3,800,000</strong></td>
-                <td style="padding:0.9rem 1.3rem;"><span class="psa-badge psa-badge-green">Ejecutado</span></td>
-            </tr>
-            <tr>
-                <td style="padding:0.9rem 1.3rem;">Finca El Roble</td>
-                <td style="padding:0.9rem 1.3rem;">Carlos Fonseca</td>
-                <td style="padding:0.9rem 1.3rem;">Alajuela</td>
-                <td style="padding:0.9rem 1.3rem;">San Carlos</td>
-                <td style="padding:0.9rem 1.3rem;">Mar 2026</td>
-                <td style="padding:0.9rem 1.3rem;"><strong>₡4,200,000</strong></td>
-                <td style="padding:0.9rem 1.3rem;"><span class="psa-badge psa-badge-gold">Pendiente</span></td>
-            </tr>
-            <tr>
-                <td style="padding:0.9rem 1.3rem;">Finca Las Palmas</td>
-                <td style="padding:0.9rem 1.3rem;">Ana Solano</td>
-                <td style="padding:0.9rem 1.3rem;">Heredia</td>
-                <td style="padding:0.9rem 1.3rem;">Sarapiquí</td>
-                <td style="padding:0.9rem 1.3rem;">Mar 2026</td>
-                <td style="padding:0.9rem 1.3rem;"><strong>₡3,100,000</strong></td>
-                <td style="padding:0.9rem 1.3rem;"><span class="psa-badge psa-badge-gold">Pendiente</span></td>
-            </tr>
-        </tbody>
-    </table>
+    <div id="gridReportePagos" style="height:400px;width:100%;" class="ag-theme-alpine"></div>
 </div>
+
+@section Scripts {
+    <script src="~/js/Pages/Reportes/PagosReporteGrid.js" asp-append-version="true"></script>
+}

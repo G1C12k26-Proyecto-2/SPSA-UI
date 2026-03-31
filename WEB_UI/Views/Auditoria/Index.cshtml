@@ -14,8 +14,8 @@
 <div class="psa-card">
     <div class="psa-filters">
         <input type="text" class="form-control form-control-sm"
-               placeholder="Buscar usuario o acción..." style="max-width:220px;" />
-        <select class="form-select form-select-sm" style="max-width:160px;">
+               placeholder="Buscar usuario o acción..." style="max-width:220px;" id="auditoriaSearch" />
+        <select class="form-select form-select-sm" style="max-width:160px;" id="auditoriaModulo">
             <option value="">Todos los módulos</option>
             <option>Pagos</option>
             <option>Usuarios</option>
@@ -23,7 +23,7 @@
             <option>Solicitudes</option>
             <option>Reportes</option>
         </select>
-        <select class="form-select form-select-sm" style="max-width:160px;">
+        <select class="form-select form-select-sm" style="max-width:160px;" id="auditoriaAccion">
             <option value="">Todas las acciones</option>
             <option>Pago ejecutado</option>
             <option>Usuario creado</option>
@@ -32,55 +32,14 @@
             <option>Solicitud aprobada</option>
             <option>Inicio sesión</option>
         </select>
-        <input type="date" class="form-control form-control-sm" style="max-width:160px;" />
+        <input type="date" class="form-control form-control-sm" style="max-width:160px;" id="auditoriaFecha" />
         <div class="spacer"></div>
         <button class="btn btn-outline-psa btn-sm"><i class="fas fa-download"></i> Exportar</button>
     </div>
 
-    <table class="table table-hover mb-0" style="font-size:0.82rem;">
-        <thead style="background:#fafaf8;">
-            <tr>
-                <th style="padding:0.8rem 1.3rem;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--psa-muted);font-weight:600;border-bottom:1px solid var(--psa-border);">Fecha</th>
-                <th style="padding:0.8rem 1.3rem;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--psa-muted);font-weight:600;border-bottom:1px solid var(--psa-border);">Usuario</th>
-                <th style="padding:0.8rem 1.3rem;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--psa-muted);font-weight:600;border-bottom:1px solid var(--psa-border);">Acción</th>
-                <th style="padding:0.8rem 1.3rem;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--psa-muted);font-weight:600;border-bottom:1px solid var(--psa-border);">Módulo</th>
-                <th style="padding:0.8rem 1.3rem;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--psa-muted);font-weight:600;border-bottom:1px solid var(--psa-border);">IP</th>
-                <th style="padding:0.8rem 1.3rem;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--psa-muted);font-weight:600;border-bottom:1px solid var(--psa-border);">Detalle</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td style="padding:0.9rem 1.3rem;">22/03/2026 10:14</td>
-                <td style="padding:0.9rem 1.3rem;">Admin Sistema</td>
-                <td style="padding:0.9rem 1.3rem;"><span class="psa-badge psa-badge-green">Pago ejecutado</span></td>
-                <td style="padding:0.9rem 1.3rem;">Pagos</td>
-                <td style="padding:0.9rem 1.3rem;font-family:monospace;font-size:0.75rem;">192.168.1.10</td>
-                <td style="padding:0.9rem 1.3rem;"><a asp-controller="Auditoria" asp-action="Detalle" class="psa-card-action">Ver →</a></td>
-            </tr>
-            <tr>
-                <td style="padding:0.9rem 1.3rem;">22/03/2026 08:30</td>
-                <td style="padding:0.9rem 1.3rem;">Admin Sistema</td>
-                <td style="padding:0.9rem 1.3rem;"><span class="psa-badge psa-badge-blue">Usuario creado</span></td>
-                <td style="padding:0.9rem 1.3rem;">Usuarios</td>
-                <td style="padding:0.9rem 1.3rem;font-family:monospace;font-size:0.75rem;">192.168.1.10</td>
-                <td style="padding:0.9rem 1.3rem;"><a asp-controller="Auditoria" asp-action="Detalle" class="psa-card-action">Ver →</a></td>
-            </tr>
-            <tr>
-                <td style="padding:0.9rem 1.3rem;">21/03/2026 16:45</td>
-                <td style="padding:0.9rem 1.3rem;">Admin Sistema</td>
-                <td style="padding:0.9rem 1.3rem;"><span class="psa-badge psa-badge-gold">Parámetro editado</span></td>
-                <td style="padding:0.9rem 1.3rem;">Configuración</td>
-                <td style="padding:0.9rem 1.3rem;font-family:monospace;font-size:0.75rem;">192.168.1.10</td>
-                <td style="padding:0.9rem 1.3rem;"><a asp-controller="Auditoria" asp-action="Detalle" class="psa-card-action">Ver →</a></td>
-            </tr>
-            <tr>
-                <td style="padding:0.9rem 1.3rem;">21/03/2026 14:10</td>
-                <td style="padding:0.9rem 1.3rem;">Ing. Rojas</td>
-                <td style="padding:0.9rem 1.3rem;"><span class="psa-badge psa-badge-red">Solicitud rechazada</span></td>
-                <td style="padding:0.9rem 1.3rem;">Solicitudes</td>
-                <td style="padding:0.9rem 1.3rem;font-family:monospace;font-size:0.75rem;">192.168.1.22</td>
-                <td style="padding:0.9rem 1.3rem;"><a asp-controller="Auditoria" asp-action="Detalle" class="psa-card-action">Ver →</a></td>
-            </tr>
-        </tbody>
-    </table>
+    <div id="gridAuditoria" style="height:400px;width:100%;" class="ag-theme-alpine"></div>
 </div>
+
+@section Scripts {
+    <script src="~/js/Pages/Admin/AuditoriaGrid.js" asp-append-version="true"></script>
+}
