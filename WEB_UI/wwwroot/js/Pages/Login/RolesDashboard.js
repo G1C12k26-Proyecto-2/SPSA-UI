@@ -29,7 +29,7 @@
     const data = await response.json();
 
     if (data.result === 'ok') {
-        sessionStorage.setItem('user', JSON.stringify(data.data));
+        sessionStorage.setItem('user', JSON.stringify(data.data)); /// Usar el de .net no el de JAVA
     const user = data.data;
 
     if (user.rol === 'Admin') {
