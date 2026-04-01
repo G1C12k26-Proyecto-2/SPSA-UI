@@ -62,6 +62,9 @@
     --psa-purple-bg: #f0e8fb;
     --psa-border: #d6ddd8;
     --psa-r: 8px;
+    /* Font families */
+    --font-titulo: 'Fraunces', serif;
+    --font-cuerpo: 'Epilogue', sans-serif;
 }
 
 .Juan5{
