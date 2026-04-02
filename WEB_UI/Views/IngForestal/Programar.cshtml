@@ -21,6 +21,9 @@
             border-radius: var(--psa-r);
             border: 1px solid var(--psa-border);
         }
+        [data-bs-theme=dark] .pr-stepper {
+            background: #2a2a2a;
+        }
         .pr-step {
             flex: 1;
             display: flex;
@@ -29,8 +32,15 @@
             padding: 0.75rem;
             border-radius: var(--psa-r);
             transition: background 0.2s;
+            background: #f5f5f5;
         }
         .pr-step.activo {
+            background: var(--psa-pale);
+        }
+        [data-bs-theme=dark] .pr-step {
+            background: #3a3a3a;
+        }
+        [data-bs-theme=dark] .pr-step.activo {
             background: var(--psa-pale);
         }
         .pr-step-num {

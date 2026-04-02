@@ -93,10 +93,20 @@
     .psa-stats {
         grid-template-columns: repeat(2, 1fr);
     }
-    
+
     .psa-stat-sub {
         white-space: normal;
     }
+}
+
+/* ===== DARK MODE ===== */
+[data-bs-theme=dark] .psa-stat-card {
+    background: #2a2a2a;
+    border-color: #464646;
+}
+
+[data-bs-theme=dark] .psa-stat-value {
+    color: #f5f5f5;
 }
 /* Ajuste para que las tarjetas de estadísticas sean más compactas */
 .psa-stats {

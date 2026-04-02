@@ -24,8 +24,8 @@ function UsuariosListaGrid() {
                 }
             },
             {
-                headerName: "", width: 80, sortable: false, filter: false,
-                cellRenderer: p => `<a href="/Usuarios/Editar/${p.data.id}" class="psa-card-action">Editar →</a>`
+                headerName: "", width: 100, minWidth: 100, sortable: false, filter: false,
+                cellRenderer: p => `<a href="/Usuarios/Editar/${p.data.id}" class="btn btn-psa btn-sm" style="font-size:0.68rem;padding:1px 8px;">Ver</a>`
             }
         ];
 

@@ -21,8 +21,8 @@ function AuditoriaGrid() {
                 cellRenderer: p => `<span style="font-family:monospace;font-size:0.75rem;">${p.value}</span>`
             },
             {
-                headerName: "", width: 80, sortable: false, filter: false,
-                cellRenderer: p => `<a href="/Auditoria/Detalle" class="psa-card-action">Ver →</a>`
+                headerName: "", width: 100, minWidth: 100, sortable: false, filter: false,
+                cellRenderer: p => `<a href="/Auditoria/Detalle" class="btn btn-psa btn-sm" style="font-size:0.68rem;padding:1px 8px;">Ver</a>`
             }
         ];
 

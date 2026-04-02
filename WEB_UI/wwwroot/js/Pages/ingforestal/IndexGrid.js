@@ -8,7 +8,7 @@ function IngForestalIndexGrid() {
         const colDefs = [
             {
                 field: "finca", headerName: "Finca / Propietario", flex: 2,
-                cellRenderer: p => `<div><div style="font-weight:600;color:var(--psa-forest);">${p.data.finca}</div><div style="font-size:0.75rem;color:var(--psa-muted);">${p.data.propietario}</div></div>`
+                cellRenderer: p => `<div><div style="color:var(--psa-ink);">${p.data.finca}</div><div style="font-size:0.75rem;color:var(--psa-muted);">${p.data.propietario}</div></div>`
             },
             { field: "ubicacion", headerName: "Ubicación", flex: 1 },
             { field: "hectareas", headerName: "Hectáreas" },
@@ -22,8 +22,8 @@ function IngForestalIndexGrid() {
             },
             { field: "fechaSolicitud", headerName: "Fecha Solicitud" },
             {
-                headerName: "", width: 80, sortable: false, filter: false,
-                cellRenderer: p => `<a href="/IngForestal/Detalle" class="psa-card-action">Ver →</a>`
+                headerName: "", width: 100, minWidth: 100, sortable: false, filter: false,
+                cellRenderer: p => `<a href="/IngForestal/Detalle" class="btn btn-psa btn-sm" style="font-size:0.68rem;padding:1px 8px;">Ver</a>`
             }
         ];
 

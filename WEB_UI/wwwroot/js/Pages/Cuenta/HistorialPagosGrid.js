@@ -30,7 +30,7 @@ function HistorialPagosGrid() {
                 }
             },
             {
-                headerName: "", width: 80, sortable: false, filter: false,
+                headerName: "", width: 100, minWidth: 100, sortable: false, filter: false,
                 cellRenderer: p => `<button class="btn btn-psa btn-sm" style="font-size:0.68rem;padding:1px 8px;">Factura</button>`
             }
         ];
