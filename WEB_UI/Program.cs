@@ -1,7 +1,11 @@
+using WEB_UI.Config;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.Configure<GoogleMapsOptions>(
+    builder.Configuration.GetSection("GoogleMaps"));
 
 var app = builder.Build();
 
