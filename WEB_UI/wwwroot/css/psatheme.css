@@ -1013,3 +1013,71 @@ h6,
         .psa-file-chip .remove:hover {
             color: var(--psa-red);
         }
+/* =====================================================
+   AGENDA - VERSIÓN SIMPLE CENTRADA
+   ===================================================== */
+
+.psa-timeline {
+    display: flex;
+    flex-direction: column;
+}
+
+.psa-tl-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 14px 0;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.psa-tl-dot {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #e8f5ee;
+    color: #2d8653;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+    .psa-tl-dot .dia {
+        font-size: 1.1rem;
+        font-weight: 700;
+    }
+
+    .psa-tl-dot .mes {
+        font-size: 0.55rem;
+        text-transform: uppercase;
+    }
+
+.psa-tl-body {
+    flex: 1;
+}
+
+.psa-tl-title {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: #0d2b1a;
+    margin-bottom: 4px;
+}
+
+.psa-tl-desc {
+    font-size: 0.7rem;
+    color: #5c6b60;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 4px;
+}
+
+.psa-tl-time {
+    font-size: 0.68rem;
+    color: #2d8653;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}

@@ -30,6 +30,9 @@
 
     if (data.result === 'ok') {
         sessionStorage.setItem('user', JSON.stringify(data.data));
+        sessionStorage.setItem('userId', data.data.id);
+        sessionStorage.setItem('userName', data.data.fullName || data.data.userName);
+        sessionStorage.setItem('userRol', data.data.rol);
     const user = data.data;
 
     if (user.rol === 'Admin') {

@@ -1,244 +1,204 @@
 /* =====================================================
    agenda.js — Visitas / Agenda | PSA
-   Ruta: wwwroot/js/ingforestal/agenda.js
+   Versión simplificada y funcional
    ===================================================== */
 
-/* ── DATOS DE EJEMPLO (reemplazar con modelo del servidor) ── */
-const AG_EVENTOS = [
-    { id: 1, fecha: '2026-03-23', hora: '08:00', finca: 'Finca Los Robles',    ubicacion: 'Turrialba, Cartago',        estado: 'pendiente' },
-    { id: 2, fecha: '2026-03-25', hora: '10:30', finca: 'Hacienda Verde',      ubicacion: 'Sarapiquí, Heredia',        estado: 'pendiente' },
-    { id: 3, fecha: '2026-03-28', hora: '07:00', finca: 'Lote El Pinar',       ubicacion: 'San Ramón, Alajuela',       estado: 'proceso'   },
-    { id: 4, fecha: '2026-03-13', hora: '09:00', finca: 'Finca El Cedro',      ubicacion: 'Pérez Zeledón, San José',   estado: 'proceso'   },
-    { id: 5, fecha: '2026-03-13', hora: '14:00', finca: 'Parcela Guayabo',     ubicacion: 'Turrialba, Cartago',        estado: 'aprobada'  },
-    { id: 6, fecha: '2026-03-05', hora: '08:00', finca: 'Lote Montañés',       ubicacion: 'Tarrazú, San José',         estado: 'aprobada'  },
-    { id: 7, fecha: '2026-03-19', hora: '11:00', finca: 'Finca La Esperanza',  ubicacion: 'Acosta, San José',          estado: 'pendiente' },
-    { id: 8, fecha: '2026-04-03', hora: '08:30', finca: 'Reserva Los Pinos',   ubicacion: 'Montes de Oro, Puntarenas', estado: 'pendiente' },
-    { id: 9, fecha: '2026-04-10', hora: '07:00', finca: 'Hacienda Río Claro',  ubicacion: 'Upala, Alajuela',           estado: 'pendiente' },
-];
+const API_URL = "https://localhost:44392";
 
-/* ── ESTADO GLOBAL ────────────────────────────────── */
 const AG = {
-    hoy:    new Date(),
-    año:    new Date().getFullYear(),
-    mes:    new Date().getMonth(),   // 0-based
+    hoy: new Date(),
+    año: new Date().getFullYear(),
+    mes: new Date().getMonth(),
     diaSeleccionado: null,
+    eventos: [],
+    ingenieroId: null
 };
 
-const MESES = [
-    'Enero','Febrero','Marzo','Abril','Mayo','Junio',
-    'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'
-];
-const DIAS_SEMANA = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+const MESES = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 
-/* ── 1. RENDER COMPLETO DEL CALENDARIO ───────────── */
-function renderCalendario() {
-    actualizarLabelMes();
-    renderCeldas();
-    // Por defecto seleccionar hoy si está en el mes actual
-    const esHoy = AG.año === AG.hoy.getFullYear() && AG.mes === AG.hoy.getMonth();
-    const diaInicial = esHoy ? AG.hoy.getDate() : 1;
-    seleccionarDia(AG.año, AG.mes, diaInicial, false);
-}
-
-function actualizarLabelMes() {
-    const el = document.getElementById('ag-mes-label');
-    if (el) el.textContent = `${MESES[AG.mes]} ${AG.año}`;
-}
-
-function renderCeldas() {
-    const wrap = document.getElementById('ag-semanas');
-    if (!wrap) return;
-    wrap.innerHTML = '';
-
-    const primerDia   = new Date(AG.año, AG.mes, 1).getDay();   // 0=Dom
-    const diasEnMes   = new Date(AG.año, AG.mes + 1, 0).getDate();
-    const diasMesAnt  = new Date(AG.año, AG.mes, 0).getDate();
-
-    const hoyStr = isoFecha(AG.hoy.getFullYear(), AG.hoy.getMonth(), AG.hoy.getDate());
-
-    let celdas = [];
-
-    // Días del mes anterior (relleno)
-    for (let i = primerDia - 1; i >= 0; i--) {
-        celdas.push({ dia: diasMesAnt - i, mes: AG.mes - 1, año: AG.año, otroMes: true });
+function obtenerIngenieroId() {
+    let id = localStorage.getItem('userId') || sessionStorage.getItem('userId');
+    if (!id) {
+        const userStr = sessionStorage.getItem('user');
+        if (userStr) {
+            try {
+                const user = JSON.parse(userStr);
+                id = user.id;
+            } catch (e) { }
+        }
     }
+    return id ? parseInt(id) : 1;
+}
+
+async function cargarAgenda() {
+    try {
+        AG.ingenieroId = obtenerIngenieroId();
+        const response = await fetch(`${API_URL}/api/Ingeniero/agenda/${AG.ingenieroId}?anio=${AG.año}&mes=${AG.mes + 1}`);
+        const data = await response.json();
+
+        if (data.result === "SUCCESS") {
+            AG.eventos = data.data.eventosMes || [];
+            renderCalendario();
+            // Seleccionar el día actual
+            const hoy = new Date();
+            if (AG.año === hoy.getFullYear() && AG.mes === hoy.getMonth()) {
+                seleccionarDia(hoy.getDate());
+            } else {
+                seleccionarDia(1);
+            }
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+function renderCalendario() {
+    document.getElementById('ag-mes-label').textContent = `${MESES[AG.mes]} ${AG.año}`;
+
+    const primerDia = new Date(AG.año, AG.mes, 1).getDay();
+    const diasEnMes = new Date(AG.año, AG.mes + 1, 0).getDate();
+    const diasMesAnt = new Date(AG.año, AG.mes, 0).getDate();
+
+    let html = '<table style="width:100%; border-collapse:collapse;">';
+    html += '<tr style="background:#f5f5f5;">';
+    html += '<th style="padding:8px; border:1px solid #ddd;">Dom</th>';
+    html += '<th style="padding:8px; border:1px solid #ddd;">Lun</th>';
+    html += '<th style="padding:8px; border:1px solid #ddd;">Mar</th>';
+    html += '<th style="padding:8px; border:1px solid #ddd;">Mié</th>';
+    html += '<th style="padding:8px; border:1px solid #ddd;">Jue</th>';
+    html += '<th style="padding:8px; border:1px solid #ddd;">Vie</th>';
+    html += '<th style="padding:8px; border:1px solid #ddd;">Sáb</th>';
+    html += '</tr>';
+
+    let dia = 1;
+    let row = '<tr>';
+
+    // Celdas vacías del mes anterior
+    for (let i = 0; i < primerDia; i++) {
+        row += '<td style="padding:8px; border:1px solid #ddd; background:#f9f9f9; height:100px; vertical-align:top;">&nbsp;</td>';
+    }
+
     // Días del mes actual
     for (let d = 1; d <= diasEnMes; d++) {
-        celdas.push({ dia: d, mes: AG.mes, año: AG.año, otroMes: false });
-    }
-    // Relleno siguiente mes
-    const restantes = 42 - celdas.length;
-    for (let d = 1; d <= restantes; d++) {
-        celdas.push({ dia: d, mes: AG.mes + 1, año: AG.año, otroMes: true });
-    }
+        const fechaStr = `${AG.año}-${String(AG.mes + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+        const eventos = AG.eventos.filter(e => e.fechaVisita?.split('T')[0] === fechaStr);
+        const esHoy = (AG.año === AG.hoy.getFullYear() && AG.mes === AG.hoy.getMonth() && d === AG.hoy.getDate());
+        const esSel = (AG.diaSeleccionado === d);
 
-    celdas.forEach(c => {
-        const fechaStr  = isoFecha(c.año, c.mes, c.dia);
-        const eventos   = AG_EVENTOS.filter(e => e.fecha === fechaStr);
-        const esHoyCell = fechaStr === hoyStr;
-        const esSel     = AG.diaSeleccionado === fechaStr;
+        let estiloCelda = 'padding:8px; border:1px solid #ddd; height:100px; vertical-align:top;';
+        if (esHoy) estiloCelda += ' border:2px solid #2d8653; background:#e8f5ee;';
+        if (esSel) estiloCelda += ' background:#d4edda;';
 
-        const celda = document.createElement('div');
-        celda.className = 'ag-cal-celda'
-            + (c.otroMes              ? ' otro-mes'     : '')
-            + (esHoyCell              ? ' hoy'          : '')
-            + (esSel                  ? ' seleccionada' : '')
-            + (eventos.length > 0     ? ' tiene-eventos': '');
-        celda.setAttribute('role', 'button');
-        celda.setAttribute('aria-label', `${c.dia} de ${MESES[c.mes]}`);
+        row += `<td style="${estiloCelda}" onclick="seleccionarDia(${d})">`;
+        row += `<span style="font-weight:bold; display:inline-block; margin-bottom:5px; background:${esHoy ? '#2d8653' : '#e8f5ee'}; color:${esHoy ? '#fff' : '#0d2b1a'}; padding:2px 8px; border-radius:20px;">${d}</span>`;
 
-        // Número del día
-        const num = document.createElement('div');
-        num.className   = 'ag-cal-num';
-        num.textContent = c.dia;
-        celda.appendChild(num);
+        // Mostrar eventos
+        eventos.slice(0, 2).forEach(ev => {
+            let color = '';
+            if (ev.estado === 'Pendiente') color = '#fdf3e3';
+            else if (ev.estado === 'En Proceso') color = '#e8f0fb';
+            else color = '#e8f5ee';
+            row += `<div style="font-size:11px; padding:3px 5px; margin-bottom:2px; border-radius:4px; background:${color}; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;">`;
+            row += `${ev.horaInicio?.substring(0, 5) || ''} ${ev.nombreFinca}`;
+            row += `</div>`;
+        });
 
-        // Píldoras de eventos (máx. 2 visibles)
-        if (eventos.length > 0) {
-            const evWrap = document.createElement('div');
-            evWrap.className = 'ag-cal-eventos';
-
-            eventos.slice(0, 2).forEach(ev => {
-                const pill = document.createElement('div');
-                pill.className   = `ag-cal-evento-pill ${ev.estado}`;
-                pill.textContent = `${ev.hora} ${ev.finca}`;
-                pill.title       = ev.finca;
-                evWrap.appendChild(pill);
-            });
-
-            if (eventos.length > 2) {
-                const mas = document.createElement('div');
-                mas.className   = 'ag-cal-evento-mas';
-                mas.textContent = `+${eventos.length - 2} más`;
-                evWrap.appendChild(mas);
-            }
-            celda.appendChild(evWrap);
+        if (eventos.length > 2) {
+            row += `<div style="font-size:10px; color:#666; font-style:italic;">+${eventos.length - 2} más</div>`;
         }
 
-        if (!c.otroMes) {
-            celda.addEventListener('click', () => seleccionarDia(c.año, c.mes, c.dia));
+        row += `</td>`;
+
+        if ((primerDia + d) % 7 === 0) {
+            row += '</tr><tr>';
         }
-        wrap.appendChild(celda);
-    });
+    }
+
+    // Completar última fila
+    const celdasUsadas = primerDia + diasEnMes;
+    const celdasRestantes = 42 - celdasUsadas;
+    for (let i = 0; i < celdasRestantes; i++) {
+        row += '<td style="padding:8px; border:1px solid #ddd; background:#f9f9f9; height:100px; vertical-align:top;">&nbsp;</td>';
+    }
+
+    row += '</tr>';
+    html += row + '</table>';
+
+    document.getElementById('ag-semanas').innerHTML = html;
 }
 
-/* ── 2. SELECCIÓN DE DÍA ─────────────────────────── */
-function seleccionarDia(año, mes, dia, reRender = true) {
-    AG.diaSeleccionado = isoFecha(año, mes, dia);
-    if (reRender) renderCeldas();
-    renderListaDia();
+function seleccionarDia(dia) {
+    AG.diaSeleccionado = dia;
+    renderCalendario();
+    cargarVisitasDia(dia);
 }
 
-function renderListaDia() {
-    const panel = document.getElementById('ag-lista-dia');
-    const label = document.getElementById('ag-dia-label');
-    if (!panel) return;
+async function cargarVisitasDia(dia) {
+    const fecha = `${AG.año}-${String(AG.mes + 1).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
+    const fechaObj = new Date(AG.año, AG.mes, dia);
+    const nombreDia = fechaObj.toLocaleDateString('es', { weekday: 'long' });
 
-    const fecha   = new Date(AG.diaSeleccionado + 'T00:00:00');
-    const nombre  = `${DIAS_SEMANA[fecha.getDay()]}, ${fecha.getDate()} de ${MESES[fecha.getMonth()]} ${fecha.getFullYear()}`;
-    if (label) label.textContent = nombre;
+    document.getElementById('ag-dia-label').textContent = `${nombreDia}, ${dia} de ${MESES[AG.mes]} ${AG.año}`;
 
-    const eventos = AG_EVENTOS
-        .filter(e => e.fecha === AG.diaSeleccionado)
-        .sort((a, b) => a.hora.localeCompare(b.hora));
-
-    panel.innerHTML = '';
+    const eventos = AG.eventos.filter(e => e.fechaVisita?.split('T')[0] === fecha);
+    const container = document.getElementById('ag-lista-dia');
 
     if (eventos.length === 0) {
-        panel.innerHTML = `
-            <div class="ag-dia-vacio">
-                <div class="ag-dia-vacio-icon">📅</div>
-                <p>Sin visitas programadas para este día.</p>
-            </div>`;
+        container.innerHTML = '<div style="text-align:center; padding:40px; color:#666;">📅<br>Sin visitas programadas para este día.</div>';
         return;
     }
 
+    let html = '';
     eventos.forEach(ev => {
-        const item = document.createElement('div');
-        item.className = 'ag-lista-item';
-        item.innerHTML = `
-            <div class="ag-lista-hora">${ev.hora}</div>
-            <div class="ag-lista-info">
-                <div class="ag-lista-nombre">${ev.finca}</div>
-                <div class="ag-lista-sub">
-                    <i class="fa-solid fa-location-dot"></i> ${ev.ubicacion}
+        let chipColor = '';
+        if (ev.estado === 'Pendiente') chipColor = 'style="background:#fdf3e3; color:#c9922a;"';
+        else if (ev.estado === 'En Proceso') chipColor = 'style="background:#e8f0fb; color:#1d4f8a;"';
+        else chipColor = 'style="background:#e8f5ee; color:#2d8653;"';
+
+        html += `
+            <div style="display:flex; gap:15px; padding:15px; border-bottom:1px solid #eee;">
+                <div style="min-width:60px; font-weight:bold; color:#2d8653;">${ev.horaInicio?.substring(0, 5) || ''}</div>
+                <div style="flex:1;">
+                    <div style="font-weight:bold; margin-bottom:4px;">${ev.nombreFinca}</div>
+                    <div style="font-size:12px; color:#666;">${ev.ubicacionCompleta || ev.ubicacion || ''}</div>
+                    <div style="margin-top:5px;"><span ${chipColor} style="padding:3px 10px; border-radius:20px; font-size:11px;">${ev.estado || ''}</span></div>
                 </div>
-                <div style="margin-top:4px;">
-                    <span class="chip chip-${ev.estado}">${etiquetaEstado(ev.estado)}</span>
+                <div>
+                    <button class="btn-icon" onclick="verDetalle(${ev.idSolicitud})" style="background:none; border:none; cursor:pointer; color:#2d8653;">👁️</button>
                 </div>
             </div>
-            <div class="ag-lista-acciones">
-                <button class="btn-icon" title="Ver detalle" onclick="verDetalle(${ev.id})">
-                    <i class="fa-solid fa-eye"></i>
-                </button>
-                ${ev.estado === 'proceso' ? `
-                <button class="btn-icon" title="Realizar visita" onclick="realizarVisita(${ev.id})">
-                    <i class="fa-solid fa-pen-to-square"></i>
-                </button>` : ''}
-            </div>`;
-        panel.appendChild(item);
+        `;
     });
+    container.innerHTML = html;
 }
 
-/* ── 3. NAVEGACIÓN MES ───────────────────────────── */
 function mesAnterior() {
     AG.mes--;
     if (AG.mes < 0) { AG.mes = 11; AG.año--; }
-    renderCalendario();
+    cargarAgenda();
 }
 
 function mesSiguiente() {
     AG.mes++;
     if (AG.mes > 11) { AG.mes = 0; AG.año++; }
-    renderCalendario();
+    cargarAgenda();
 }
 
 function irHoy() {
     AG.año = AG.hoy.getFullYear();
     AG.mes = AG.hoy.getMonth();
-    renderCalendario();
+    cargarAgenda();
 }
 
-/* ── 4. NAVEGACIÓN ───────────────────────────────── */
 function verDetalle(id) {
-    if (!id || isNaN(id)) { mostrarToastAG('ID inválido.', true); return; }
-    window.location.href = `/IngForestal/Detalle?id=${encodeURIComponent(id)}`;
-}
-
-function realizarVisita(id) {
-    if (!id || isNaN(id)) { mostrarToastAG('ID inválido.', true); return; }
-    window.location.href = `/IngForestal/Realizar?id=${encodeURIComponent(id)}`;
+    window.location.href = `/IngForestal/Detalle?id=${id}`;
 }
 
 function programarVisita() {
     window.location.href = '/IngForestal/Programar';
 }
 
-/* ── 5. HELPERS ──────────────────────────────────── */
-function isoFecha(año, mes, dia) {
-    const m = String(mes + 1).padStart(2, '0');   // mes 0-based → 1-based
-    const d = String(dia).padStart(2, '0');
-    return `${año}-${m}-${d}`;
-}
-
-function etiquetaEstado(estado) {
-    const mapa = { pendiente: 'Pendiente', proceso: 'En Proceso', aprobada: 'Aprobada', rechazada: 'Rechazada' };
-    return mapa[estado] || estado;
-}
-
-/* ── 6. TOAST ────────────────────────────────────── */
-function mostrarToastAG(mensaje, esError = false) {
-    const toast   = document.getElementById('ag-toast');
-    const msgSpan = document.getElementById('ag-toast-msg');
-    if (!toast || !mensaje) return;
-    msgSpan.textContent = mensaje;
-    toast.classList.toggle('error', esError);
-    toast.classList.add('visible');
-    clearTimeout(toast._t);
-    toast._t = setTimeout(() => toast.classList.remove('visible'), 3500);
-}
-
-/* ── 7. INIT ─────────────────────────────────────── */
+// Inicializar
 document.addEventListener('DOMContentLoaded', () => {
-    renderCalendario();
+    cargarAgenda();
 });

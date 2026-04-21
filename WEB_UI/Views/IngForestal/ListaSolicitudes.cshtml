@@ -4,11 +4,7 @@
 }
 
 @section Styles {
-    <!-- Ya no necesitas estas fuentes porque psatheme.css ya las define -->
-    <!-- <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"> -->
-    <!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet"> -->
-    <!-- <link rel="stylesheet" href="~/css/ingforestal/dashboard.css" asp-append-version="true" /> -->
-    <!-- <link rel="stylesheet" href="~/css/ingforestal/visitas-index.css" asp-append-version="true" /> -->
+    <link rel="stylesheet" href="~/css/ingforestal/lista-solicitudes.css" asp-append-version="true" />
 }
 
 <div class="IngForestal-dashboard">
@@ -27,27 +23,27 @@
         </div>
     </div>
 
-    <!-- ===== TABS DE ESTADO - Usando psa-tabs ===== -->
+    <!-- ===== TABS DE ESTADO ===== -->
     <div class="psa-tabs" style="margin-bottom: 1.5rem;">
-        <a href="#" class="psa-tab active" data-tab="todos" onclick="cambiarTab('todos'); return false;">
+        <a href="javascript:void(0)" class="psa-tab active" data-tab="todos" onclick="cambiarTab('todos')">
             <i class="fas fa-layer-group"></i> Todas
-            <span class="psa-badge psa-badge-grey" style="margin-left: 6px;" id="badge-todos">39</span>
+            <span class="psa-badge psa-badge-grey" style="margin-left: 6px;" id="badge-todos">0</span>
         </a>
-        <a href="#" class="psa-tab" data-tab="pendiente" onclick="cambiarTab('pendiente'); return false;">
+        <a href="javascript:void(0)" class="psa-tab" data-tab="pendiente" onclick="cambiarTab('pendiente')">
             <i class="fas fa-hourglass-half"></i> Pendientes
-            <span class="psa-badge psa-badge-gold" style="margin-left: 6px;" id="badge-pendiente">8</span>
+            <span class="psa-badge psa-badge-gold" style="margin-left: 6px;" id="badge-pendiente">0</span>
         </a>
-        <a href="#" class="psa-tab" data-tab="proceso" onclick="cambiarTab('proceso'); return false;">
+        <a href="javascript:void(0)" class="psa-tab" data-tab="proceso" onclick="cambiarTab('proceso')">
             <i class="fas fa-spinner"></i> En Proceso
-            <span class="psa-badge psa-badge-blue" style="margin-left: 6px;" id="badge-proceso">3</span>
+            <span class="psa-badge psa-badge-blue" style="margin-left: 6px;" id="badge-proceso">0</span>
         </a>
-        <a href="#" class="psa-tab" data-tab="aprobada" onclick="cambiarTab('aprobada'); return false;">
+        <a href="javascript:void(0)" class="psa-tab" data-tab="aprobada" onclick="cambiarTab('aprobada')">
             <i class="fas fa-circle-check"></i> Aprobadas
-            <span class="psa-badge psa-badge-green" style="margin-left: 6px;" id="badge-aprobada">24</span>
+            <span class="psa-badge psa-badge-green" style="margin-left: 6px;" id="badge-aprobada">0</span>
         </a>
-        <a href="#" class="psa-tab" data-tab="rechazada" onclick="cambiarTab('rechazada'); return false;">
+        <a href="javascript:void(0)" class="psa-tab" data-tab="rechazada" onclick="cambiarTab('rechazada')">
             <i class="fas fa-circle-xmark"></i> Rechazadas
-            <span class="psa-badge psa-badge-red" style="margin-left: 6px;" id="badge-rechazada">4</span>
+            <span class="psa-badge psa-badge-red" style="margin-left: 6px;" id="badge-rechazada">0</span>
         </a>
     </div>
 
@@ -59,7 +55,7 @@
             <div class="psa-card-title">
                 <i class="fas fa-list"></i> Listado de solicitudes
             </div>
-            <span style="font-size: 0.75rem; color: var(--psa-muted);" id="vi-pag-info">Cargando...</span>
+            <span style="font-size: 0.75rem; color: var(--psa-muted);" id="vi-pag-info-bottom">Cargando...</span>
         </div>
 
         <!-- Filtros -->
@@ -97,141 +93,10 @@
                     </tr>
                 </thead>
                 <tbody id="vi-tbody">
-                    <!-- FILA 1 -->
-                    <tr data-estado="pendiente" data-nombre="Finca Los Robles" data-fecha="2026-03-23" data-hectareas="12.5" data-fecha-visita="2026-03-23" style="border-bottom: 1px solid var(--psa-border);">
-                        <td style="padding: 14px 16px;">
-                            <div style="font-weight: 600; color: var(--psa-forest);">Finca Los Robles</div>
-                            <div style="font-size: 0.75rem; color: var(--psa-muted);">José Ángel Mora</div>
-                        </td>
-                        <td style="padding: 14px 16px;">Turrialba, Cartago</td>
-                        <td style="padding: 14px 16px;">12.50 ha</td>
-                        <td style="padding: 14px 16px;">Bosque Secundario</td>
-                        <td style="padding: 14px 16px;"><span class="psa-badge psa-badge-gold">Pendiente</span></td>
-                        <td style="padding: 14px 16px;">
-                            <div>23/03/2026</div>
-                            <div style="font-size: 0.7rem; color: var(--psa-muted);">—</div>
-                        </td>
-                        <td style="padding: 14px 16px;">
-                            <button class="btn-icon" style="background: none; border: none; cursor: pointer; color: var(--psa-leaf); font-size: 0.9rem; padding: 4px 8px; border-radius: 6px;" title="Ver detalle" onclick="verDetalle(1)">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                            <button class="btn-icon" style="background: none; border: none; cursor: pointer; color: var(--psa-leaf); font-size: 0.9rem; padding: 4px 8px; border-radius: 6px;" title="Programar visita" onclick="abrirModalProgramar(1,'Finca Los Robles','José Ángel Mora')">
-                                <i class="fas fa-calendar-plus"></i>
-                            </button>
-                        </td>
-                    </tr>
-
-                    <!-- FILA 2 -->
-                    <tr data-estado="pendiente" data-nombre="Hacienda Verde" data-fecha="2026-03-15" data-hectareas="28.0" data-fecha-visita="2026-03-25" style="border-bottom: 1px solid var(--psa-border);">
-                        <td style="padding: 14px 16px;">
-                            <div style="font-weight: 600; color: var(--psa-forest);">Hacienda Verde</div>
-                            <div style="font-size: 0.75rem; color: var(--psa-muted);">María Solano Vega</div>
-                        </td>
-                        <td style="padding: 14px 16px;">Sarapiquí, Heredia</td>
-                        <td style="padding: 14px 16px;">28.00 ha</td>
-                        <td style="padding: 14px 16px;">Bosque Primario</td>
-                        <td style="padding: 14px 16px;"><span class="psa-badge psa-badge-gold">Pendiente</span></td>
-                        <td style="padding: 14px 16px;">
-                            <div>25/03/2026</div>
-                            <div style="font-size: 0.7rem; color: var(--psa-muted);">—</div>
-                        </td>
-                        <td style="padding: 14px 16px;">
-                            <button class="btn-icon" style="background: none; border: none; cursor: pointer; color: var(--psa-leaf); font-size: 0.9rem; padding: 4px 8px; border-radius: 6px;" title="Ver detalle" onclick="verDetalle(2)">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                            <button class="btn-icon" style="background: none; border: none; cursor: pointer; color: var(--psa-leaf); font-size: 0.9rem; padding: 4px 8px; border-radius: 6px;" title="Programar visita" onclick="abrirModalProgramar(2,'Hacienda Verde','María Solano Vega')">
-                                <i class="fas fa-calendar-plus"></i>
-                            </button>
-                        </td>
-                    </tr>
-
-                    <!-- FILA 3 -->
-                    <tr data-estado="proceso" data-nombre="Finca El Cedro" data-fecha="2026-03-10" data-hectareas="9.75" data-fecha-visita="2026-03-28" style="border-bottom: 1px solid var(--psa-border);">
-                        <td style="padding: 14px 16px;">
-                            <div style="font-weight: 600; color: var(--psa-forest);">Finca El Cedro</div>
-                            <div style="font-size: 0.75rem; color: var(--psa-muted);">Roberto Chaves</div>
-                        </td>
-                        <td style="padding: 14px 16px;">Pérez Zeledón, San José</td>
-                        <td style="padding: 14px 16px;">9.75 ha</td>
-                        <td style="padding: 14px 16px;">Plantación Forestal</td>
-                        <td style="padding: 14px 16px;"><span class="psa-badge psa-badge-blue">En Proceso</span></td>
-                        <td style="padding: 14px 16px;">
-                            <div>28/03/2026</div>
-                            <div style="font-size: 0.7rem; color: var(--psa-muted);">—</div>
-                        </td>
-                        <td style="padding: 14px 16px;">
-                            <button class="btn-icon" style="background: none; border: none; cursor: pointer; color: var(--psa-leaf); font-size: 0.9rem; padding: 4px 8px; border-radius: 6px;" title="Ver detalle" onclick="verDetalle(3)">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                            <button class="btn-icon" style="background: none; border: none; cursor: pointer; color: var(--psa-leaf); font-size: 0.9rem; padding: 4px 8px; border-radius: 6px;" title="Continuar evaluación" onclick="realizarVisita(3)">
-                                <i class="fas fa-pen-to-square"></i>
-                            </button>
-                        </td>
-                    </tr>
-
-                    <!-- FILA 4 -->
-                    <tr data-estado="aprobada" data-nombre="Lote Montañés" data-fecha="2026-03-05" data-hectareas="45.0" data-fecha-visita="2026-03-05" style="border-bottom: 1px solid var(--psa-border);">
-                        <td style="padding: 14px 16px;">
-                            <div style="font-weight: 600; color: var(--psa-forest);">Lote Montañés</div>
-                            <div style="font-size: 0.75rem; color: var(--psa-muted);">Ana Chinchilla</div>
-                        </td>
-                        <td style="padding: 14px 16px;">Tarrazú, San José</td>
-                        <td style="padding: 14px 16px;">45.00 ha</td>
-                        <td style="padding: 14px 16px;">Bosque Primario</td>
-                        <td style="padding: 14px 16px;"><span class="psa-badge psa-badge-green">Aprobada</span></td>
-                        <td style="padding: 14px 16px;">
-                            <div>05/03/2026</div>
-                            <div style="font-size: 0.7rem; color: var(--psa-muted);">—</div>
-                        </td>
-                        <td style="padding: 14px 16px;">
-                            <button class="btn-icon" style="background: none; border: none; cursor: pointer; color: var(--psa-leaf); font-size: 0.9rem; padding: 4px 8px; border-radius: 6px;" title="Ver detalle" onclick="verDetalle(4)">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                        </td>
-                    </tr>
-
-                    <!-- FILA 5 -->
-                    <tr data-estado="rechazada" data-nombre="Finca San Marcos" data-fecha="2026-02-28" data-hectareas="5.0" data-fecha-visita="2026-02-28" style="border-bottom: 1px solid var(--psa-border);">
-                        <td style="padding: 14px 16px;">
-                            <div style="font-weight: 600; color: var(--psa-forest);">Finca San Marcos</div>
-                            <div style="font-size: 0.75rem; color: var(--psa-muted);">Luis Blanco</div>
-                        </td>
-                        <td style="padding: 14px 16px;">Alajuela, Alajuela</td>
-                        <td style="padding: 14px 16px;">5.00 ha</td>
-                        <td style="padding: 14px 16px;">Pasto</td>
-                        <td style="padding: 14px 16px;"><span class="psa-badge psa-badge-red">Rechazada</span></td>
-                        <td style="padding: 14px 16px;">
-                            <div>28/02/2026</div>
-                            <div style="font-size: 0.7rem; color: var(--psa-muted);">—</div>
-                        </td>
-                        <td style="padding: 14px 16px;">
-                            <button class="btn-icon" style="background: none; border: none; cursor: pointer; color: var(--psa-leaf); font-size: 0.9rem; padding: 4px 8px; border-radius: 6px;" title="Ver detalle" onclick="verDetalle(5)">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                        </td>
-                    </tr>
-
-                    <!-- FILA 6 -->
-                    <tr data-estado="pendiente" data-nombre="Finca La Esperanza" data-fecha="2026-03-20" data-hectareas="18.3" data-fecha-visita="2026-03-22" style="border-bottom: 1px solid var(--psa-border);">
-                        <td style="padding: 14px 16px;">
-                            <div style="font-weight: 600; color: var(--psa-forest);">Finca La Esperanza</div>
-                            <div style="font-size: 0.75rem; color: var(--psa-muted);">Carmen Ulate</div>
-                        </td>
-                        <td style="padding: 14px 16px;">Acosta, San José</td>
-                        <td style="padding: 14px 16px;">18.30 ha</td>
-                        <td style="padding: 14px 16px;">Bosque Secundario</td>
-                        <td style="padding: 14px 16px;"><span class="psa-badge psa-badge-gold">Pendiente</span></td>
-                        <td style="padding: 14px 16px;">
-                            <div>22/03/2026</div>
-                            <div style="font-size: 0.7rem; color: var(--psa-muted);">—</div>
-                        </td>
-                        <td style="padding: 14px 16px;">
-                            <button class="btn-icon" style="background: none; border: none; cursor: pointer; color: var(--psa-leaf); font-size: 0.9rem; padding: 4px 8px; border-radius: 6px;" title="Ver detalle" onclick="verDetalle(6)">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                            <button class="btn-icon" style="background: none; border: none; cursor: pointer; color: var(--psa-leaf); font-size: 0.9rem; padding: 4px 8px; border-radius: 6px;" title="Programar visita" onclick="abrirModalProgramar(6,'Finca La Esperanza','Carmen Ulate')">
-                                <i class="fas fa-calendar-plus"></i>
-                            </button>
+                    <tr id="loading-row">
+                        <td colspan="7" style="text-align: center; padding: 60px 20px; color: var(--psa-muted);">
+                            <i class="fas fa-spinner fa-spin" style="font-size: 1.5rem; margin-bottom: 10px; display: inline-block;"></i>
+                            <div>Cargando solicitudes...</div>
                         </td>
                     </tr>
                 </tbody>
@@ -250,7 +115,7 @@
 
         <!-- Paginación -->
         <div class="psa-filters" style="justify-content: space-between; border-top: 1px solid var(--psa-border); border-bottom: none;">
-            <span style="font-size: 0.75rem; color: var(--psa-muted);" id="vi-pag-info-bottom"></span>
+            <span style="font-size: 0.75rem; color: var(--psa-muted);" id="vi-pag-info"></span>
             <div style="display: flex; gap: 6px;" id="vi-pag-btns"></div>
         </div>
 
