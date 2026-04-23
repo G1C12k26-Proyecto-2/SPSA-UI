@@ -1,17 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using WEB_UI.Config;
 
 namespace WebUI.Controllers
 {
     public class FincasController : Controller
     {
-        private readonly GoogleMapsOptions _googleMapsOptions;
-
-        public FincasController(IOptions<GoogleMapsOptions> googleMapsOptions)
-        {
-            _googleMapsOptions = googleMapsOptions.Value;
-        }
         public IActionResult Index()
         {
             ViewData["Title"] = "Mis Fincas";
@@ -23,7 +15,6 @@ namespace WebUI.Controllers
         {
             ViewData["Title"] = "Registrar Finca";
             ViewData["Breadcrumb"] = "Registrar Finca";
-            ViewBag.GoogleMapsApiKey = _googleMapsOptions.JsApiKey;
             return View();
         }
 
