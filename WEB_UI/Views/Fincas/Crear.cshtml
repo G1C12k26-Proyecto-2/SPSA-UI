@@ -24,26 +24,41 @@
                     <label class="form-label-psa">Nombre de la Finca</label>
                     <input id="txtNombre" type="text" class="form-control" placeholder="Nombre de la finca" />
                 </div>
+                <!-- Mapa -->
                 <div class="col-12">
                     <label class="form-label-psa">Seleccionar Ubicación en Mapa</label>
-                    <div class="psa-map-selector">
-                        <div class="pin" style="top:45%;left:50%;background:var(--psa-red);box-shadow:0 0 0 6px rgba(184,50,50,0.3);"></div>
-                        <div class="psa-map-hint"><i class="fas fa-mouse-pointer"></i> Clic para seleccionar ubicación</div>
-                    </div>
-                    <small class="text-muted">Coordenadas: 10.4628° N, -84.6426° W</small>
+                    <div id="map" style="height:350px; border-radius:12px; border:1px solid #2d5a3d;"></div>
+                    <small class="text-muted mt-1 d-block">
+                        <i class="fas fa-map-marker-alt me-1"></i>
+                        <span id="lblCoordenadas">Haz clic en el mapa para seleccionar la ubicación</span>
+                    </small>
+                    <input type="hidden" id="hfLatitud" />
+                    <input type="hidden" id="hfLongitud" />
                 </div>
+
+                <!-- Provincia -->
                 <div class="col-md-4">
                     <label class="form-label-psa">Provincia</label>
-                    <input type="text" class="form-control" value="Alajuela" >
-                    <small class="text-muted">Auto-detectada</small>
+                    <select id="ddlProvincia" class="form-control">
+                        <option value="">Cargando...</option>
+                    </select>
+                    <small class="text-muted">Auto-detectada al hacer clic en el mapa</small>
                 </div>
+
+                <!-- Cantón -->
                 <div class="col-md-4">
                     <label class="form-label-psa">Cantón</label>
-                    <input type="text" class="form-control" value="San Carlos" />
+                    <select id="ddlCanton" class="form-control">
+                        <option value="">Seleccione provincia primero</option>
+                    </select>
                 </div>
+
+                <!-- Distrito -->
                 <div class="col-md-4">
                     <label class="form-label-psa">Distrito</label>
-                    <input type="text" class="form-control" value="La Fortuna" />
+                    <select id="ddlDistrito" class="form-control">
+                        <option value="">Seleccione cantón primero</option>
+                    </select>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label-psa">Tamaño (Hectáreas)</label>
@@ -124,5 +139,13 @@
 </div>
 
 @section Scripts {
-    <script src="~/js/Pages/Fincas/crearfinca.js" asp-append-version="true"></script>
+    <script src="~/js/Pages/Fincas/crearfinca.js"></script>
+    <script>
+        function initMap() {
+            if (window.crearFincaInstance) window.crearFincaInstance.InitMap();
+        }
+    </script>
+    <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=@ViewBag.GoogleMapsApiKey&callback=initMap">
+    </script>
 }
