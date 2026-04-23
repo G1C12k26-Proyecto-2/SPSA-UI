@@ -26,24 +26,21 @@
                 </div>
                 <div class="col-12">
                     <label class="form-label-psa">Seleccionar Ubicación en Mapa</label>
-                    <div class="psa-map-selector">
-                        <div class="pin" style="top:45%;left:50%;background:var(--psa-red);box-shadow:0 0 0 6px rgba(184,50,50,0.3);"></div>
-                        <div class="psa-map-hint"><i class="fas fa-mouse-pointer"></i> Clic para seleccionar ubicación</div>
-                    </div>
-                    <small class="text-muted">Coordenadas: 10.4628° N, -84.6426° W</small>
+                    <div id="map" style="height: 400px; width: 100%; border-radius: 8px;"></div>
+                    <small class="text-muted" id="txtCoordenadas">Seleccioná un punto en el mapa</small>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label-psa">Provincia</label>
-                    <input type="text" class="form-control" value="Alajuela" >
+                    <input id="txtProvincia" type="text" class="form-control" >
                     <small class="text-muted">Auto-detectada</small>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label-psa">Cantón</label>
-                    <input type="text" class="form-control" value="San Carlos" />
+                    <input id="txtCanton" type="text" class="form-control" />
                 </div>
                 <div class="col-md-4">
                     <label class="form-label-psa">Distrito</label>
-                    <input type="text" class="form-control" value="La Fortuna" />
+                    <input id="txtDistrito" type="text" class="form-control" />
                 </div>
                 <div class="col-md-4">
                     <label class="form-label-psa">Tamaño (Hectáreas)</label>
@@ -119,10 +116,15 @@
                 <button type="button" class="btn btn-outline-psa" id="btnBorrador"><i class="fas fa-floppy-disk"></i> Guardar Borrador</button>
                 <a class="btn btn-outline-psa" asp-controller="Fincas" asp-action="Index">Cancelar</a>
             </div>
+            <input type="hidden" id="hdnLat" />
+            <input type="hidden" id="hdnLng" />
+            <input type="hidden" id="hdnAddress" />
+            <input type="hidden" id="hdnPlaceId" />
         </form>
     </div>
 </div>
 
 @section Scripts {
+    <script async src="https://maps.googleapis.com/maps/api/js?key=@ViewBag.GoogleMapsApiKey&callback=initMap"></script>
     <script src="~/js/Pages/Fincas/crearfinca.js" asp-append-version="true"></script>
 }
