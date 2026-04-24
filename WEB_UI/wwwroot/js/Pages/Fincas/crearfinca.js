@@ -34,6 +34,31 @@ function CrearFinca() {
         $('#uploadFotos').click(() => $('#inputFotos').trigger('click'));
         $('#uploadDocs').click(() => $('#inputDocs').trigger('click'));
 
+        $(document).on('mouseenter', '.file-preview-card', function() {
+            $(this).find('.file-remove-btn').css('display', 'flex');
+        });
+        $(document).on('mouseleave', '.file-preview-card', function() {
+            $(this).find('.file-remove-btn').css('display', 'none');
+        });
+        $(document).on('click', '.file-remove-btn', function(e) {
+            e.stopPropagation();
+            const card = $(this).closest('.file-preview-card');
+            const index = parseInt(card.data('index'));
+            const type = card.data('type');
+            if (type === 'foto') {
+                fotosUrls.splice(index, 1);
+                $('#previewFotos').find('.file-preview-card').each(function(i) { $(this).attr('data-index', i); });
+                if (fotosUrls.length === 0) $('#uploadFotos').html('<i class="fas fa-camera"></i><p>Arrastra imágenes o haz clic</p><small>JPG, PNG · máx. 10MB</small>');
+                else $('#uploadFotos').html('<i class="fas fa-check text-success"></i><p>' + fotosUrls.length + ' foto(s) subida(s)</p>');
+            } else {
+                docsUrls.splice(index, 1);
+                $('#previewDocs').find('.file-preview-card').each(function(i) { $(this).attr('data-index', i); });
+                if (docsUrls.length === 0) $('#uploadDocs').html('<i class="fas fa-file-arrow-up"></i><p>Plano catastrado, escritura, etc.</p><small>PDF · máx. 25MB</small>');
+                else $('#uploadDocs').html('<i class="fas fa-check text-success"></i><p>' + docsUrls.length + ' documento(s) subido(s)</p>');
+            }
+            card.remove();
+        });
+
         $('#inputFotos').on('change', async function() {
             const files = this.files;
             if (!files || files.length === 0) return;
@@ -42,8 +67,13 @@ function CrearFinca() {
             fotosUrls = result;
             $('#uploadFotos').html('<i class="fas fa-check text-success"></i><p>' + files.length + ' foto(s) subida(s)</p>');
             $('#previewFotos').empty();
-            fotosUrls.forEach(url => {
-                $('#previewFotos').append('<img src="' + url + '" style="height:60px;width:60px;object-fit:cover;border-radius:8px;" />');
+            fotosUrls.forEach((url, i) => {
+                $('#previewFotos').append(`
+        <div class="file-preview-card" data-index="${i}" data-type="foto" style="position:relative;display:inline-block;width:60px;height:60px;border-radius:8px;overflow:hidden;margin:2px;">
+            <img src="${url}" style="width:60px;height:60px;object-fit:cover;display:block;" />
+            <div class="file-remove-btn" style="display:none;position:absolute;top:2px;right:2px;background:rgba(0,0,0,0.6);color:white;border-radius:50%;width:18px;height:18px;font-size:11px;align-items:center;justify-content:center;cursor:pointer;">✕</div>
+        </div>
+    `);
             });
         });
 
@@ -55,8 +85,14 @@ function CrearFinca() {
             docsUrls = result;
             $('#uploadDocs').html('<i class="fas fa-check text-success"></i><p>' + files.length + ' documento(s) subido(s)</p>');
             $('#previewDocs').empty();
-            docsUrls.forEach(url => {
-                $('#previewDocs').append('<span class="badge bg-secondary"><i class="fas fa-file-pdf me-1"></i>PDF</span>');
+            docsUrls.forEach((url, i) => {
+                $('#previewDocs').append(`
+        <div class="file-preview-card" data-index="${i}" data-type="doc" style="position:relative;display:inline-flex;align-items:center;gap:4px;background:#f1f5f2;border:1px solid #ccc;border-radius:8px;padding:4px 8px;margin:2px;">
+            <i class="fas fa-file-pdf text-danger"></i>
+            <span style="font-size:12px;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Doc ${i + 1}</span>
+            <div class="file-remove-btn" style="display:none;background:rgba(0,0,0,0.6);color:white;border-radius:50%;width:16px;height:16px;font-size:10px;align-items:center;justify-content:center;cursor:pointer;margin-left:2px;">✕</div>
+        </div>
+    `);
             });
         });
     };
