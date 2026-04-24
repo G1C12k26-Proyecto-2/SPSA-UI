@@ -24,7 +24,6 @@
                     <label class="form-label-psa">Nombre de la Finca</label>
                     <input id="txtNombre" type="text" class="form-control" placeholder="Nombre de la finca" />
                 </div>
-                <!-- Mapa -->
                 <div class="col-12">
                     <label class="form-label-psa">Seleccionar Ubicación en Mapa</label>
                     <div id="map" style="height:350px; border-radius:12px; border:1px solid #2d5a3d;"></div>
@@ -36,20 +35,15 @@
                     <input type="hidden" id="hfLongitud" />
                 </div>
 
-                <!-- Provincia -->
                 <div class="col-md-4">
                     <label class="form-label-psa">Provincia</label>
                     <input id="ddlProvincia" type="text" class="form-control" placeholder="Provincia" />
                     <small class="text-muted">Auto-detectada al hacer clic en el mapa</small>
                 </div>
-
-                <!-- Cantón -->
                 <div class="col-md-4">
                     <label class="form-label-psa">Cantón</label>
                     <input id="ddlCanton" type="text" class="form-control" placeholder="Cantón" />
                 </div>
-
-                <!-- Distrito -->
                 <div class="col-md-4">
                     <label class="form-label-psa">Distrito</label>
                     <input id="ddlDistrito" type="text" class="form-control" placeholder="Distrito" />
@@ -62,44 +56,48 @@
             </div>
 
             <h5 class="mb-3 mt-4"><i class="fas fa-leaf text-success"></i> Características Ambientales</h5>
+
             <div class="mb-3">
                 <label class="form-label-psa">Tipo de Superficie</label>
-                <div class="psa-chip-group">
-                    <span class="psa-chip">Plana</span>
-                    <span class="psa-chip selected">Inclinada</span>
-                    <span class="psa-chip">Muy Inclinada</span>
+                <div class="psa-chip-group" data-field="pendiente">
+                    <span class="psa-chip" data-value="PLANA">Plana</span>
+                    <span class="psa-chip selected" data-value="INCLINADA">Inclinada</span>
+                    <span class="psa-chip" data-value="MUY_INCLINADA">Muy Inclinada</span>
                 </div>
             </div>
+
             <div class="mb-3">
                 <label class="form-label-psa">Tipo de Vegetación</label>
-                <div class="psa-chip-group">
-                    <span class="psa-chip selected">Bosque Primario</span>
-                    <span class="psa-chip">Bosque Secundario</span>
-                    <span class="psa-chip">Plantación Forestal</span>
-                    <span class="psa-chip">Pasto</span>
+                <div class="psa-chip-group" data-field="vegetacion">
+                    <span class="psa-chip selected" data-value="BOSQUE_PRIMARIO">Bosque Primario</span>
+                    <span class="psa-chip" data-value="BOSQUE_SECUNDARIO">Bosque Secundario</span>
+                    <span class="psa-chip" data-value="PLANTACION_FORESTAL">Plantación Forestal</span>
+                    <span class="psa-chip" data-value="PASTO_ESCASA">Pasto</span>
                 </div>
             </div>
+
             <div class="mb-3">
                 <label class="form-label-psa">Recursos Hídricos</label>
-                <div class="psa-chip-group" data-multi="true">
-                    <span class="psa-chip selected">Ríos o Quebradas</span>
-                    <span class="psa-chip">Nacientes</span>
-                    <span class="psa-chip">Sin recurso hídrico</span>
+                <div class="psa-chip-group" data-multi="true" data-field="hidrico">
+                    <span class="psa-chip" data-value="rios">Ríos o Quebradas</span>
+                    <span class="psa-chip" data-value="nacientes">Nacientes</span>
+                    <span class="psa-chip" data-value="ninguno">Sin recurso hídrico</span>
                 </div>
                 <div class="d-flex gap-2 align-items-center mt-2">
                     <label class="form-label-psa mb-0" style="white-space:nowrap;">Cantidad de nacientes:</label>
-                    <input type="number" class="form-control" value="0" min="0" style="width:80px;" />
+                    <input id="txtNacientes" type="number" class="form-control" value="0" min="0" style="width:80px;" />
                 </div>
             </div>
+
             <div class="mb-3">
                 <label class="form-label-psa">Uso de Suelo (selección múltiple)</label>
-                <div class="psa-chip-group" data-multi="true">
-                    <span class="psa-chip selected">Conservación</span>
-                    <span class="psa-chip selected">Protección Forestal</span>
-                    <span class="psa-chip">Reforestación</span>
-                    <span class="psa-chip">Agroforestal</span>
-                    <span class="psa-chip">Ganaderia</span>
-                    <span class="psa-chip">Mixto</span>
+                <div class="psa-chip-group" data-multi="true" data-field="usosuelo">
+                    <span class="psa-chip selected" data-value="Conservación">Conservación</span>
+                    <span class="psa-chip selected" data-value="Protección Forestal">Protección Forestal</span>
+                    <span class="psa-chip" data-value="Reforestación">Reforestación</span>
+                    <span class="psa-chip" data-value="Agroforestal">Agroforestal</span>
+                    <span class="psa-chip" data-value="Ganadería">Ganadería</span>
+                    <span class="psa-chip" data-value="Mixto">Mixto</span>
                 </div>
             </div>
 
@@ -122,6 +120,7 @@
                     </div>
                 </div>
             </div>
+
             <hr />
             <div class="d-flex gap-2">
                 <button type="button" class="btn btn-psa" id="btnEnviar"><i class="fas fa-paper-plane"></i> Enviar Solicitud</button>

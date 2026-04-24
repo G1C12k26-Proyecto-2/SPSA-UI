@@ -1,4 +1,4 @@
-﻿const API_URL_BASE = "http://localhost:5094";
+﻿const API_URL_BASE = 'https://localhost:7070';
 
 // ── Header scroll effect ──
 const header = document.getElementById('bpHeader');

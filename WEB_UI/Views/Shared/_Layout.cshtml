@@ -190,7 +190,7 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.js"></script>
 <script>
-        const API_URL_BASE = "http://localhost:5094";
+        const API_URL_BASE = 'https://localhost:7070';
     function ShowSuccess(t, x) { Swal.fire({ icon: 'success', title: t, text: x, timer: 2000 }); }
     function ShowError(t, x) { Swal.fire({ icon: 'error', title: t, text: x }); }
     function ShowConfirm(t, x, cb) { Swal.fire({ title: t, text: x, icon: 'warning', showCancelButton: true, confirmButtonColor: '#2d8653', cancelButtonColor: '#b83232', confirmButtonText: 'Confirmar', cancelButtonText: 'Cancelar' }).then(r => { if (r.isConfirmed) cb(); }); }

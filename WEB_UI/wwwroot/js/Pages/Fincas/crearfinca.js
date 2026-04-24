@@ -4,11 +4,20 @@ function CrearFinca() {
     this.InitView = () => {
         window.crearFincaInstance = this;
 
-        // Chips
         $(document).on('click', '.psa-chip', function () {
             const group = $(this).closest('.psa-chip-group');
             if (group.data('multi') === true) {
-                $(this).toggleClass('selected');
+                if (group.data('field') === 'hidrico') {
+                    if ($(this).data('value') === 'ninguno') {
+                        group.find('.psa-chip').removeClass('selected');
+                        $(this).addClass('selected');
+                    } else {
+                        group.find('[data-value="ninguno"]').removeClass('selected');
+                        $(this).toggleClass('selected');
+                    }
+                } else {
+                    $(this).toggleClass('selected');
+                }
             } else {
                 group.find('.psa-chip').removeClass('selected');
                 $(this).addClass('selected');
@@ -65,8 +74,8 @@ function CrearFinca() {
             };
 
             const provincia = get('administrative_area_level_1');
-            const canton    = get('administrative_area_level_2', 'locality', 'sublocality_level_1');
-            const distrito  = get('administrative_area_level_3', 'neighborhood', 'sublocality_level_2', 'locality');
+            const canton = get('administrative_area_level_2', 'locality', 'sublocality_level_1');
+            const distrito = get('administrative_area_level_3', 'neighborhood', 'sublocality_level_2', 'locality');
 
             $('#ddlProvincia').val(provincia || '');
             $('#ddlCanton').val(canton || '');
@@ -74,14 +83,26 @@ function CrearFinca() {
         });
     };
 
+    this.GetChipValue = (field) => {
+        return $(`[data-field="${field}"] .psa-chip.selected`).first().data('value') || '';
+    };
+
+    this.GetChipValues = (field) => {
+        const values = [];
+        $(`[data-field="${field}"] .psa-chip.selected`).each(function () {
+            values.push($(this).data('value'));
+        });
+        return values;
+    };
+
     this.Submit = () => {
-        const nombre = $('#txtNombre').val();
+        const nombre = $('#txtNombre').val().trim();
         const hectareas = $('#txtHectareas').val();
         const lat = $('#hfLatitud').val();
         const lng = $('#hfLongitud').val();
-        const idProvincia = $('#ddlProvincia').val();
-        const idCanton = $('#ddlCanton').val();
-        const idDistrito = $('#ddlDistrito').val();
+        const provincia = $('#ddlProvincia').val().trim();
+        const canton = $('#ddlCanton').val().trim();
+        const distrito = $('#ddlDistrito').val().trim();
 
         if (!nombre || !hectareas) {
             ShowError('Campos requeridos', 'Nombre y hectáreas son obligatorios.');
@@ -91,42 +112,96 @@ function CrearFinca() {
             ShowError('Ubicación requerida', 'Por favor seleccione una ubicación en el mapa.');
             return;
         }
-        if (!idProvincia || !idCanton || !idDistrito) {
-            ShowError('Ubicación incompleta', 'Seleccione provincia, cantón y distrito.');
+        if (!provincia || !canton) {
+            ShowError('Ubicación incompleta', 'Provincia y cantón son obligatorios.');
             return;
         }
 
-        const servicios = [];
-        $('.psa-chip-group[data-field="servicios"] .psa-chip.selected').each(function () {
-            servicios.push($(this).data('value'));
-        });
+        const pendiente = this.GetChipValue('pendiente');
+        const vegetacion = this.GetChipValue('vegetacion');
+        const hidricos = this.GetChipValues('hidrico');
+        const usoSuelos = this.GetChipValues('usosuelo');
 
-        const payload = {
-            nombre,
-            hectareas: parseFloat(hectareas),
-            latitud: parseFloat(lat),
-            longitud: parseFloat(lng),
-            idProvincia: parseInt(idProvincia),
-            idCanton: parseInt(idCanton),
-            idDistrito: parseInt(idDistrito),
-            servicios
-        };
+        if (!pendiente) {
+            ShowError('Campo requerido', 'Seleccione el tipo de superficie.');
+            return;
+        }
+        if (!vegetacion) {
+            ShowError('Campo requerido', 'Seleccione el tipo de vegetación.');
+            return;
+        }
+        if (hidricos.length === 0) {
+            ShowError('Campo requerido', 'Seleccione al menos un recurso hídrico.');
+            return;
+        }
+        if (usoSuelos.length === 0) {
+            ShowError('Campo requerido', 'Seleccione al menos un uso de suelo.');
+            return;
+        }
+
+        const nacientes = parseInt($('#txtNacientes').val()) || 0;
+
+        if (hidricos.includes('nacientes') && nacientes === 0) {
+            ShowError('Campo requerido', 'Ingrese la cantidad de nacientes.');
+            return;
+        }
+        const tieneRios = hidricos.includes('rios');
+        const usoSuelo = usoSuelos.join(', ');
+
+        const user = JSON.parse(sessionStorage.getItem('user'));
+        if (!user || !user.id) {
+            ShowError('Sesión inválida', 'No se pudo obtener el usuario. Inicie sesión nuevamente.');
+            return;
+        }
 
         ShowConfirm('Enviar solicitud', '¿Está seguro de enviar la solicitud? Una vez enviada, pasará a revisión.', () => {
+
+            // Paso 1: resolver textos a IDs de UBICACIONES
             $.ajax({
-                url: API_URL_BASE + '/api/Solicitudes/Create',
+                url: API_URL_BASE + '/api/Ubicaciones/Resolve',
                 method: 'POST',
                 contentType: 'application/json',
-                data: JSON.stringify(payload),
+                data: JSON.stringify({ provincia, canton, distrito }),
                 success: (res) => {
-                    if (res.result === 'ok') {
-                        ShowSuccess('Solicitud enviada', 'Su finca fue registrada y está pendiente de revisión.');
-                        setTimeout(() => { window.location = '/Fincas'; }, 2000);
-                    } else {
-                        ShowError('Error', res.message || 'No se pudo registrar la finca.');
+                    if (res.result !== 'success') {
+                        ShowError('Error', 'No se pudieron resolver las ubicaciones.');
+                        return;
                     }
+
+                    const ubicacion = res.data;
+
+                    // Paso 2: crear la solicitud
+                    const payload = {
+                        usuarioId: user.id,
+                        nombreFinca: nombre,
+                        idProvincia: ubicacion.idProvincia || null,
+                        idCanton: ubicacion.idCanton || null,
+                        idDistrito: ubicacion.idDistrito || null,
+                        hectareasOriginal: parseFloat(hectareas),
+                        pendienteOriginal: pendiente,
+                        tipoVegetacionOriginal: vegetacion,
+                        tieneRiosQuebradasOriginal: tieneRios,
+                        cantidadNacientesOriginal: nacientes,
+                        usoSueloOriginal: usoSuelo
+                    };
+
+                    $.ajax({
+                        url: API_URL_BASE + '/api/Solicitudes/Create',
+                        method: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify(payload),
+                        success: (res2) => {
+                            if (res2.result === 'ok' || res2.result === 'success') {
+                                ShowSuccess('Solicitud enviada', 'Su finca fue registrada y está pendiente de revisión.');
+                                setTimeout(() => { window.location = '/Fincas'; }, 2000);
+                            } else {
+                                ShowError('Error', res2.message || 'No se pudo registrar la finca.');
+                            }
+                        },
+                        error: () => ShowError('Error', 'No se pudo conectar con el servidor.')
+                    });
                 },
-                error: () => ShowError('Error', 'No se pudo conectar con el servidor.')
+                error: () => ShowError('Error', 'No se pudo resolver la ubicación.')
             });
         });
     };
