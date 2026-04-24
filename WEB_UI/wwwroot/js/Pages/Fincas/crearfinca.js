@@ -55,20 +55,22 @@ function CrearFinca() {
             if (status !== 'OK' || !results[0]) return;
 
             const components = results[0].address_components;
-            console.log('Components:', results[0].address_components.map(c => ({ name: c.long_name, types: c.types })));
 
-            const get = (type) => {
-                const c = components.find(c => c.types.includes(type));
-                return c ? c.long_name : '';
+            const get = (...types) => {
+                for (const type of types) {
+                    const c = components.find(c => c.types.includes(type));
+                    if (c) return c.long_name;
+                }
+                return '';
             };
 
             const provincia = get('administrative_area_level_1');
-            const canton   = get('administrative_area_level_2') || get('locality') || get('sublocality_level_1');
-            const distrito = get('administrative_area_level_3') || get('locality');
+            const canton    = get('administrative_area_level_2', 'locality', 'sublocality_level_1');
+            const distrito  = get('administrative_area_level_3', 'neighborhood', 'sublocality_level_2', 'locality');
 
-            $('#ddlProvincia').html(`<option value="1">${provincia}</option>`);
-            $('#ddlCanton').html(`<option value="1">${canton}</option>`);
-            $('#ddlDistrito').html(`<option value="1">${distrito}</option>`);
+            $('#ddlProvincia').val(provincia || '');
+            $('#ddlCanton').val(canton || '');
+            $('#ddlDistrito').val(distrito || '');
         });
     };
 
