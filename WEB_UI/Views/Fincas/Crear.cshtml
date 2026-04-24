@@ -55,14 +55,11 @@
             <h5 class="mb-3 mt-4"><i class="fas fa-leaf text-success"></i> Características Ambientales</h5>
             <div class="mb-3">
                 <label class="form-label-psa">Tipo de Superficie</label>
-                <select class="form-select" style="max-width:400px;">
-                    <option disabled selected>Seleccione tipo</option>
-                    <option>Montañosa</option>
-                    <option>Llanura</option>
-                    <option>Laderas</option>
-                    <option>Valle</option>
-                    <option>Costera</option>
-                </select>
+                <div class="psa-chip-group">
+                    <span class="psa-chip">Plana</span>
+                    <span class="psa-chip selected">Inclinada</span>
+                    <span class="psa-chip">Muy Inclinada</span>
+                </div>
             </div>
             <div class="mb-3">
                 <label class="form-label-psa">Tipo de Vegetación</label>
@@ -83,14 +80,6 @@
                 <div class="d-flex gap-2 align-items-center mt-2">
                     <label class="form-label-psa mb-0" style="white-space:nowrap;">Cantidad de nacientes:</label>
                     <input type="number" class="form-control" value="0" min="0" style="width:80px;" />
-                </div>
-            </div>
-            <div class="mb-3">
-                <label class="form-label-psa">Pendiente del Terreno</label>
-                <div class="psa-chip-group">
-                    <span class="psa-chip">Plana</span>
-                    <span class="psa-chip selected">Inclinada</span>
-                    <span class="psa-chip">Muy Inclinada</span>
                 </div>
             </div>
             <div class="mb-3">
