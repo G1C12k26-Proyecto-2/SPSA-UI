@@ -1,7 +1,10 @@
 /* =====================================================
-   visitas-index.js — Visitas / Index | PSA
-   Adaptado para usar clases psatheme.css
+   ListaSolicitudes.js — Lista de Solicitudes | PSA
+   Ruta: wwwroot/js/pages/ingforestal/ListaSolicitudes.js
+   Versión: Con carga dinámica desde el backend
    ===================================================== */
+
+const API_URL = "https://localhost:44392"; // Cambiar según entorno
 
 /* ── ESTADO GLOBAL ─────────────────────────────────── */
 const VI = {
@@ -10,15 +13,186 @@ const VI = {
     dirSort: 'asc',
     paginaActual: 1,
     porPagina: 8,
+    datosOriginales: [],      // Almacena todas las solicitudes
 };
 
-/* ── 1. TABS (adaptado para psa-tabs) ───────────────── */
+/* ── 1. CARGA INICIAL DESDE EL BACKEND ─────────────── */
+async function cargarSolicitudes() {
+    mostrarLoading(true);
+
+    try {
+        const ingenieroId = obtenerIngenieroId();
+        const response = await fetch(`${API_URL}/api/Ingeniero/Ingeniero/${ingenieroId}`);
+        const data = await response.json();
+
+        if (data.result === "SUCCESS" && data.data) {
+            // Guardar datos originales
+            VI.datosOriginales = data.data.solicitudesRecientes || [];
+
+            // Actualizar badges con los contadores
+            actualizarBadges(VI.datosOriginales);
+
+            // Renderizar tabla
+            renderizarTabla(VI.datosOriginales);
+
+            // Aplicar filtros y paginación
+            actualizarContadores();
+            aplicarFiltros();
+
+        } else {
+            mostrarToastVI('Error al cargar los datos: ' + (data.message || 'Error desconocido'), true);
+        }
+    } catch (error) {
+        console.error('Error al cargar solicitudes:', error);
+        mostrarToastVI('Error de conexión con el servidor', true);
+    } finally {
+        mostrarLoading(false);
+    }
+}
+
+// Función para obtener el ID del ingeniero
+function obtenerIngenieroId() {
+    let ingenieroId = localStorage.getItem('userId');
+    if (!ingenieroId) ingenieroId = sessionStorage.getItem('userId');
+    if (!ingenieroId) {
+        const userStr = sessionStorage.getItem('user');
+        if (userStr) {
+            try {
+                const user = JSON.parse(userStr);
+                ingenieroId = user.id;
+            } catch (e) { console.error('Error parsing user:', e); }
+        }
+    }
+    if (!ingenieroId) {
+        console.warn('No se encontró ID de usuario, usando valor por defecto 1');
+        return 1;
+    }
+    return parseInt(ingenieroId);
+}
+
+function mostrarLoading(mostrar) {
+    const tbody = document.getElementById('vi-tbody');
+    if (!tbody) return;
+
+    if (mostrar) {
+        tbody.innerHTML = `<tr id="loading-row">
+            <td colspan="7" style="text-align: center; padding: 60px 20px; color: var(--psa-muted);">
+                <i class="fas fa-spinner fa-spin" style="font-size: 1.5rem; margin-bottom: 10px; display: inline-block;"></i>
+                <div>Cargando solicitudes...</div>
+            </td>
+        </tr>`;
+    }
+}
+
+function actualizarBadges(solicitudes) {
+    let contadores = {
+        todos: solicitudes.length,
+        pendiente: 0,
+        proceso: 0,
+        aprobada: 0,
+        rechazada: 0
+    };
+
+    solicitudes.forEach(sol => {
+        const estado = (sol.estado || '').toLowerCase();
+        if (estado === 'pendiente') contadores.pendiente++;
+        else if (estado === 'en proceso') contadores.proceso++;
+        else if (estado === 'aprobada') contadores.aprobada++;
+        else if (estado === 'rechazada') contadores.rechazada++;
+    });
+
+    const badgeTodos = document.getElementById('badge-todos');
+    const badgePendiente = document.getElementById('badge-pendiente');
+    const badgeProceso = document.getElementById('badge-proceso');
+    const badgeAprobada = document.getElementById('badge-aprobada');
+    const badgeRechazada = document.getElementById('badge-rechazada');
+
+    if (badgeTodos) badgeTodos.textContent = contadores.todos;
+    if (badgePendiente) badgePendiente.textContent = contadores.pendiente;
+    if (badgeProceso) badgeProceso.textContent = contadores.proceso;
+    if (badgeAprobada) badgeAprobada.textContent = contadores.aprobada;
+    if (badgeRechazada) badgeRechazada.textContent = contadores.rechazada;
+}
+
+function renderizarTabla(solicitudes) {
+    const tbody = document.getElementById('vi-tbody');
+    if (!tbody) return;
+
+    if (!solicitudes || solicitudes.length === 0) {
+        tbody.innerHTML = '';
+        return;
+    }
+
+    tbody.innerHTML = '';
+
+    const estadoMap = {
+        'Pendiente': { class: 'psa-badge-gold', text: 'Pendiente', value: 'pendiente' },
+        'En Proceso': { class: 'psa-badge-blue', text: 'En Proceso', value: 'proceso' },
+        'Aprobada': { class: 'psa-badge-green', text: 'Aprobada', value: 'aprobada' },
+        'Rechazada': { class: 'psa-badge-red', text: 'Rechazada', value: 'rechazada' }
+    };
+
+    solicitudes.forEach((sol) => {
+        const estadoTexto = sol.estado || 'Pendiente';
+        const estadoInfo = estadoMap[estadoTexto] || estadoMap['Pendiente'];
+        const fechaFormateada = formatFecha(sol.fechaSolicitud);
+        const hectareasFormateadas = `${parseFloat(sol.hectareas).toFixed(2)} ha`;
+
+        const row = document.createElement('tr');
+        row.setAttribute('data-estado', estadoInfo.value);
+        row.setAttribute('data-nombre', sol.nombreFinca || '');
+        row.setAttribute('data-fecha', sol.fechaSolicitud ? sol.fechaSolicitud.split('T')[0] : '');
+        row.setAttribute('data-hectareas', sol.hectareas || 0);
+        row.setAttribute('data-id', sol.idSolicitud);
+        row.style.borderBottom = '1px solid var(--psa-border)';
+
+        // Determinar botones según estado
+        let botones = `
+            <button class="btn-icon" style="background: none; border: none; cursor: pointer; color: var(--psa-leaf); font-size: 0.9rem; padding: 4px 8px; border-radius: 6px;" 
+                    title="Ver detalle" onclick="verDetalle(${sol.idSolicitud})">
+                <i class="fas fa-eye"></i>
+            </button>
+        `;
+
+        if (estadoTexto === 'Pendiente') {
+            botones += `
+                <button class="btn-icon" style="background: none; border: none; cursor: pointer; color: var(--psa-leaf); font-size: 0.9rem; padding: 4px 8px; border-radius: 6px;" 
+                        title="Programar visita" onclick="abrirModalProgramar(${sol.idSolicitud}, '${escapeHtml(sol.nombreFinca)}', '${escapeHtml(sol.propietario)}')">
+                    <i class="fas fa-calendar-plus"></i>
+                </button>
+            `;
+        } else if (estadoTexto === 'En Proceso') {
+            botones += `
+                <button class="btn-icon" style="background: none; border: none; cursor: pointer; color: var(--psa-gold); font-size: 0.9rem; padding: 4px 8px; border-radius: 6px;" 
+                        title="Continuar evaluación" onclick="realizarVisita(${sol.idSolicitud})">
+                    <i class="fas fa-pen-to-square"></i>
+                </button>
+            `;
+        }
+
+        row.innerHTML = `
+            <td style="padding: 14px 16px;">
+                <div style="font-weight: 600; color: var(--psa-forest);">${escapeHtml(sol.nombreFinca || '')}</div>
+                <div style="font-size: 0.75rem; color: var(--psa-muted);">${escapeHtml(sol.propietario || '')}</div>
+            </td>
+            <td style="padding: 14px 16px;">${escapeHtml(sol.ubicacion || '')}</td>
+            <td style="padding: 14px 16px;">${hectareasFormateadas}</td>
+            <td style="padding: 14px 16px;">${escapeHtml(sol.tipoVegetacion || '')}</td>
+            <td style="padding: 14px 16px;"><span class="psa-badge ${estadoInfo.class}">${estadoInfo.text}</span></td>
+            <td style="padding: 14px 16px;">${fechaFormateada}</td>
+            <td style="padding: 14px 16px;">${botones}</td>
+        `;
+
+        tbody.appendChild(row);
+    });
+}
+
+/* ── 2. TABS ───────────────────────────────────────── */
 function cambiarTab(tab) {
     if (!tab) return;
     VI.tabActual = tab;
     VI.paginaActual = 1;
 
-    // Actualizar estilo de los tabs usando clase psa-tab
     document.querySelectorAll('.psa-tab').forEach(btn => {
         if (btn.getAttribute('data-tab') === tab) {
             btn.classList.add('active');
@@ -30,75 +204,83 @@ function cambiarTab(tab) {
     aplicarFiltros();
 }
 
-/* ── 2. FILTROS + BÚSQUEDA ────────────────────────── */
+/* ── 3. FILTROS + BÚSQUEDA ────────────────────────── */
 function aplicarFiltros() {
-    const busqueda = (document.getElementById('vi-buscador')?.value || '').trim().toLowerCase();
-    const orden = document.getElementById('vi-orden')?.value || 'fecha-desc';
+    if (!VI.datosOriginales || VI.datosOriginales.length === 0) {
+        actualizarPaginacion([]);
+        return;
+    }
 
-    const filas = Array.from(document.querySelectorAll('#vi-tbody tr'));
-    let visibles = [];
+    let datosFiltrados = [...VI.datosOriginales];
 
-    filas.forEach(fila => {
-        const estado = fila.dataset.estado || '';
-        const texto = fila.innerText.toLowerCase();
+    // Filtrar por estado
+    if (VI.tabActual && VI.tabActual !== 'todos') {
+        datosFiltrados = datosFiltrados.filter(sol => {
+            const estadoTexto = (sol.estado || '').toLowerCase();
+            const estadoFiltro = VI.tabActual.toLowerCase();
 
-        const passTab = VI.tabActual === 'todos' || estado === VI.tabActual;
-        const passBusc = !busqueda || texto.includes(busqueda);
+            if (estadoFiltro === 'pendiente') return estadoTexto === 'pendiente';
+            if (estadoFiltro === 'proceso') return estadoTexto === 'en proceso';
+            if (estadoFiltro === 'aprobada') return estadoTexto === 'aprobada';
+            if (estadoFiltro === 'rechazada') return estadoTexto === 'rechazada';
+            return true;
+        });
+    }
 
-        if (passTab && passBusc) {
-            fila.style.display = '';
-            visibles.push(fila);
-        } else {
-            fila.style.display = 'none';
-        }
-    });
+    // Filtrar por búsqueda
+    const busqueda = document.getElementById('vi-buscador')?.value.trim().toLowerCase() || '';
+    if (busqueda) {
+        datosFiltrados = datosFiltrados.filter(sol =>
+            (sol.nombreFinca || '').toLowerCase().includes(busqueda) ||
+            (sol.propietario || '').toLowerCase().includes(busqueda) ||
+            (sol.ubicacion || '').toLowerCase().includes(busqueda)
+        );
+    }
 
     // Ordenar
-    visibles.sort((a, b) => {
-        switch (orden) {
-            case 'fecha-desc':
-                return new Date(b.dataset.fecha) - new Date(a.dataset.fecha);
-            case 'fecha-asc':
-                return new Date(a.dataset.fecha) - new Date(b.dataset.fecha);
-            case 'nombre-asc':
-                return (a.dataset.nombre || '').localeCompare(b.dataset.nombre || '');
-            case 'hectareas-desc':
-                return parseFloat(b.dataset.hectareas) - parseFloat(a.dataset.hectareas);
-            default:
-                return 0;
-        }
-    });
+    const orden = document.getElementById('vi-orden')?.value || 'fecha-desc';
+    datosFiltrados = ordenarDatos(datosFiltrados, orden);
 
-    // Re-insertar en orden
-    const tbody = document.getElementById('vi-tbody');
-    visibles.forEach(f => tbody.appendChild(f));
-
-    actualizarPaginacion(visibles.length);
+    // Actualizar paginación
+    actualizarPaginacion(datosFiltrados);
     actualizarContadores();
-    mostrarEstadoVacio(visibles.length === 0);
 }
 
-/* ── ACTUALIZAR CONTADORES DE LOS BADGES ──────────── */
+function ordenarDatos(datos, orden) {
+    const datosOrdenados = [...datos];
+    switch (orden) {
+        case 'fecha-desc':
+            return datosOrdenados.sort((a, b) => new Date(b.fechaSolicitud) - new Date(a.fechaSolicitud));
+        case 'fecha-asc':
+            return datosOrdenados.sort((a, b) => new Date(a.fechaSolicitud) - new Date(b.fechaSolicitud));
+        case 'nombre-asc':
+            return datosOrdenados.sort((a, b) => (a.nombreFinca || '').localeCompare(b.nombreFinca || ''));
+        case 'hectareas-desc':
+            return datosOrdenados.sort((a, b) => (b.hectareas || 0) - (a.hectareas || 0));
+        default:
+            return datosOrdenados;
+    }
+}
+
 function actualizarContadores() {
-    const filas = document.querySelectorAll('#vi-tbody tr');
+    if (!VI.datosOriginales) return;
+
     let contadores = {
-        todos: 0,
+        todos: VI.datosOriginales.length,
         pendiente: 0,
         proceso: 0,
         aprobada: 0,
         rechazada: 0
     };
 
-    filas.forEach(fila => {
-        const estado = fila.dataset.estado || '';
-        contadores.todos++;
+    VI.datosOriginales.forEach(sol => {
+        const estado = (sol.estado || '').toLowerCase();
         if (estado === 'pendiente') contadores.pendiente++;
-        if (estado === 'proceso') contadores.proceso++;
-        if (estado === 'aprobada') contadores.aprobada++;
-        if (estado === 'rechazada') contadores.rechazada++;
+        else if (estado === 'en proceso') contadores.proceso++;
+        else if (estado === 'aprobada') contadores.aprobada++;
+        else if (estado === 'rechazada') contadores.rechazada++;
     });
 
-    // Actualizar badges
     const badgeTodos = document.getElementById('badge-todos');
     const badgePendiente = document.getElementById('badge-pendiente');
     const badgeProceso = document.getElementById('badge-proceso');
@@ -120,7 +302,6 @@ function limpiarFiltros() {
     VI.tabActual = 'todos';
     VI.paginaActual = 1;
 
-    // Actualizar tabs visualmente
     document.querySelectorAll('.psa-tab').forEach(btn => {
         btn.classList.toggle('active', btn.getAttribute('data-tab') === 'todos');
     });
@@ -128,29 +309,37 @@ function limpiarFiltros() {
     aplicarFiltros();
 }
 
-/* ── 3. PAGINACIÓN ───────────────────────────────── */
-function actualizarPaginacion(total) {
+/* ── 4. PAGINACIÓN ───────────────────────────────── */
+function actualizarPaginacion(datos) {
+    const total = datos.length;
     const totalPags = Math.max(1, Math.ceil(total / VI.porPagina));
     if (VI.paginaActual > totalPags) VI.paginaActual = totalPags;
 
-    const filas = Array.from(document.querySelectorAll('#vi-tbody tr')).filter(f => f.style.display !== 'none');
-    filas.forEach((f, i) => {
-        const enPagina = i >= (VI.paginaActual - 1) * VI.porPagina &&
-            i < VI.paginaActual * VI.porPagina;
-        f.style.display = enPagina ? '' : 'none';
-    });
+    // Obtener datos de la página actual
+    const inicio = (VI.paginaActual - 1) * VI.porPagina;
+    const fin = inicio + VI.porPagina;
+    const datosPagina = datos.slice(inicio, fin);
+
+    // Renderizar tabla solo con los datos de la página actual
+    renderizarTabla(datosPagina);
 
     // Texto de info
-    const desde = total === 0 ? 0 : (VI.paginaActual - 1) * VI.porPagina + 1;
-    const hasta = Math.min(VI.paginaActual * VI.porPagina, total);
+    const desde = total === 0 ? 0 : inicio + 1;
+    const hasta = Math.min(fin, total);
     const infoBottom = document.getElementById('vi-pag-info-bottom');
-    if (infoBottom) {
-        infoBottom.textContent = total === 0
-            ? 'Sin resultados'
-            : `Mostrando ${desde}–${hasta} de ${total} visita${total !== 1 ? 's' : ''}`;
-    }
+    const infoTop = document.getElementById('vi-pag-info');
 
-    // Botones de página
+    const textoInfo = total === 0
+        ? 'Sin resultados'
+        : `Mostrando ${desde}–${hasta} de ${total} visita${total !== 1 ? 's' : ''}`;
+
+    if (infoBottom) infoBottom.textContent = textoInfo;
+    if (infoTop) infoTop.textContent = textoInfo;
+
+    // Mostrar/ocultar estado vacío
+    mostrarEstadoVacio(total === 0);
+
+    // Renderizar botones de página
     renderBotonesPag(totalPags);
 }
 
@@ -198,7 +387,6 @@ function crearPagBtn(contenido, title, deshabilitado) {
     return btn;
 }
 
-/* ── 4. ESTADO VACÍO ─────────────────────────────── */
 function mostrarEstadoVacio(vacio) {
     const el = document.getElementById('vi-empty');
     if (el) el.style.display = vacio ? 'block' : 'none';
@@ -206,7 +394,6 @@ function mostrarEstadoVacio(vacio) {
 
 /* ── 5. MODAL PROGRAMAR VISITA ───────────────────── */
 function abrirModalProgramar(id, finca, propietario) {
-    // Prellenar campos de referencia (solo lectura)
     const elFinca = document.getElementById('pv-finca');
     const elProp = document.getElementById('pv-propietario');
     const elId = document.getElementById('pv-solicitud-id');
@@ -287,11 +474,20 @@ function guardarVisita() {
         return;
     }
 
-    // Simulación frontend
-    cerrarModal();
-    mostrarToastVI('✅ Visita programada correctamente.');
+    const id = document.getElementById('pv-solicitud-id')?.value;
+    const fecha = document.getElementById('pv-fecha')?.value;
+    const hora = document.getElementById('pv-hora')?.value;
+    const transporte = document.getElementById('pv-transporte')?.value;
+    const objetivo = document.getElementById('pv-objetivo')?.value;
+    const observacion = document.getElementById('pv-observacion')?.value;
 
-    // Recargar la página para mostrar la nueva visita
+    // Aquí se haría la llamada al backend
+    // fetch(`${API_URL}/api/Agenda/programar`, { method: 'POST', body: JSON.stringify({...}) })
+
+    mostrarToastVI('✅ Visita programada correctamente.');
+    cerrarModal();
+
+    // Recargar para mostrar los cambios
     setTimeout(() => {
         location.reload();
     }, 1500);
@@ -303,11 +499,7 @@ function mostrarToastVI(mensaje, esError = false) {
     const msgSpan = document.getElementById('vi-toast-msg');
     if (!toast || !mensaje) return;
     msgSpan.textContent = mensaje;
-    if (esError) {
-        toast.style.background = 'var(--psa-red)';
-    } else {
-        toast.style.background = 'var(--psa-leaf)';
-    }
+    toast.style.background = esError ? 'var(--psa-red)' : 'var(--psa-leaf)';
     toast.classList.add('visible');
     clearTimeout(toast._t);
     toast._t = setTimeout(() => toast.classList.remove('visible'), 3500);
@@ -315,12 +507,12 @@ function mostrarToastVI(mensaje, esError = false) {
 
 /* ── 8. NAVEGACIÓN ───────────────────────────────── */
 function verDetalle(id) {
-    if (!id || isNaN(id)) { mostrarToastVI('ID de visita inválido.', true); return; }
+    if (!id || isNaN(id)) { mostrarToastVI('ID de solicitud inválido.', true); return; }
     window.location.href = `/IngForestal/Detalle?id=${encodeURIComponent(id)}`;
 }
 
 function realizarVisita(id) {
-    if (!id || isNaN(id)) { mostrarToastVI('ID de visita inválido.', true); return; }
+    if (!id || isNaN(id)) { mostrarToastVI('ID de solicitud inválido.', true); return; }
     window.location.href = `/IngForestal/Realizar?id=${encodeURIComponent(id)}`;
 }
 
@@ -328,7 +520,19 @@ function programarVisita() {
     window.location.href = '/IngForestal/Programar';
 }
 
-/* ── 9. INIT ─────────────────────────────────────── */
+/* ── 9. FUNCIONES AUXILIARES ─────────────────────── */
+function formatFecha(fecha) {
+    if (!fecha) return '';
+    const date = new Date(fecha);
+    return `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()}`;
+}
+
+function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+/* ── 10. INIT ────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
     // Fecha mínima del input del modal = hoy
     const inputFecha = document.getElementById('pv-fecha');
@@ -359,7 +563,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Aplicar filtros iniciales
-    actualizarContadores();
-    aplicarFiltros();
+    // Cargar solicitudes desde el backend
+    cargarSolicitudes();
 });
