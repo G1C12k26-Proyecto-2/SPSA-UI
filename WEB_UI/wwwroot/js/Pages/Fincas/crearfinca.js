@@ -1,5 +1,7 @@
 function CrearFinca() {
     let map, marker;
+    let fotosUrls = [];
+    let docsUrls = [];
 
     this.InitView = () => {
         window.crearFincaInstance = this;
@@ -28,6 +30,35 @@ function CrearFinca() {
         $('#btnBorrador').click(() => this.SaveBorrador());
 
         this.LoadBorradores();
+
+        $('#uploadFotos').click(() => $('#inputFotos').trigger('click'));
+        $('#uploadDocs').click(() => $('#inputDocs').trigger('click'));
+
+        $('#inputFotos').on('change', async function() {
+            const files = this.files;
+            if (!files || files.length === 0) return;
+            $('#uploadFotos').html('<i class="fas fa-spinner fa-spin"></i><p>Subiendo fotos...</p>');
+            const result = await crearFincaInstance.UploadFiles(files, 'fincas/fotos');
+            fotosUrls = result;
+            $('#uploadFotos').html('<i class="fas fa-check text-success"></i><p>' + files.length + ' foto(s) subida(s)</p>');
+            $('#previewFotos').empty();
+            fotosUrls.forEach(url => {
+                $('#previewFotos').append('<img src="' + url + '" style="height:60px;width:60px;object-fit:cover;border-radius:8px;" />');
+            });
+        });
+
+        $('#inputDocs').on('change', async function() {
+            const files = this.files;
+            if (!files || files.length === 0) return;
+            $('#uploadDocs').html('<i class="fas fa-spinner fa-spin"></i><p>Subiendo documentos...</p>');
+            const result = await crearFincaInstance.UploadFiles(files, 'fincas/documentos');
+            docsUrls = result;
+            $('#uploadDocs').html('<i class="fas fa-check text-success"></i><p>' + files.length + ' documento(s) subido(s)</p>');
+            $('#previewDocs').empty();
+            docsUrls.forEach(url => {
+                $('#previewDocs').append('<span class="badge bg-secondary"><i class="fas fa-file-pdf me-1"></i>PDF</span>');
+            });
+        });
     };
 
     this.InitMap = () => {
@@ -285,7 +316,9 @@ function CrearFinca() {
                         tieneRiosQuebradasOriginal: tieneRios,
                         cantidadNacientesOriginal: nacientes,
                         usoSueloOriginal: usoSuelo || null,
-                        estado: 'Borrador'
+                        estado: 'Borrador',
+                        fotosUrls: JSON.stringify(fotosUrls),
+                        documentosUrls: JSON.stringify(docsUrls)
                     };
 
                     $.ajax({
@@ -407,12 +440,15 @@ function CrearFinca() {
                         idProvincia: ubicacion.idProvincia || null,
                         idCanton: ubicacion.idCanton || null,
                         idDistrito: ubicacion.idDistrito || null,
+                        distritoTexto: $('#ddlDistrito').val() || null,
                         hectareasOriginal: parseFloat(hectareas),
                         pendienteOriginal: pendiente,
                         tipoVegetacionOriginal: vegetacion,
                         tieneRiosQuebradasOriginal: tieneRios,
                         cantidadNacientesOriginal: nacientes,
-                        usoSueloOriginal: usoSuelo
+                        usoSueloOriginal: usoSuelo,
+                        fotosUrls: JSON.stringify(fotosUrls),
+                        documentosUrls: JSON.stringify(docsUrls)
                     };
 
                     $.ajax({
@@ -443,6 +479,27 @@ function CrearFinca() {
                 error: () => ShowError('Error', 'No se pudo resolver la ubicación.')
             });
         });
+    };
+
+    this.UploadFiles = async (files, folder) => {
+        const formData = new FormData();
+        for (let i = 0; i < files.length; i++) {
+            formData.append('files', files[i]);
+        }
+        try {
+            const response = await fetch(API_URL_BASE + '/api/cloudinary/upload-multiple?folder=' + folder, {
+                method: 'POST',
+                body: formData
+            });
+            const data = await response.json();
+            if (Array.isArray(data)) {
+                return data.filter(f => f.success).map(f => f.secureUrl || f.url);
+            }
+            return [];
+        } catch (e) {
+            console.error('Error subiendo archivos:', e);
+            return [];
+        }
     };
 }
 

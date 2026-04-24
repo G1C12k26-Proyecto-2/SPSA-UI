@@ -110,19 +110,23 @@
             <div class="row g-3 mb-3">
                 <div class="col-md-6">
                     <label class="form-label-psa">Fotografías</label>
-                    <div class="psa-upload">
+                    <div class="psa-upload" id="uploadFotos" style="cursor:pointer;">
                         <i class="fas fa-camera"></i>
                         <p>Arrastra imágenes o haz clic</p>
                         <small>JPG, PNG · máx. 10MB</small>
                     </div>
+                    <input type="file" id="inputFotos" multiple accept="image/*" style="display:none;" />
+                    <div id="previewFotos" class="d-flex flex-wrap gap-2 mt-2"></div>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label-psa">Documentos Legales</label>
-                    <div class="psa-upload">
+                    <div class="psa-upload" id="uploadDocs" style="cursor:pointer;">
                         <i class="fas fa-file-arrow-up"></i>
                         <p>Plano catastrado, escritura, etc.</p>
                         <small>PDF · máx. 25MB</small>
                     </div>
+                    <input type="file" id="inputDocs" multiple accept=".pdf" style="display:none;" />
+                    <div id="previewDocs" class="d-flex flex-wrap gap-2 mt-2"></div>
                 </div>
             </div>
 
