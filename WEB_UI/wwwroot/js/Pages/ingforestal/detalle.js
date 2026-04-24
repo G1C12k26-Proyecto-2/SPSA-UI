@@ -4,8 +4,9 @@
    Versión: Con carga dinámica (igual que dashboard.js)
    ===================================================== */
 
-//const API_URL = "https://spsaapi.azurewebsites.net";
-const API_URL = "https://localhost:44392";
+const API_URL = window.location.hostname === 'localhost'
+    ? "https://localhost:44392"  // Desarrollo local
+    : "https://spsaapi.azurewebsites.net";  // Producción
 
 // Variables globales
 let datosDetalle = null;

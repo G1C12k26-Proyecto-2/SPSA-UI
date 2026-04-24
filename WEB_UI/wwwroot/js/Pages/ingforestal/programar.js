@@ -4,7 +4,10 @@
    Versión: Conectado al backend
    ===================================================== */
 
-const API_URL = "https://localhost:44392";
+const API_URL = window.location.hostname === 'localhost'
+    ? "https://localhost:44392"  // Desarrollo local
+    : "https://spsaapi.azurewebsites.net";  // Producción
+
 
 /* ── ESTADO GLOBAL ─────────────────────────────────── */
 const PR = {

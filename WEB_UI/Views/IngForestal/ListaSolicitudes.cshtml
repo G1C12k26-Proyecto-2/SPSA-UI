@@ -3,9 +3,7 @@
     Layout = "~/Views/Shared/_LayoutIngForestal.cshtml";
 }
 
-@section Styles {
-    <link rel="stylesheet" href="~/css/ingforestal/lista-solicitudes.css" asp-append-version="true" />
-}
+
 
 <div class="IngForestal-dashboard">
 
@@ -113,10 +111,18 @@
             </div>
         </div>
 
-        <!-- Paginación -->
+        <!-- Paginación - actualizar esta sección -->
         <div class="psa-filters" style="justify-content: space-between; border-top: 1px solid var(--psa-border); border-bottom: none;">
-            <span style="font-size: 0.75rem; color: var(--psa-muted);" id="vi-pag-info"></span>
-            <div style="display: flex; gap: 6px;" id="vi-pag-btns"></div>
+            <span id="pag-info" style="font-size: 0.75rem; color: var(--psa-muted);">Cargando...</span>
+            <div style="display: flex; gap: 6px;">
+                <button class="btn btn-outline-psa btn-sm" style="padding: 4px 10px;" id="btn-pag-prev" disabled>
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <span id="pag-numeros" style="display: flex; gap: 4px;"></span>
+                <button class="btn btn-outline-psa btn-sm" style="padding: 4px 10px;" id="btn-pag-next" disabled>
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
         </div>
 
     </div><!-- /psa-card -->
@@ -226,5 +232,5 @@
 </div>
 
 @section Scripts {
-    <script src="~/js/Pages/ingforestal/ListaSolicitudadesGrid.js" asp-append-version="true"></script>
+    <script src="~/js/Pages/ingforestal/ListaSolicitudes.js" asp-append-version="true"></script>
 }

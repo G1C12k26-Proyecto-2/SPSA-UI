@@ -3,8 +3,9 @@
    Ruta: wwwroot/js/ingforestal/realizar.js
    ===================================================== */
 
-//const API_URL = "https://spsaapi.azurewebsites.net";
-const API_URL = "https://localhost:44392";  // Para desarrollo local
+const API_URL = window.location.hostname === 'localhost'
+    ? "https://localhost:44392"  // Desarrollo local
+    : "https://spsaapi.azurewebsites.net";  // Producción
 
 // Estado global
 const RL = {

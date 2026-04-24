@@ -46,7 +46,8 @@ const EC_SOLICITUDES = [
     { id: 4, finca: 'Finca La Cima',       prop: 'Rosa Jiménez',    ubic: 'Dota, San José',          has: '8.75',  veg: 'plantacion-forestal',  pend: 'plana',        rec: 'ninguno'   },
     { id: 5, finca: 'Hacienda Verde',      prop: 'María Solano',    ubic: 'Sarapiquí, Heredia',      has: '28.00', veg: 'bosque-primario',     pend: 'muy-inclinada',rec: 'rio'       },
 ];
-
+const API_URL = "https://spsaapi.azurewebsites.net";
+//const API_URL = "https://localhost:44392";
 /* ═══════════════════════════════════════════════════
    1. RENDER DE SOLICITUDES
 ═══════════════════════════════════════════════════ */
