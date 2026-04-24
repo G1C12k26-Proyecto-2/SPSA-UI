@@ -25,7 +25,9 @@ function CrearFinca() {
         });
 
         $('#btnEnviar').click(() => this.Submit());
-        $('#btnBorrador').click(() => ShowSuccess('Borrador guardado', 'Se guardó como borrador.'));
+        $('#btnBorrador').click(() => this.SaveBorrador());
+
+        this.LoadBorradores();
     };
 
     this.InitMap = () => {
@@ -95,6 +97,234 @@ function CrearFinca() {
         return values;
     };
 
+    this.LoadBorradores = () => {
+        const user = JSON.parse(sessionStorage.getItem('user'));
+        if (!user || !user.id) return;
+
+        $.ajax({
+            url: API_URL_BASE + '/api/Solicitudes/Borradores/' + user.id,
+            method: 'GET',
+            success: (res) => {
+                if (res.result !== 'ok' || !res.data || res.data.length === 0) {
+                    $('#seccionBorradores').hide();
+                    return;
+                }
+
+                $('#seccionBorradores').show();
+                $('#listaBorradores').empty();
+
+                res.data.forEach(b => {
+                    const fecha = new Date(b.fechaSolicitud).toLocaleDateString('es-CR');
+                    const card = `
+                        <div class="col-md-6">
+                            <div class="psa-borrador-card" data-id="${b.idSolicitud}">
+                                <div class="psa-card" style="border-left: 4px solid var(--psa-gold); position:relative; cursor:pointer; transition: box-shadow 0.2s;">
+                                    <div class="psa-card-body d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <div class="fw-semibold"><i class="fas fa-floppy-disk me-2" style="color:var(--psa-gold);"></i>${b.nombreFinca}</div>
+                                            <small class="text-muted">Guardado el ${fecha}</small>
+                                        </div>
+                                        <span class="psa-badge psa-badge-muted">Borrador</span>
+                                    </div>
+                                    <div class="psa-borrador-overlay" style="display:none; position:absolute; inset:0; background:transparent; border-radius:inherit; align-items:center; justify-content:center; gap:12px;">
+                                        <button class="btn btn-psa btn-sm btnEditarBorrador" data-id="${b.idSolicitud}">
+                                            <i class="fas fa-pen me-1"></i> Editar
+                                        </button>
+                                        <button class="btn btn-outline-danger btn-sm btnEliminarBorrador" data-id="${b.idSolicitud}">
+                                            <i class="fas fa-trash me-1"></i> Eliminar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`;
+                    $('#listaBorradores').append(card);
+                });
+
+                $(document).off('mouseenter', '.psa-borrador-card').on('mouseenter', '.psa-borrador-card', function () {
+                    $(this).find('.psa-borrador-overlay').css('display', 'flex');
+                });
+                $(document).off('mouseleave', '.psa-borrador-card').on('mouseleave', '.psa-borrador-card', function () {
+                    $(this).find('.psa-borrador-overlay').hide();
+                });
+
+                $(document).off('click', '.btnEliminarBorrador').on('click', '.btnEliminarBorrador', (e) => {
+                    e.stopPropagation();
+                    const id = $(e.currentTarget).data('id');
+                    ShowConfirm('Eliminar borrador', '¿Estás seguro de eliminar este borrador?', () => {
+                        $.ajax({
+                            url: API_URL_BASE + '/api/Solicitudes/Delete/' + id,
+                            method: 'DELETE',
+                            success: (res) => {
+                                if (res.result === 'ok') {
+                                    ShowSuccess('Eliminado', 'Borrador eliminado correctamente.');
+                                    setTimeout(() => this.LoadBorradores(), 1000);
+                                } else {
+                                    ShowError('Error', res.message || 'No se pudo eliminar.');
+                                }
+                            },
+                            error: () => ShowError('Error', 'No se pudo conectar con el servidor.')
+                        });
+                    });
+                });
+
+                $(document).off('click', '.btnEditarBorrador').on('click', '.btnEditarBorrador', (e) => {
+                    e.stopPropagation();
+                    const id = $(e.currentTarget).data('id');
+                    $.ajax({
+                        url: API_URL_BASE + '/api/Solicitudes/GetById/' + id,
+                        method: 'GET',
+                        success: (res) => {
+                            if (res.result !== 'ok') {
+                                ShowError('Error', 'No se pudo cargar el borrador.');
+                                return;
+                            }
+                            const b = res.data;
+
+                            $('#frmCrear').data('borradorId', id);
+                            $('#txtNombre').val(b.nombreFinca || '');
+                            $('#ddlProvincia').val(b.provincia || '');
+                            $('#ddlCanton').val(b.canton || '');
+                            $('#ddlDistrito').val(b.distrito || b.distritoTexto || '');
+                            $('#txtHectareas').val(b.hectareasOriginal || '');
+
+                            if (b.pendienteOriginal) {
+                                $('[data-field="pendiente"] .psa-chip').removeClass('selected');
+                                $(`[data-field="pendiente"] [data-value="${b.pendienteOriginal}"]`).addClass('selected');
+                            }
+
+                            if (b.tipoVegetacionOriginal) {
+                                $('[data-field="vegetacion"] .psa-chip').removeClass('selected');
+                                $(`[data-field="vegetacion"] [data-value="${b.tipoVegetacionOriginal}"]`).addClass('selected');
+                            }
+
+                            $('[data-field="hidrico"] .psa-chip').removeClass('selected');
+                            if (b.tieneRiosQuebradasOriginal) {
+                                $('[data-field="hidrico"] [data-value="rios"]').addClass('selected');
+                            }
+                            if (b.cantidadNacientesOriginal > 0) {
+                                $('[data-field="hidrico"] [data-value="nacientes"]').addClass('selected');
+                                $('#txtNacientes').val(b.cantidadNacientesOriginal);
+                            }
+                            if (!b.tieneRiosQuebradasOriginal && !b.cantidadNacientesOriginal) {
+                                $('[data-field="hidrico"] [data-value="ninguno"]').addClass('selected');
+                            }
+
+                            $('[data-field="usosuelo"] .psa-chip').removeClass('selected');
+                            if (b.usoSueloOriginal) {
+                                b.usoSueloOriginal.split(',').map(v => v.trim()).forEach(v => {
+                                    $(`[data-field="usosuelo"] [data-value="${v}"]`).addClass('selected');
+                                });
+                            }
+
+                            if (typeof google !== 'undefined' && typeof google.maps !== 'undefined') {
+                                if (!map) {
+                                    this.InitMap();
+                                } else {
+                                    google.maps.event.trigger(map, 'resize');
+                                }
+                            }
+
+                            $('html, body').animate({ scrollTop: $('#frmCrear').offset().top - 20 }, 400);
+                        },
+                        error: () => ShowError('Error', 'No se pudo conectar con el servidor.')
+                    });
+                });
+            },
+            error: () => $('#seccionBorradores').hide()
+        });
+    };
+
+    this.SaveBorrador = () => {
+        const nombre = $('#txtNombre').val().trim();
+        if (!nombre) {
+            ShowError('Campo requerido', 'El nombre de la finca es obligatorio para guardar el borrador.');
+            return;
+        }
+
+        const user = JSON.parse(sessionStorage.getItem('user'));
+        if (!user || !user.id) {
+            ShowError('Sesión inválida', 'No se pudo obtener el usuario. Inicie sesión nuevamente.');
+            return;
+        }
+
+        $.ajax({
+            url: API_URL_BASE + '/api/Solicitudes/Borradores/' + user.id,
+            method: 'GET',
+            success: (res) => {
+                if (res.result === 'ok' && res.data && res.data.length >= 2) {
+                    ShowError('Límite alcanzado', 'Ya tienes 2 borradores guardados. Elimina uno antes de guardar otro.');
+                    return;
+                }
+
+                const hectareas = $('#txtHectareas').val();
+                const pendiente = this.GetChipValue('pendiente');
+                const vegetacion = this.GetChipValue('vegetacion');
+                const hidricos = this.GetChipValues('hidrico');
+                const usoSuelos = this.GetChipValues('usosuelo');
+                const nacientes = parseInt($('#txtNacientes').val()) || 0;
+                const tieneRios = hidricos.includes('rios');
+                const usoSuelo = usoSuelos.join(', ');
+                const provincia = $('#ddlProvincia').val().trim();
+                const canton = $('#ddlCanton').val().trim();
+                const distrito = $('#ddlDistrito').val().trim();
+
+                const saveBorrador = (idProvincia, idCanton, idDistrito) => {
+                    const payload = {
+                        usuarioId: user.id,
+                        nombreFinca: nombre,
+                        idProvincia: idProvincia,
+                        idCanton: idCanton,
+                        idDistrito: idDistrito,
+                        distritoTexto: idDistrito ? null : (distrito || null),
+                        hectareasOriginal: hectareas ? parseFloat(hectareas) : null,
+                        pendienteOriginal: pendiente || null,
+                        tipoVegetacionOriginal: vegetacion || null,
+                        tieneRiosQuebradasOriginal: tieneRios,
+                        cantidadNacientesOriginal: nacientes,
+                        usoSueloOriginal: usoSuelo || null,
+                        estado: 'Borrador'
+                    };
+
+                    $.ajax({
+                        url: API_URL_BASE + '/api/Solicitudes/Create',
+                        method: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify(payload),
+                        success: (res2) => {
+                            if (res2.result === 'ok' || res2.result === 'success') {
+                                ShowSuccess('Borrador guardado', 'Tu borrador fue guardado correctamente.');
+                                setTimeout(() => location.reload(), 1500);
+                            } else {
+                                ShowError('Error', res2.message || 'No se pudo guardar el borrador.');
+                            }
+                        },
+                        error: () => ShowError('Error', 'No se pudo conectar con el servidor.')
+                    });
+                };
+
+                if (provincia && canton) {
+                    $.ajax({
+                        url: API_URL_BASE + '/api/Ubicaciones/Resolve',
+                        method: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify({ provincia, canton, distrito }),
+                        success: (resUbic) => {
+                            if (resUbic.result === 'success' && resUbic.data) {
+                                saveBorrador(resUbic.data.idProvincia || null, resUbic.data.idCanton || null, resUbic.data.idDistrito || null);
+                            } else {
+                                saveBorrador(null, null, null);
+                            }
+                        },
+                        error: () => saveBorrador(null, null, null)
+                    });
+                } else {
+                    saveBorrador(null, null, null);
+                }
+            },
+            error: () => ShowError('Error', 'No se pudo verificar los borradores.')
+        });
+    };
+
     this.Submit = () => {
         const nombre = $('#txtNombre').val().trim();
         const hectareas = $('#txtHectareas').val();
@@ -155,8 +385,6 @@ function CrearFinca() {
         }
 
         ShowConfirm('Enviar solicitud', '¿Está seguro de enviar la solicitud? Una vez enviada, pasará a revisión.', () => {
-
-            // Paso 1: resolver textos a IDs de UBICACIONES
             $.ajax({
                 url: API_URL_BASE + '/api/Ubicaciones/Resolve',
                 method: 'POST',
@@ -170,7 +398,6 @@ function CrearFinca() {
 
                     const ubicacion = res.data;
 
-                    // Paso 2: crear la solicitud
                     const payload = {
                         usuarioId: user.id,
                         nombreFinca: nombre,
@@ -193,7 +420,16 @@ function CrearFinca() {
                         success: (res2) => {
                             if (res2.result === 'ok' || res2.result === 'success') {
                                 ShowSuccess('Solicitud enviada', 'Su finca fue registrada y está pendiente de revisión.');
-                                setTimeout(() => { window.location = '/Fincas'; }, 2000);
+                                const borradorId = $('#frmCrear').data('borradorId');
+                                if (borradorId) {
+                                    $.ajax({
+                                        url: API_URL_BASE + '/api/Solicitudes/Delete/' + borradorId,
+                                        method: 'DELETE',
+                                        complete: () => setTimeout(() => { window.location = '/Fincas'; }, 2000)
+                                    });
+                                } else {
+                                    setTimeout(() => { window.location = '/Fincas'; }, 2000);
+                                }
                             } else {
                                 ShowError('Error', res2.message || 'No se pudo registrar la finca.');
                             }

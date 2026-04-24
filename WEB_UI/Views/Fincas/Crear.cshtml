@@ -11,6 +11,11 @@
     </div>
 </div>
 
+<div id="seccionBorradores" class="mb-4" style="display:none;">
+    <h5 class="mb-3"><i class="fas fa-floppy-disk text-success"></i> Borradores Guardados</h5>
+    <div id="listaBorradores" class="row g-3"></div>
+</div>
+
 <div class="psa-card">
     <div class="psa-card-header">
         <div class="psa-card-title"><i class="fas fa-tree"></i> Datos de la Propiedad</div>
@@ -137,6 +142,12 @@
         function initMap() {
             if (window.crearFincaInstance) window.crearFincaInstance.InitMap();
         }
+
+        $(document).ready(() => {
+            if (typeof google !== 'undefined' && typeof google.maps !== 'undefined') {
+                if (window.crearFincaInstance) window.crearFincaInstance.InitMap();
+            }
+        });
     </script>
     <script async defer
             src="https://maps.googleapis.com/maps/api/js?key=@ViewBag.GoogleMapsApiKey&callback=initMap">
