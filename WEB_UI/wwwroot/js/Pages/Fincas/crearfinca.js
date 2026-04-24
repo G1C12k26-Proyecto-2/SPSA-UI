@@ -220,7 +220,10 @@ function CrearFinca() {
                                 if (!map) {
                                     this.InitMap();
                                 } else {
-                                    google.maps.event.trigger(map, 'resize');
+                                    setTimeout(() => {
+                                        google.maps.event.trigger(map, 'resize');
+                                        map.setCenter({ lat: 10.4628, lng: -84.6426 });
+                                    }, 300);
                                 }
                             }
 
