@@ -18,13 +18,13 @@
         <aside class="psa-sidebar">
             <div class="psa-sidebar-brand">
                 <div class="badge-label">SINAC · FONAFIFO</div>
-                <div class="brand-title"><a asp-controller="IngForestal" asp-action="Index">Bio<span>Pago</span></a></div>
+                <div class="brand-title"><a asp-controller="IngForestal" asp-action="Index"><span id="app-nombre">BioPago</span></a></div>
             </div>
-            <div class="psa-sidebar-user">
-                <div class="psa-avatar">CF</div>
+            <div class="psa-sidebar-user" id="user-info-container">
+                <div class="psa-avatar" id="user-avatar">--</div>
                 <div>
-                    <div class="user-name">Carlos Fonseca</div>
-                    <div class="user-role">Ingeniero Forestal</div>
+                    <div class="user-name" id="user-nombre">Cargando...</div>
+                    <div class="user-role" id="user-rol">Ingeniero Forestal</div>
                 </div>
             </div>
             <nav class="psa-sidebar-nav">
@@ -43,8 +43,8 @@
                     <i class="fa-regular fa-calendar-plus"></i> Programar visita
                 </a>
                 <div class="psa-nav-section">Cuenta</div>
-                <a class="psa-nav-item @(controller == "IngForestal" && action == "Mi Perfil" ? "active" : "")" asp-controller="IngForestal" asp-action="Perfil">
-                    <i class="fa-regular fa-calendar-plus"></i> Mi Perfil
+                <a class="psa-nav-item @(controller == "IngForestal" && action == "Perfil" ? "active" : "")" asp-controller="IngForestal" asp-action="Perfil">
+                    <i class="fa-regular fa-user"></i> Mi Perfil
                 </a>
             </nav>
             <div class="psa-sidebar-footer">
@@ -73,44 +73,12 @@
                                 <div style="font-family:'Fraunces',serif;font-size:0.95rem;font-weight:500;color:var(--psa-forest);display:flex;align-items:center;gap:0.4rem;">
                                     <i class="fas fa-bell" style="font-size:0.82rem;color:var(--psa-leaf);"></i> Notificaciones
                                 </div>
-                                <span style="font-size:0.6rem;font-weight:600;background:var(--psa-pale);color:var(--psa-leaf);padding:0.15rem 0.5rem;border-radius:99px;">2 nuevas</span>
+                                <span style="font-size:0.6rem;font-weight:600;background:var(--psa-pale);color:var(--psa-leaf);padding:0.15rem 0.5rem;border-radius:99px;" id="notif-contador">0 nuevas</span>
                             </div>
-                            <div style="max-height:340px;overflow-y:auto;">
-                                <div style="padding:0.9rem 1.2rem;border-bottom:1px solid #f5f3ef;background:var(--psa-pale);cursor:pointer;transition:background 0.15s;" onmouseover="this.style.background='#ddf0e5'" onmouseout="this.style.background='var(--psa-pale)'">
-                                    <div style="display:flex;gap:0.7rem;align-items:flex-start;">
-                                        <div style="width:32px;height:32px;border-radius:50%;background:var(--psa-pale);border:1.5px solid var(--psa-leaf);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                                            <i class="fas fa-calendar-plus" style="font-size:0.7rem;color:var(--psa-leaf);"></i>
-                                        </div>
-                                        <div style="flex:1;min-width:0;">
-                                            <div style="font-size:0.8rem;font-weight:500;color:var(--psa-ink);">Nueva visita asignada</div>
-                                            <div style="font-size:0.72rem;color:var(--psa-muted);margin-top:1px;">Finca El Roble · Carlos Fonseca · 28 mar 2026</div>
-                                            <div style="font-size:0.65rem;color:var(--psa-leaf);margin-top:3px;font-weight:500;">Hace 30 min</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div style="padding:0.9rem 1.2rem;border-bottom:1px solid #f5f3ef;background:var(--psa-pale);cursor:pointer;transition:background 0.15s;" onmouseover="this.style.background='#ddf0e5'" onmouseout="this.style.background='var(--psa-pale)'">
-                                    <div style="display:flex;gap:0.7rem;align-items:flex-start;">
-                                        <div style="width:32px;height:32px;border-radius:50%;background:var(--psa-gold-bg);border:1.5px solid var(--psa-gold);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                                            <i class="fas fa-file-lines" style="font-size:0.7rem;color:var(--psa-gold);"></i>
-                                        </div>
-                                        <div style="flex:1;min-width:0;">
-                                            <div style="font-size:0.8rem;font-weight:500;color:var(--psa-ink);">Solicitud pendiente de evaluación</div>
-                                            <div style="font-size:0.72rem;color:var(--psa-muted);margin-top:1px;">Finca Las Palmas · Ana Solano · 78 ha</div>
-                                            <div style="font-size:0.65rem;color:var(--psa-leaf);margin-top:3px;font-weight:500;">Hace 2 horas</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div style="padding:0.9rem 1.2rem;border-bottom:1px solid #f5f3ef;cursor:pointer;transition:background 0.15s;" onmouseover="this.style.background='#fafaf8'" onmouseout="this.style.background='transparent'">
-                                    <div style="display:flex;gap:0.7rem;align-items:flex-start;">
-                                        <div style="width:32px;height:32px;border-radius:50%;background:var(--psa-sand);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                                            <i class="fas fa-clipboard-check" style="font-size:0.7rem;color:var(--psa-muted);"></i>
-                                        </div>
-                                        <div style="flex:1;min-width:0;">
-                                            <div style="font-size:0.8rem;font-weight:400;color:var(--psa-muted);">Evaluación enviada</div>
-                                            <div style="font-size:0.72rem;color:var(--psa-muted);margin-top:1px;">Finca La Catarata · Aprobada</div>
-                                            <div style="font-size:0.65rem;color:var(--psa-muted);margin-top:3px;">15 mar 2026</div>
-                                        </div>
-                                    </div>
+                            <div style="max-height:340px;overflow-y:auto;" id="notif-lista">
+                                <div style="padding: 2rem; text-align: center; color: var(--psa-muted);">
+                                    <i class="fas fa-bell-slash"></i>
+                                    <p style="margin-top: 0.5rem; font-size: 0.8rem;">No hay notificaciones</p>
                                 </div>
                             </div>
                             <div style="padding:0.7rem 1.2rem;border-top:1px solid var(--psa-border);text-align:center;background:#fefefe;">
@@ -118,9 +86,9 @@
                             </div>
                         </div>
                     </div>
-                    <div class="psa-topbar-icon Juan4"><i class="fas fa-circle-question"></i></div>
+                    <div class="psa-topbar-icon" id="btn-ayuda"><i class="fas fa-circle-question"></i></div>
                     <a asp-controller="IngForestal" asp-action="Perfil" style="text-decoration:none;">
-                        <div class="psa-avatar" style="width:30px;height:30px;font-size:0.7rem;cursor:pointer;">CF</div>
+                        <div class="psa-avatar" style="width:30px;height:30px;font-size:0.7rem;cursor:pointer;" id="topbar-avatar">--</div>
                     </a>
                 </div>
             </div>
@@ -137,20 +105,88 @@
     <script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.js"></script>
     <script>
         const API_URL_BASE = "https://spsaapi.azurewebsites.net";
+        
         function ShowSuccess(t, x) { Swal.fire({ icon: 'success', title: t, text: x, timer: 2000 }); }
         function ShowError(t, x) { Swal.fire({ icon: 'error', title: t, text: x }); }
         function ShowConfirm(t, x, cb) { Swal.fire({ title: t, text: x, icon: 'warning', showCancelButton: true, confirmButtonColor: '#2d8653', cancelButtonColor: '#b83232', confirmButtonText: 'Confirmar', cancelButtonText: 'Cancelar' }).then(r => { if (r.isConfirmed) cb(); }); }
 
         function toggleNotif() {
-            var panel = document.getElementById('notifPanel');
-            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+        var panel = document.getElementById('notifPanel');
+        panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
         }
+        
         document.addEventListener('click', function(e) {
-            var wrapper = document.querySelector('.psa-notif-wrapper');
-            var panel = document.getElementById('notifPanel');
-            if (wrapper && panel && !wrapper.contains(e.target)) {
-                panel.style.display = 'none';
-            }
+        var wrapper = document.querySelector('.psa-notif-wrapper');
+        var panel = document.getElementById('notifPanel');
+        if (wrapper && panel && !wrapper.contains(e.target)) {
+        panel.style.display = 'none';
+        }
+        });
+
+        // =====================================================
+        // CARGAR DATOS DINÁMICOS DEL LAYOUT
+        // =====================================================
+        
+        async function cargarParametrosLayout() {
+        try {
+        const response = await fetch(`${API_URL_BASE}/api/Ingeniero/realizar-visita/parametros`);
+        const data = await response.json();
+                
+        if (data.result === "SUCCESS" && data.data) {
+        // Obtener nombre del sistema desde los parámetros
+        const nombreSistema = data.data.ajustesVegetacion?.['NOMBRE_SISTEMA'] || 'BioPago';
+        document.getElementById('app-nombre').textContent = nombreSistema;
+        }
+        } catch (error) {
+        console.error('Error cargando parámetros:', error);
+        }
+        }
+        
+        function cargarDatosUsuario() {
+        // Obtener datos del usuario desde localStorage/sessionStorage
+        let nombre = localStorage.getItem('userName') || sessionStorage.getItem('userName');
+        let avatar = '';
+            
+        if (!nombre) {
+        try {
+        const userStr = sessionStorage.getItem('user');
+        if (userStr) {
+        const user = JSON.parse(userStr);
+        nombre = user.fullName || user.userName || user.nombre;
+        avatar = user.avatar || '';
+        }
+        } catch (e) { console.error('Error parsing user:', e); }
+        }
+            
+        if (!nombre) {
+        nombre = 'Ingeniero';
+        }
+            
+        // Generar iniciales para el avatar
+        const iniciales = nombre.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+            
+        // Actualizar elementos del DOM
+        const userNombre = document.getElementById('user-nombre');
+        const userAvatar = document.getElementById('user-avatar');
+        const topbarAvatar = document.getElementById('topbar-avatar');
+            
+        if (userNombre) userNombre.textContent = nombre;
+        if (userAvatar) userAvatar.textContent = iniciales;
+        if (topbarAvatar) topbarAvatar.textContent = iniciales;
+        }
+        
+        function cerrarSesion() {
+        ShowConfirm('Cerrar sesión', '¿Está seguro que desea cerrar sesión?', () => {
+        localStorage.clear();
+        sessionStorage.clear();
+        window.location.href = '/Login';
+        });
+        }
+        
+        // Inicializar layout
+        document.addEventListener('DOMContentLoaded', () => {
+        cargarParametrosLayout();
+        cargarDatosUsuario();
         });
     </script>
     <script src="~/js/Pages/Shared/layout.js" asp-append-version="true"></script>

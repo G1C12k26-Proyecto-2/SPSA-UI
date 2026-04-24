@@ -30,7 +30,18 @@
                     <button class="btn btn-sm btn-outline-psa" onclick="mesSiguiente()">▶</button>
                 </div>
             </div>
-            <div class="psa-card-body" style="padding: 1rem; overflow-x: auto;">
+            <div class="psa-card-body" style="padding: 1rem;">
+                <!-- Días de la semana -->
+                <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-bottom: 8px;">
+                    <div style="text-align: center; font-size: 0.75rem; font-weight: 600; color: #64748b; padding: 8px 4px; background: #fafaf8; border-radius: 8px;">Dom</div>
+                    <div style="text-align: center; font-size: 0.75rem; font-weight: 600; color: #64748b; padding: 8px 4px; background: #fafaf8; border-radius: 8px;">Lun</div>
+                    <div style="text-align: center; font-size: 0.75rem; font-weight: 600; color: #64748b; padding: 8px 4px; background: #fafaf8; border-radius: 8px;">Mar</div>
+                    <div style="text-align: center; font-size: 0.75rem; font-weight: 600; color: #64748b; padding: 8px 4px; background: #fafaf8; border-radius: 8px;">Mié</div>
+                    <div style="text-align: center; font-size: 0.75rem; font-weight: 600; color: #64748b; padding: 8px 4px; background: #fafaf8; border-radius: 8px;">Jue</div>
+                    <div style="text-align: center; font-size: 0.75rem; font-weight: 600; color: #64748b; padding: 8px 4px; background: #fafaf8; border-radius: 8px;">Vie</div>
+                    <div style="text-align: center; font-size: 0.75rem; font-weight: 600; color: #64748b; padding: 8px 4px; background: #fafaf8; border-radius: 8px;">Sáb</div>
+                </div>
+                <!-- Celdas del calendario -->
                 <div id="ag-semanas"></div>
             </div>
             <div class="psa-card-footer" style="display: flex; gap: 20px; padding: 10px 1rem; border-top: 1px solid #e2e8f0;">

@@ -453,3 +453,106 @@
     background: var(--psa-red-bg);
     color: var(--psa-red);
 }
+/* =====================================================
+   ESTADOS CON COLORES DE FONDO (como en las imágenes)
+   ===================================================== */
+
+/* Estados - Badge pequeño (para el header) */
+.psa-badge-green {
+    background: #dff0e5;
+    color: #1a6e3b;
+    border: 1px solid #b8d9c4;
+}
+
+.psa-badge-blue {
+    background: #e3f0fc;
+    color: #1a5a8c;
+    border: 1px solid #bdd6eb;
+}
+
+.psa-badge-gold {
+    background: #fef3e0;
+    color: #b8701a;
+    border: 1px solid #f0dfb8;
+}
+
+.psa-badge-red {
+    background: #fde8e8;
+    color: #b33a3a;
+    border: 1px solid #f5c4c4;
+}
+
+.psa-badge-grey {
+    background: #f0f0f0;
+    color: #666;
+    border: 1px solid #ddd;
+}
+
+/* =====================================================
+   TARJETA DE ESTADO - Fondo del header según estado
+   ===================================================== */
+
+/* Pendiente - Amarillo/Dorado */
+.dt-estado-chip-gold-header {
+    background: #fef3e0 !important;
+    border-bottom: 1px solid #f0dfb8;
+}
+
+.dt-estado-chip-gold {
+    background: #fef3e0;
+    color: #b8701a;
+    border: 1px solid #f0dfb8;
+}
+
+/* En Proceso - Azul */
+.dt-estado-chip-blue-header {
+    background: #e3f0fc !important;
+    border-bottom: 1px solid #bdd6eb;
+}
+
+.dt-estado-chip-blue {
+    background: #e3f0fc;
+    color: #1a5a8c;
+    border: 1px solid #bdd6eb;
+}
+
+/* Aprobada - Verde */
+.dt-estado-chip-green-header {
+    background: #dff0e5 !important;
+    border-bottom: 1px solid #b8d9c4;
+}
+
+.dt-estado-chip-green {
+    background: #dff0e5;
+    color: #1a6e3b;
+    border: 1px solid #b8d9c4;
+}
+
+/* Rechazada - Rojo */
+.dt-estado-chip-red-header {
+    background: #fde8e8 !important;
+    border-bottom: 1px solid #f5c4c4;
+}
+
+.dt-estado-chip-red {
+    background: #fde8e8;
+    color: #b33a3a;
+    border: 1px solid #f5c4c4;
+}
+
+/* Estado por defecto */
+.dt-estado-chip-grey-header {
+    background: #f5f5f5 !important;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.dt-estado-chip-grey {
+    background: #f5f5f5;
+    color: #666;
+    border: 1px solid #e0e0e0;
+}
+
+/* Asegurar que el header de la tarjeta use el color correcto */
+.dt-estado-card .dt-estado-header {
+    transition: background 0.2s ease;
+}

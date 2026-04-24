@@ -1,7 +1,10 @@
 /* =====================================================
    programar.js — Visitas / Programar | PSA
    Ruta: wwwroot/js/ingforestal/programar.js
+   Versión: Conectado al backend
    ===================================================== */
+
+const API_URL = "https://localhost:44392";
 
 /* ── ESTADO GLOBAL ─────────────────────────────────── */
 const PR = {
@@ -13,23 +16,181 @@ const PR = {
     solicitudUbic: '',
     solicitudHas: '',
     solicitudVeg: '',
+    ingenieroId: null,
+    todasSolicitudes: []  // ← Agregar esta línea
 };
 
-/* ── DATOS DE EJEMPLO (reemplazar con fetch al backend) ── */
-const PR_SOLICITUDES = [
-    { id: 1, finca: 'Finca Los Robles', propietario: 'José Ángel Mora', ubicacion: 'Turrialba, Cartago', hectareas: '12.50', vegetacion: 'Bosque Secundario' },
-    { id: 2, finca: 'Hacienda Verde', propietario: 'María Solano Vega', ubicacion: 'Sarapiquí, Heredia', hectareas: '28.00', vegetacion: 'Bosque Primario' },
-    { id: 3, finca: 'Finca La Esperanza', propietario: 'Carmen Ulate', ubicacion: 'Acosta, San José', hectareas: '18.30', vegetacion: 'Bosque Secundario' },
-    { id: 4, finca: 'Parcela El Roble', propietario: 'Diego Vargas', ubicacion: 'Dota, San José', hectareas: '8.75', vegetacion: 'Plantación Forestal' },
-];
+/* ── OBTENER ID DEL INGENIERO ─────────────────────── */
+function obtenerIngenieroId() {
+    let id = localStorage.getItem('userId') || sessionStorage.getItem('userId');
+    if (!id) {
+        const userStr = sessionStorage.getItem('user');
+        if (userStr) {
+            try {
+                const user = JSON.parse(userStr);
+                id = user.id;
+            } catch (e) { console.error('Error parsing user:', e); }
+        }
+    }
+    if (!id) {
+        console.warn('No se encontró ID de usuario, usando valor por defecto 57');
+        return 57;
+    }
+    return parseInt(id);
+}
 
-/* ═══════════════════════════════════════════════════
-   1. STEPPER — NAVEGACIÓN ENTRE PASOS
-═══════════════════════════════════════════════════ */
+/* ── CARGAR SOLICITUDES DESDE EL BACKEND ─────────── */
+async function cargarSolicitudes(idParaFiltrar = null) {
+    const listaContainer = document.getElementById('pr-lista-solicitudes');
+    if (!listaContainer) return;
+
+    listaContainer.innerHTML = '<div class="pr-solicitudes-empty"><i class="fas fa-spinner fa-spin"></i><p>Cargando solicitudes...</p></div>';
+
+    try {
+        PR.ingenieroId = obtenerIngenieroId();
+        const response = await fetch(`${API_URL}/api/Ingeniero/solicitudes/pendientes/${PR.ingenieroId}`);
+        const data = await response.json();
+
+        if (data.result === "SUCCESS" && data.data && data.data.length > 0) {
+            // Guardar todas las solicitudes originales
+            PR.todasSolicitudes = data.data;
+
+            // Renderizar solicitudes (con filtro si viene idParaFiltrar)
+            renderSolicitudes(data.data, idParaFiltrar);
+
+            // Si hay idParaFiltrar, buscar y seleccionar esa solicitud
+            if (idParaFiltrar) {
+                const solicitud = data.data.find(s => s.idSolicitud === idParaFiltrar);
+                if (solicitud) {
+                    seleccionarSolicitud(solicitud);
+                    // Opcional: mostrar un mensaje indicando que se filtró
+                    const buscador = document.getElementById('pr-buscar-sol');
+                    if (buscador) {
+                        buscador.value = solicitud.nombreFinca;
+                        aplicarFiltroBusqueda(solicitud.nombreFinca);
+                    }
+                }
+            }
+        } else {
+            listaContainer.innerHTML = '<div class="pr-solicitudes-empty"><i class="fas fa-inbox"></i><p>No hay solicitudes pendientes asignadas.</p></div>';
+        }
+    } catch (error) {
+        console.error('Error al cargar solicitudes:', error);
+        listaContainer.innerHTML = '<div class="pr-solicitudes-empty"><i class="fas fa-exclamation-triangle"></i><p>Error al cargar solicitudes.</p></div>';
+        mostrarToastPR('Error de conexión con el servidor', true);
+    }
+}
+
+function renderSolicitudes(solicitudes, idParaSeleccionar = null) {
+    const listaContainer = document.getElementById('pr-lista-solicitudes');
+    if (!listaContainer) return;
+
+    listaContainer.innerHTML = '';
+
+    if (!solicitudes || solicitudes.length === 0) {
+        listaContainer.innerHTML = '<div class="pr-solicitudes-empty"><i class="fas fa-inbox"></i><p>No hay solicitudes pendientes.</p></div>';
+        return;
+    }
+
+    solicitudes.forEach(sol => {
+        const isSelected = (PR.solicitudId === sol.idSolicitud) || (idParaSeleccionar === sol.idSolicitud);
+        const item = document.createElement('div');
+        item.className = `pr-solicitud-item ${isSelected ? 'seleccionada' : ''}`;
+        item.setAttribute('data-id', sol.idSolicitud);
+        item.setAttribute('data-nombre', sol.nombreFinca);
+        item.setAttribute('data-propietario', sol.propietario);
+        item.setAttribute('data-ubicacion', sol.ubicacion);
+        item.setAttribute('data-hectareas', sol.hectareas);
+        item.setAttribute('data-vegetacion', sol.tipoVegetacion);
+        item.setAttribute('role', 'radio');
+        item.setAttribute('aria-checked', isSelected ? 'true' : 'false');
+        item.setAttribute('tabindex', '0');
+
+        item.innerHTML = `
+            <div class="pr-solicitud-icono">
+                <i class="fas fa-tree"></i>
+            </div>
+            <div class="pr-solicitud-contenido">
+                <div class="pr-solicitud-nombre">${escapeHtml(sol.nombreFinca)}</div>
+                <div class="pr-solicitud-detalle">
+                    <span><i class="fas fa-user"></i> ${escapeHtml(sol.propietario)}</span>
+                    <span><i class="fas fa-location-dot"></i> ${escapeHtml(sol.ubicacion)}</span>
+                </div>
+                <div class="pr-solicitud-metricas">
+                    <span class="pr-metrica"><i class="fas fa-ruler-combined"></i> ${parseFloat(sol.hectareas).toFixed(2)} ha</span>
+                    <span class="pr-metrica"><i class="fas fa-leaf"></i> ${escapeHtml(sol.tipoVegetacion)}</span>
+                    <span class="pr-metrica estado"><i class="fas fa-hourglass-half"></i> ${escapeHtml(sol.estado)}</span>
+                </div>
+            </div>
+            <div class="pr-solicitud-seleccion">
+                <i class="fas fa-check"></i>
+            </div>
+        `;
+
+        item.addEventListener('click', () => seleccionarSolicitud(sol));
+        item.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') seleccionarSolicitud(sol);
+        });
+
+        listaContainer.appendChild(item);
+    });
+
+    // Si hay idParaSeleccionar, actualizar PR.solicitudId
+    if (idParaSeleccionar) {
+        const solicitud = solicitudes.find(s => s.idSolicitud === idParaSeleccionar);
+        if (solicitud && !PR.solicitudId) {
+            PR.solicitudId = solicitud.idSolicitud;
+            PR.solicitudNombre = solicitud.nombreFinca;
+            PR.solicitudProp = solicitud.propietario;
+            PR.solicitudUbic = solicitud.ubicacion;
+            PR.solicitudHas = solicitud.hectareas;
+            PR.solicitudVeg = solicitud.tipoVegetacion;
+            actualizarResumen();
+        }
+    }
+}
+
+function seleccionarSolicitud(sol) {
+    PR.solicitudId = sol.idSolicitud;
+    PR.solicitudNombre = sol.nombreFinca;
+    PR.solicitudProp = sol.propietario;
+    PR.solicitudUbic = sol.ubicacion;
+    PR.solicitudHas = sol.hectareas;
+    PR.solicitudVeg = sol.tipoVegetacion;
+
+    // Actualizar visualmente
+    const items = document.querySelectorAll('.pr-solicitud-item');
+    items.forEach(item => {
+        const id = parseInt(item.getAttribute('data-id'));
+        if (id === sol.idSolicitud) {
+            item.classList.add('seleccionada');
+            item.setAttribute('aria-checked', 'true');
+        } else {
+            item.classList.remove('seleccionada');
+            item.setAttribute('aria-checked', 'false');
+        }
+    });
+
+    actualizarResumen();
+    const err = document.getElementById('pr-sol-err');
+    if (err) err.style.display = 'none';
+}
+
+function getSolicitudSeleccionada() {
+    if (!PR.solicitudId) return null;
+    return {
+        idSolicitud: PR.solicitudId,
+        nombreFinca: PR.solicitudNombre,
+        propietario: PR.solicitudProp,
+        ubicacion: PR.solicitudUbic,
+        hectareas: PR.solicitudHas,
+        tipoVegetacion: PR.solicitudVeg
+    };
+}
+
+/* ── FUNCIONES DE NAVEGACIÓN ─────────────────────── */
 function irPaso(paso) {
     if (paso < 1 || paso > PR.totalPasos) return;
-
-    // Validar antes de avanzar
     if (paso > PR.pasoActual) {
         if (!validarPasoActual()) return;
     }
@@ -50,16 +211,12 @@ function actualizarStepper() {
         if (n === PR.pasoActual) el.classList.add('activo');
         if (n < PR.pasoActual) el.classList.add('completado');
 
-        // Ícono check para completados
         const numEl = el.querySelector('.pr-step-num');
         if (numEl) {
-            numEl.innerHTML = n < PR.pasoActual
-                ? '<i class="fas fa-check"></i>'
-                : n;
+            numEl.innerHTML = n < PR.pasoActual ? '<i class="fas fa-check"></i>' : n;
         }
     });
 
-    // Botones de navegación
     const btnAnterior = document.getElementById('pr-btn-anterior');
     const btnSiguiente = document.getElementById('pr-btn-siguiente');
     const btnGuardar = document.getElementById('pr-btn-guardar');
@@ -75,153 +232,13 @@ function mostrarSeccion(paso) {
     });
 }
 
-/* ═══════════════════════════════════════════════════
-   2. PASO 1 — SELECCIÓN DE SOLICITUD (con tu estructura HTML)
-═══════════════════════════════════════════════════ */
-function renderSolicitudes(filtro = '') {
-    const lista = document.getElementById('pr-lista-solicitudes');
-    if (!lista) return;
-
-    // Limpiar lista actual
-    lista.innerHTML = '';
-
-    const filtradas = PR_SOLICITUDES.filter(s =>
-        !filtro ||
-        s.finca.toLowerCase().includes(filtro) ||
-        s.propietario.toLowerCase().includes(filtro) ||
-        s.ubicacion.toLowerCase().includes(filtro)
-    );
-
-    if (filtradas.length === 0) {
-        lista.innerHTML = `<div class="pr-solicitudes-empty">
-            <i class="fas fa-search"></i>
-            <p>No se encontraron solicitudes que coincidan con la búsqueda.</p>
-        </div>`;
-        return;
-    }
-
-    filtradas.forEach(s => {
-        const isSelected = PR.solicitudId === s.id;
-        const item = document.createElement('div');
-        item.className = `pr-solicitud-item ${isSelected ? 'seleccionada' : ''}`;
-        item.setAttribute('data-id', s.id);
-        item.setAttribute('data-nombre', s.finca);
-        item.setAttribute('data-propietario', s.propietario);
-        item.setAttribute('data-ubicacion', s.ubicacion);
-        item.setAttribute('data-hectareas', s.hectareas);
-        item.setAttribute('data-vegetacion', s.vegetacion);
-        item.setAttribute('data-estado', 'Pendiente');
-        item.setAttribute('role', 'radio');
-        item.setAttribute('aria-checked', isSelected ? 'true' : 'false');
-        item.setAttribute('tabindex', '0');
-
-        item.innerHTML = `
-            <div class="pr-solicitud-icono">
-                <i class="fas fa-tree"></i>
-            </div>
-            <div class="pr-solicitud-contenido">
-                <div class="pr-solicitud-nombre">${escapeHtml(s.finca)}</div>
-                <div class="pr-solicitud-detalle">
-                    <span><i class="fas fa-user"></i> ${escapeHtml(s.propietario)}</span>
-                    <span><i class="fas fa-location-dot"></i> ${escapeHtml(s.ubicacion)}</span>
-                </div>
-                <div class="pr-solicitud-metricas">
-                    <span class="pr-metrica"><i class="fas fa-ruler-combined"></i> ${s.hectareas} ha</span>
-                    <span class="pr-metrica"><i class="fas fa-leaf"></i> ${escapeHtml(s.vegetacion)}</span>
-                    <span class="pr-metrica estado"><i class="fas fa-hourglass-half"></i> Pendiente</span>
-                </div>
-            </div>
-            <div class="pr-solicitud-seleccion">
-                <i class="fas fa-check"></i>
-            </div>
-        `;
-
-        item.addEventListener('click', (e) => seleccionarSolicitud(s));
-        item.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') seleccionarSolicitud(s);
-        });
-
-        lista.appendChild(item);
-    });
-}
-
-// Función para escapar HTML
-function escapeHtml(str) {
-    if (!str) return '';
-    return str.replace(/[&<>]/g, function (m) {
-        if (m === '&') return '&amp;';
-        if (m === '<') return '&lt;';
-        if (m === '>') return '&gt;';
-        return m;
-    });
-}
-
-function seleccionarSolicitud(s) {
-    PR.solicitudId = s.id;
-    PR.solicitudNombre = s.finca;
-    PR.solicitudProp = s.propietario;
-    PR.solicitudUbic = s.ubicacion;
-    PR.solicitudHas = s.hectareas;
-    PR.solicitudVeg = s.vegetacion;
-
-    // Actualizar la selección visual en la lista
-    const items = document.querySelectorAll('.pr-solicitud-item');
-    items.forEach(item => {
-        const id = parseInt(item.getAttribute('data-id'));
-        if (id === s.id) {
-            item.classList.add('seleccionada');
-            item.setAttribute('aria-checked', 'true');
-        } else {
-            item.classList.remove('seleccionada');
-            item.setAttribute('aria-checked', 'false');
-        }
-    });
-
-    actualizarResumen();
-
-    // Quitar error si había
-    const err = document.getElementById('pr-sol-err');
-    if (err) err.style.display = 'none';
-}
-
-function getSolicitudSeleccionada() {
-    if (!PR.solicitudId) return null;
-    return {
-        id: PR.solicitudId,
-        nombre: PR.solicitudNombre,
-        propietario: PR.solicitudProp,
-        ubicacion: PR.solicitudUbic,
-        hectareas: PR.solicitudHas,
-        vegetacion: PR.solicitudVeg,
-        estado: 'Pendiente'
-    };
-}
-
-/* ═══════════════════════════════════════════════════
-   3. VALIDACIÓN POR PASO
-═══════════════════════════════════════════════════ */
+/* ── VALIDACIÓN ──────────────────────────────────── */
 const PR_REGLAS = {
-    'pr-fecha': {
-        req: true, tipo: 'fecha-futura',
-        msg: 'Seleccione una fecha válida (hoy o posterior).'
-    },
-    'pr-hora': {
-        req: true, tipo: 'texto',
-        msg: 'Indique la hora de la visita.'
-    },
-    'pr-transporte': {
-        req: true, tipo: 'select',
-        msg: 'Seleccione el medio de transporte.'
-    },
-    'pr-objetivo': {
-        req: true, tipo: 'texto',
-        msg: 'Describa el objetivo de la visita (mín. 10 caracteres).',
-        minLen: 10
-    },
-    'pr-duracion': {
-        req: true, tipo: 'select',
-        msg: 'Seleccione la duración estimada.'
-    },
+    'pr-fecha': { req: true, tipo: 'fecha-futura', msg: 'Seleccione una fecha válida (hoy o posterior).' },
+    'pr-hora': { req: true, tipo: 'texto', msg: 'Indique la hora de la visita.' },
+    'pr-transporte': { req: true, tipo: 'select', msg: 'Seleccione el medio de transporte.' },
+    'pr-objetivo': { req: true, tipo: 'texto', msg: 'Describa el objetivo (mín. 10 caracteres).', minLen: 10 },
+    'pr-duracion': { req: true, tipo: 'select', msg: 'Seleccione la duración estimada.' },
 };
 
 function validarCampo(id) {
@@ -247,10 +264,7 @@ function validarCampo(id) {
         if (ok && regla.minLen && val.length < regla.minLen) ok = false;
     }
 
-    el.classList.toggle('invalido', !ok);
-    if (err) {
-        err.classList.toggle('visible', !ok);
-    }
+    if (err) err.classList.toggle('visible', !ok);
     return ok;
 }
 
@@ -273,17 +287,16 @@ function validarPasoActual() {
         if (!ok) mostrarToastPR('Corrija los campos marcados en rojo.', true);
         return ok;
     }
-
     return true;
 }
 
-/* ═══════════════════════════════════════════════════
-   4. RESUMEN LATERAL (actualiza en tiempo real)
-═══════════════════════════════════════════════════ */
+/* ── RESUMEN ─────────────────────────────────────── */
 function actualizarResumen() {
-    set('pr-res-finca', PR.solicitudNombre || null);
-    set('pr-res-prop', PR.solicitudProp || null);
-    set('pr-res-ubic', PR.solicitudUbic || null);
+    set('pr-res-finca', PR.solicitudNombre);
+    set('pr-res-prop', PR.solicitudProp);
+    set('pr-res-ubic', PR.solicitudUbic);
+    set('pr-res-has', PR.solicitudHas ? `${parseFloat(PR.solicitudHas).toFixed(2)} ha` : null);
+    set('pr-res-veg', PR.solicitudVeg);
     set('pr-res-fecha', document.getElementById('pr-fecha')?.value ? formatFecha(document.getElementById('pr-fecha').value) : null);
     set('pr-res-hora', document.getElementById('pr-hora')?.value || null);
     set('pr-res-transporte', document.getElementById('pr-transporte')?.selectedOptions[0]?.text !== 'Seleccione...' ? document.getElementById('pr-transporte')?.selectedOptions[0]?.text : null);
@@ -308,15 +321,13 @@ function formatFecha(iso) {
     return `${d}/${m}/${a}`;
 }
 
-/* ═══════════════════════════════════════════════════
-   5. PASO 3 — CONFIRMACIÓN
-═══════════════════════════════════════════════════ */
+/* ── CONFIRMACIÓN ────────────────────────────────── */
 function construirConfirmacion() {
     const datos = {
         'Finca': PR.solicitudNombre,
         'Propietario': PR.solicitudProp,
         'Ubicación': PR.solicitudUbic,
-        'Hectáreas': `${PR.solicitudHas} ha`,
+        'Hectáreas': `${parseFloat(PR.solicitudHas).toFixed(2)} ha`,
         'Tipo de vegetación': PR.solicitudVeg,
         'Fecha de visita': formatFecha(document.getElementById('pr-fecha')?.value),
         'Hora': document.getElementById('pr-hora')?.value,
@@ -341,76 +352,137 @@ function construirConfirmacion() {
     });
 }
 
-/* ═══════════════════════════════════════════════════
-   6. GUARDAR / ENVIAR
-═══════════════════════════════════════════════════ */
-function guardarVisita() {
+/* ── GUARDAR VISITA ──────────────────────────────── */
+async function guardarVisita() {
     const seleccionada = getSolicitudSeleccionada();
     if (!seleccionada) {
         mostrarToastPR('Debe seleccionar una solicitud.', true);
         return;
     }
 
-    const datos = {
-        solicitudId: seleccionada.id,
-        finca: seleccionada.nombre,
-        propietario: seleccionada.propietario,
-        ubicacion: seleccionada.ubicacion,
-        hectareas: seleccionada.hectareas,
-        vegetacion: seleccionada.vegetacion,
+    const duracion = parseInt(document.getElementById('pr-duracion')?.value) || 0;
+
+    const request = {
+        idSolicitud: seleccionada.idSolicitud,
         fechaVisita: document.getElementById('pr-fecha')?.value,
-        horaVisita: document.getElementById('pr-hora')?.value,
-        duracion: document.getElementById('pr-duracion')?.value,
-        transporte: document.getElementById('pr-transporte')?.value,
-        objetivo: document.getElementById('pr-objetivo')?.value,
-        observacion: document.getElementById('pr-observacion')?.value,
-        equipo: document.getElementById('pr-equipo')?.value,
+        horaInicio: document.getElementById('pr-hora')?.value + ':00',
+        duracionEstimada: duracion,
+        medioTransporte: document.getElementById('pr-transporte')?.value,
+        objetivoVisita: document.getElementById('pr-objetivo')?.value,
+        equipoMateriales: document.getElementById('pr-equipo')?.value || '',
+        observacionesCoordinacion: document.getElementById('pr-observacion')?.value || ''
     };
 
-    console.log('Visita a guardar:', datos);
-    mostrarToastPR('✅ Visita programada correctamente.');
+    mostrarToastPR('Guardando visita...');
 
-    setTimeout(() => {
-        window.location.href = '/IngForestal/ListaSolicitudes';
-    }, 1800);
+    try {
+        const response = await fetch(`${API_URL}/api/Ingeniero/visita/programar`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(request)
+        });
+        const data = await response.json();
+
+        if (data.result === "SUCCESS") {
+            mostrarToastPR('✅ Visita programada correctamente.');
+            setTimeout(() => {
+                window.location.href = '/IngForestal/ListaSolicitudes';
+            }, 1800);
+        } else {
+            mostrarToastPR(data.message || 'Error al programar la visita.', true);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        mostrarToastPR('Error de conexión con el servidor', true);
+    }
 }
 
-/* ═══════════════════════════════════════════════════
-   7. TOAST
-═══════════════════════════════════════════════════ */
+/* ── TOAST ───────────────────────────────────────── */
 function mostrarToastPR(mensaje, esError = false) {
     const toast = document.getElementById('pr-toast');
     const msgSpan = document.getElementById('pr-toast-msg');
     if (!toast || !mensaje) return;
     msgSpan.textContent = mensaje;
-    if (esError) {
-        toast.style.background = 'var(--psa-red)';
-    } else {
-        toast.style.background = 'var(--psa-leaf)';
-    }
+    toast.classList.toggle('error', esError);
     toast.classList.add('visible');
     clearTimeout(toast._t);
     toast._t = setTimeout(() => toast.classList.remove('visible'), 3500);
 }
 
-/* ═══════════════════════════════════════════════════
-   8. INIT
-═══════════════════════════════════════════════════ */
+function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>]/g, function (m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
+    });
+}
+function aplicarFiltroBusqueda(filtro) {
+    const items = document.querySelectorAll('.pr-solicitud-item');
+    let visibles = 0;
+
+    items.forEach(item => {
+        const texto = item.innerText.toLowerCase();
+        const coincide = !filtro || texto.includes(filtro.toLowerCase());
+        item.style.display = coincide ? 'flex' : 'none';
+        if (coincide) visibles++;
+    });
+
+    // Mostrar mensaje si no hay resultados
+    const listaContainer = document.getElementById('pr-lista-solicitudes');
+    const emptyMsg = listaContainer.querySelector('.pr-solicitudes-empty');
+
+    if (visibles === 0 && items.length > 0) {
+        if (!emptyMsg) {
+            const msg = document.createElement('div');
+            msg.className = 'pr-solicitudes-empty';
+            msg.innerHTML = '<i class="fas fa-search"></i><p>No se encontraron solicitudes que coincidan con la búsqueda.</p>';
+            listaContainer.appendChild(msg);
+        }
+    } else if (emptyMsg && visibles > 0) {
+        emptyMsg.remove();
+    }
+}
+
+/* ── INICIALIZACIÓN ───────────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
-    // Fecha mínima = hoy
+    // Configurar fecha mínima
     const inputFecha = document.getElementById('pr-fecha');
     if (inputFecha) inputFecha.min = new Date().toISOString().split('T')[0];
 
-    // Render inicial del stepper y sección
+    // Inicializar wizard
     actualizarStepper();
     mostrarSeccion(1);
-    renderSolicitudes();
+
+    // Obtener ID de solicitud desde URL (si viene)
+    const params = new URLSearchParams(window.location.search);
+    const idParam = parseInt(params.get('id'));
+
+    // Cargar solicitudes y luego preseleccionar/filtrar si hay ID
+    cargarSolicitudes(idParam);
+
+    // Configurar eventos de los botones
+    const btnAnterior = document.getElementById('pr-btn-anterior');
+    const btnSiguiente = document.getElementById('pr-btn-siguiente');
+    const btnGuardar = document.getElementById('pr-btn-guardar');
+
+    if (btnAnterior) {
+        btnAnterior.onclick = function () { pasoAnterior(); };
+    }
+    if (btnSiguiente) {
+        btnSiguiente.onclick = function () { pasoSiguiente(); };
+    }
+    if (btnGuardar) {
+        btnGuardar.onclick = function () { guardarVisita(); };
+    }
 
     // Búsqueda de solicitudes
     const buscador = document.getElementById('pr-buscar-sol');
     if (buscador) {
-        buscador.addEventListener('input', e => {
-            renderSolicitudes(e.target.value.trim().toLowerCase());
+        buscador.addEventListener('input', function (e) {
+            const filtro = e.target.value.trim().toLowerCase();
+            aplicarFiltroBusqueda(filtro);
         });
     }
 
@@ -418,19 +490,8 @@ document.addEventListener('DOMContentLoaded', () => {
     Object.keys(PR_REGLAS).forEach(id => {
         const el = document.getElementById(id);
         if (!el) return;
-        el.addEventListener('blur', () => { validarCampo(id); actualizarResumen(); });
-        el.addEventListener('input', () => {
-            if (el.classList.contains('invalido')) validarCampo(id);
-            actualizarResumen();
-        });
-        el.addEventListener('change', () => { validarCampo(id); actualizarResumen(); });
+        el.addEventListener('blur', function () { validarCampo(id); actualizarResumen(); });
+        el.addEventListener('input', function () { validarCampo(id); actualizarResumen(); });
+        el.addEventListener('change', function () { validarCampo(id); actualizarResumen(); });
     });
-
-    // Prellenar si viene id en query string
-    const params = new URLSearchParams(window.location.search);
-    const idParam = parseInt(params.get('id'));
-    if (idParam) {
-        const s = PR_SOLICITUDES.find(x => x.id === idParam);
-        if (s) seleccionarSolicitud(s);
-    }
 });

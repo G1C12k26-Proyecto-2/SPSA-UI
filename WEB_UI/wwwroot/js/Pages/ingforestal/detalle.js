@@ -90,18 +90,19 @@ function renderizarDetalle(data) {
                     </span>
                 </div>
             </div>
-            <div style="display: flex; gap: 0.75rem;">
-                <a class="btn btn-outline-psa btn-sm" href="javascript:history.back()">
-                    <i class="fas fa-arrow-left"></i> Volver
-                </a>
-                <button class="btn btn-outline-psa btn-sm" onclick="programarVisita()">
-                    <i class="fas fa-calendar-plus"></i> Programar Visita
-                </button>
-                ${detalle.estado?.toLowerCase() === 'en proceso' ? `
-                <button class="btn btn-psa btn-sm" onclick="realizarVisita()">
-                    <i class="fas fa-clipboard-check"></i> Realizar Visita
-                </button>` : ''}
-            </div>
+<div style="display: flex; gap: 0.75rem;">
+    <a class="btn btn-outline-psa btn-sm" href="javascript:history.back()">
+        <i class="fas fa-arrow-left"></i> Volver
+    </a>
+    ${detalle.estado?.toLowerCase() === 'pendiente' ? `
+    <button class="btn btn-outline-psa btn-sm" onclick="programarVisita()">
+        <i class="fas fa-calendar-plus"></i> Programar Visita
+    </button>` : ''}
+    ${detalle.estado?.toLowerCase() === 'en proceso' ? `
+    <button class="btn btn-psa btn-sm" onclick="realizarVisita()">
+        <i class="fas fa-clipboard-check"></i> Realizar Visita
+    </button>` : ''}
+</div>
         </div>
 
         <!-- ===== LAYOUT ===== -->
@@ -240,72 +241,72 @@ function renderizarDetalle(data) {
                 </div>
                 ` : ''}
                 
-                <!-- CÁLCULO DE PAGO -->
-                ${calculoPago && calculoPago.montoTotalMensual > 0 ? `
-                <div class="psa-card">
-                    <div class="psa-card-header">
-                        <div class="psa-card-title">
-                            <i class="fas fa-coins"></i> Cálculo de Pago Mensual Estimado
-                        </div>
+                <!-- CÁLCULO DE PAGO - Solo visible si la solicitud está APROBADA -->
+${detalle.estado?.toLowerCase() === 'aprobada' && calculoPago && calculoPago.montoTotalMensual > 0 ? `
+<div class="psa-card">
+    <div class="psa-card-header">
+        <div class="psa-card-title">
+            <i class="fas fa-coins"></i> Cálculo de Pago Mensual Estimado
+        </div>
+    </div>
+    <div class="psa-card-body" style="padding: 0;">
+        <div class="ed-calculo-wrap">
+            <div class="ed-calculo-header">
+                <div class="ed-calculo-header-left">
+                    <p>Pago mensual estimado</p>
+                    <div class="ed-calculo-monto">
+                        ${calculoPago.montoTotalFormateado || `₡ ${calculoPago.montoTotalMensual.toLocaleString()}`}
                     </div>
-                    <div class="psa-card-body" style="padding: 0;">
-                        <div class="ed-calculo-wrap">
-                            <div class="ed-calculo-header">
-                                <div class="ed-calculo-header-left">
-                                    <p>Pago mensual estimado</p>
-                                    <div class="ed-calculo-monto">
-                                        ${calculoPago.montoTotalFormateado || `₡ ${calculoPago.montoTotalMensual.toLocaleString()}`}
-                                    </div>
-                                    <div class="ed-calculo-sub">
-                                        Tope de ajustes: ${Math.round(calculoPago.topeAplicado)}% · Ajuste aplicado: ${Math.round(calculoPago.porcentajeAplicado)}%
-                                    </div>
-                                </div>
-                                <div class="ed-calculo-icon">💰</div>
-                            </div>
-                            <div class="ed-calculo-filas">
-                                <div class="ed-calculo-fila">
-                                    <span class="ed-calculo-label">Precio base por hectárea</span>
-                                    <span class="ed-calculo-val">${calculoPago.montoBaseFormateado || `₡ ${calculoPago.precioBaseHectarea.toLocaleString()}`}</span>
-                                </div>
-                                <div class="ed-calculo-fila">
-                                    <span class="ed-calculo-label">Hectáreas verificadas</span>
-                                    <span class="ed-calculo-val">${calculoPago.hectareasUtilizadas.toFixed(2)} ha</span>
-                                </div>
-                                <div class="ed-calculo-fila">
-                                    <span class="ed-calculo-label">Monto base</span>
-                                    <span class="ed-calculo-val">${calculoPago.montoBaseFormateado || `₡ ${calculoPago.montoBase.toLocaleString()}`}</span>
-                                </div>
-                                <div class="ed-calculo-fila">
-                                    <span class="ed-calculo-label">Ajuste vegetación (${calculoPago.tipoVegetacion})</span>
-                                    <span class="ed-calculo-val positivo">+${Math.round(calculoPago.porcentajeVegetacion)}%</span>
-                                </div>
-                                <div class="ed-calculo-fila">
-                                    <span class="ed-calculo-label">Ajuste pendiente (${calculoPago.pendiente})</span>
-                                    <span class="ed-calculo-val positivo">+${Math.round(calculoPago.porcentajePendiente)}%</span>
-                                </div>
-                                <div class="ed-calculo-fila">
-                                    <span class="ed-calculo-label">Ajuste recursos hídricos</span>
-                                    <span class="ed-calculo-val positivo">+${Math.round(calculoPago.porcentajeHidrico)}%</span>
-                                </div>
-                                <div class="ed-calculo-fila">
-                                    <span class="ed-calculo-label">Total ajuste aplicado</span>
-                                    <span class="ed-calculo-val positivo">
-                                        +${Math.round(calculoPago.porcentajeAplicado)}% = ${calculoPago.montoAjusteFormateado || `₡ ${calculoPago.montoAjuste.toLocaleString()}`}
-                                    </span>
-                                </div>
-                                <div class="ed-calculo-fila" style="border-top: 2px solid var(--psa-border); padding-top: 0.75rem; margin-top: 0.25rem;">
-                                    <span class="ed-calculo-label" style="font-weight: 700; font-size: 0.9rem;">Total mensual estimado</span>
-                                    <span class="ed-calculo-val total">${calculoPago.montoTotalFormateado || `₡ ${calculoPago.montoTotalMensual.toLocaleString()}`}</span>
-                                </div>
-                            </div>
-                            <p class="ed-calculo-nota">
-                                Estimación referencial basada en los parámetros vigentes al momento de la evaluación.
-                                El monto final es calculado y ejecutado por el sistema de pagos al aprobar la solicitud.
-                            </p>
-                        </div>
+                    <div class="ed-calculo-sub">
+                        Tope de ajustes: ${Math.round(calculoPago.topeAplicado || 0)}% · Ajuste aplicado: ${Math.round(calculoPago.porcentajeAplicado || 0)}%
                     </div>
                 </div>
-                ` : ''}
+                <div class="ed-calculo-icon">💰</div>
+            </div>
+            <div class="ed-calculo-filas">
+                <div class="ed-calculo-fila">
+                    <span class="ed-calculo-label">Precio base por hectárea</span>
+                    <span class="ed-calculo-val">${calculoPago.montoBaseFormateado || `₡ ${(calculoPago.precioBaseHectarea || 0).toLocaleString()}`}</span>
+                </div>
+                <div class="ed-calculo-fila">
+                    <span class="ed-calculo-label">Hectáreas verificadas</span>
+                    <span class="ed-calculo-val">${(calculoPago.hectareasUtilizadas || 0).toFixed(2)} ha</span>
+                </div>
+                <div class="ed-calculo-fila">
+                    <span class="ed-calculo-label">Monto base</span>
+                    <span class="ed-calculo-val">${calculoPago.montoBaseFormateado || `₡ ${(calculoPago.montoBase || 0).toLocaleString()}`}</span>
+                </div>
+                <div class="ed-calculo-fila">
+                    <span class="ed-calculo-label">Ajuste vegetación (${calculoPago.tipoVegetacion || 'N/A'})</span>
+                    <span class="ed-calculo-val positivo">+${Math.round(calculoPago.porcentajeVegetacion || 0)}%</span>
+                </div>
+                <div class="ed-calculo-fila">
+                    <span class="ed-calculo-label">Ajuste pendiente (${calculoPago.pendiente || 'N/A'})</span>
+                    <span class="ed-calculo-val positivo">+${Math.round(calculoPago.porcentajePendiente || 0)}%</span>
+                </div>
+                <div class="ed-calculo-fila">
+                    <span class="ed-calculo-label">Ajuste recursos hídricos</span>
+                    <span class="ed-calculo-val positivo">+${Math.round(calculoPago.porcentajeHidrico || 0)}%</span>
+                </div>
+                <div class="ed-calculo-fila">
+                    <span class="ed-calculo-label">Total ajuste aplicado</span>
+                    <span class="ed-calculo-val positivo">
+                        +${Math.round(calculoPago.porcentajeAplicado || 0)}% = ${calculoPago.montoAjusteFormateado || `₡ ${(calculoPago.montoAjuste || 0).toLocaleString()}`}
+                    </span>
+                </div>
+                <div class="ed-calculo-fila" style="border-top: 2px solid var(--psa-border); padding-top: 0.75rem; margin-top: 0.25rem;">
+                    <span class="ed-calculo-label" style="font-weight: 700; font-size: 0.9rem;">Total mensual estimado</span>
+                    <span class="ed-calculo-val total">${calculoPago.montoTotalFormateado || `₡ ${(calculoPago.montoTotalMensual || 0).toLocaleString()}`}</span>
+                </div>
+            </div>
+            <p class="ed-calculo-nota">
+                Estimación referencial basada en los parámetros vigentes al momento de la evaluación.
+                El monto final es calculado y ejecutado por el sistema de pagos al aprobar la solicitud.
+            </p>
+        </div>
+    </div>
+</div>
+` : ''}
 
             </div>
 
@@ -313,53 +314,60 @@ function renderizarDetalle(data) {
             <div style="display: flex; flex-direction: column; gap: 1.5rem;">
 
                 <!-- Tarjeta de estado -->
-                <div class="dt-estado-card">
-                    <div class="dt-estado-header">
-                        <p>Estado actual</p>
-                        <div class="dt-estado-chip-grande">
-                            <i class="fas ${getEstadoIcono(detalle.estado)}"></i>
-                            <span id="dt-estado-grande">${getEstadoTexto(detalle.estado)}</span>
-                        </div>
-                    </div>
-                    <div class="dt-estado-body">
-                        <div class="dt-estado-fila">
-                            <span class="dt-estado-fila-label">Solicitud</span>
-                            <span class="dt-estado-fila-val">${formatFecha(detalle.fechaSolicitud)}</span>
-                        </div>
-                        <div class="dt-estado-fila">
-                            <span class="dt-estado-fila-label">Visita programada</span>
-                            <span class="dt-estado-fila-val">${formatFecha(detalle.fechaVisitaProgramada) || '—'}</span>
-                        </div>
-                        <div class="dt-estado-fila">
-                            <span class="dt-estado-fila-label">Hora</span>
-                            <span class="dt-estado-fila-val">${detalle.horaInicioVisita || '—'}</span>
-                        </div>
-                        <div class="dt-estado-fila">
-                            <span class="dt-estado-fila-label">Ingeniero</span>
-                            <span class="dt-estado-fila-val">${escapeHtml(detalle.ingenieroNombre || 'No asignado')}</span>
-                        </div>
-                    </div>
-                </div>
+                <!-- Tarjeta de estado -->
+<div class="dt-estado-card">
+    <div class="dt-estado-header ${getEstadoHeaderClass(detalle.estado)}">
+        <p>Estado actual</p>
+        <div class="dt-estado-chip-grande ${getEstadoChipClass(detalle.estado)}">
+            <i class="fas ${getEstadoIcono(detalle.estado)}"></i>
+            <span id="dt-estado-grande">${getEstadoTexto(detalle.estado)}</span>
+        </div>
+    </div>
+    <div class="dt-estado-body">
+        <div class="dt-estado-fila">
+            <span class="dt-estado-fila-label">Solicitud</span>
+            <span class="dt-estado-fila-val">${formatFecha(detalle.fechaSolicitud)}</span>
+        </div>
+        <div class="dt-estado-fila">
+            <span class="dt-estado-fila-label">Visita programada</span>
+            <span class="dt-estado-fila-val">${formatFecha(detalle.fechaVisitaProgramada) || '—'}</span>
+        </div>
+        <div class="dt-estado-fila">
+            <span class="dt-estado-fila-label">Hora</span>
+            <span class="dt-estado-fila-val">${detalle.horaInicioVisita || '—'}</span>
+        </div>
+        <div class="dt-estado-fila">
+            <span class="dt-estado-fila-label">Ingeniero</span>
+            <span class="dt-estado-fila-val">${escapeHtml(detalle.ingenieroNombre || 'No asignado')}</span>
+        </div>
+    </div>
+</div>
 
-                <!-- Acciones rápidas -->
-                <div class="psa-card">
-                    <div class="psa-card-header">
-                        <div class="psa-card-title">
-                            <i class="fas fa-bolt"></i> Acciones
-                        </div>
-                    </div>
-                    <div class="psa-card-body">
-                        <div class="dt-acciones-aside">
-                            ${detalle.estado?.toLowerCase() === 'en proceso' ? `
-                            <button class="btn btn-psa" onclick="realizarVisita()">
-                                <i class="fas fa-clipboard-check"></i> Realizar Visita
-                            </button>` : ''}
-                            <a class="btn btn-outline-psa" href="/IngForestal/Agenda" style="justify-content: center;">
-                                <i class="fas fa-calendar-days"></i> Ver Agenda
-                            </a>
-                        </div>
-                    </div>
-                </div>
+<!-- Acciones rápidas - Solo visible para Pendiente o En Proceso -->
+${detalle.estado?.toLowerCase() === 'pendiente' || detalle.estado?.toLowerCase() === 'en proceso' ? `
+<div class="psa-card">
+    <div class="psa-card-header">
+        <div class="psa-card-title">
+            <i class="fas fa-bolt"></i> Acciones
+        </div>
+    </div>
+    <div class="psa-card-body">
+        <div class="dt-acciones-aside">
+            ${detalle.estado?.toLowerCase() === 'pendiente' ? `
+            <button class="btn btn-psa" onclick="programarVisita()">
+                <i class="fas fa-calendar-plus"></i> Programar Visita
+            </button>` : ''}
+            ${detalle.estado?.toLowerCase() === 'en proceso' ? `
+            <button class="btn btn-psa" onclick="realizarVisita()">
+                <i class="fas fa-clipboard-check"></i> Realizar Visita
+            </button>` : ''}
+            <a class="btn btn-outline-psa" href="/IngForestal/Agenda" style="justify-content: center;">
+                <i class="fas fa-calendar-days"></i> Ver Agenda
+            </a>
+        </div>
+    </div>
+</div>
+` : ''}
 
                 <!-- Timeline / Historial -->
                 ${historial.length > 0 ? `
@@ -421,16 +429,31 @@ function getEstadoTexto(estado) {
     if (e === 'rechazada') return 'Rechazada';
     return estado || 'Desconocido';
 }
+function getEstadoChipClass(estado) {
+    const e = estado?.toLowerCase() || '';
+    if (e === 'pendiente') return 'dt-estado-chip-gold';
+    if (e === 'en proceso') return 'dt-estado-chip-blue';
+    if (e === 'aprobada') return 'dt-estado-chip-green';
+    if (e === 'rechazada') return 'dt-estado-chip-red';
+    return 'dt-estado-chip-grey';
+}
 
 function getEstadoIcono(estado) {
     const e = estado?.toLowerCase() || '';
     if (e === 'pendiente') return 'fa-hourglass-half';
-    if (e === 'en proceso') return 'fa-spinner';
+    if (e === 'en proceso') return 'fa-spinner fa-pulse';
     if (e === 'aprobada') return 'fa-check-circle';
     if (e === 'rechazada') return 'fa-times-circle';
     return 'fa-question-circle';
 }
-
+function getEstadoHeaderClass(estado) {
+    const e = estado?.toLowerCase() || '';
+    if (e === 'pendiente') return 'dt-estado-header-gold';
+    if (e === 'en proceso') return 'dt-estado-header-blue';
+    if (e === 'aprobada') return 'dt-estado-header-green';
+    if (e === 'rechazada') return 'dt-estado-header-red';
+    return 'dt-estado-header-grey';
+}
 function getRecursosHidricosTexto(detalle) {
     const partes = [];
     if (detalle.tieneRiosQuebradasOriginal) partes.push('Río/Quebrada');

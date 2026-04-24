@@ -2,7 +2,7 @@
    agenda.css — Agenda de Visitas | PSA
    ===================================================== */
 
-/* ── LAYOUT PRINCIPAL ────────────────────────────── */
+/* Layout principal */
 .ag-body {
     display: grid;
     grid-template-columns: 1fr 360px;
@@ -10,13 +10,12 @@
     align-items: start;
 }
 
-/* ── PANELES ─────────────────────────────────────── */
+/* Paneles */
 .ag-panel {
     background: #fff;
     border-radius: 12px;
     border: 1px solid #e2e8f0;
     overflow: hidden;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
 .ag-panel-header {
@@ -25,146 +24,117 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 12px;
     background: #fafaf8;
 }
 
-    .ag-panel-header h2 {
-        font-size: 0.95rem;
-        font-weight: 600;
-        color: #0d2b1a;
-        margin: 0;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-/* ── NAVEGACIÓN ──────────────────────────────────── */
-.ag-cal-nav {
+.ag-panel-header h2 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #0d2b1a;
+    margin: 0;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
 }
 
+/* Navegación */
 .ag-cal-nav-btn {
     background: none;
     border: 1px solid #e2e8f0;
     border-radius: 6px;
     padding: 4px 10px;
     cursor: pointer;
-    font-size: 0.8rem;
 }
 
-    .ag-cal-nav-btn:hover {
-        background: #e8f5ee;
-        border-color: #2d8653;
-    }
-
-.ag-cal-mes-label {
-    font-weight: 600;
-    font-size: 0.9rem;
-    min-width: 120px;
-    text-align: center;
-    color: #0d2b1a;
+/* Grid del calendario */
+.ag-cal-fila {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+    margin-bottom: 6px;
 }
 
-/* ── CALENDARIO EN TABLA ─────────────────────────── */
-.ag-cal-grid {
-    padding: 1rem;
-    overflow-x: auto;
+/* Celda */
+.ag-cal-celda {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 8px 6px;
+    height: 95px;
+    min-height: 95px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 
-    .ag-cal-grid table {
-        width: 100%;
-        border-collapse: collapse;
-        table-layout: fixed;
-    }
+.ag-cal-celda.otro-mes {
+    background: #f8faf8;
+    opacity: 0.6;
+}
 
-    .ag-cal-grid th,
-    .ag-cal-grid td {
-        border: 1px solid #e2e8f0;
-        padding: 8px;
-        vertical-align: top;
-        width: 14.28%;
-    }
+.ag-cal-celda.hoy {
+    border: 2px solid #2d8653;
+    background: #e8f5ee;
+}
 
-    .ag-cal-grid th {
-        background: #fafaf8;
-        font-weight: 600;
-        font-size: 0.75rem;
-        color: #64748b;
-        text-align: center;
-        padding: 10px 4px;
-    }
-
-    .ag-cal-grid td {
-        height: 100px;
-        min-height: 100px;
-        background: #fff;
-        cursor: pointer;
-    }
-
-        .ag-cal-grid td.otro-mes {
-            background: #f8faf8;
-            opacity: 0.7;
-        }
-
-        .ag-cal-grid td.hoy {
-            border: 2px solid #2d8653;
-            background: #e8f5ee;
-        }
-
-        .ag-cal-grid td.seleccionada {
-            background: #d4edda;
-            border: 2px solid #2d8653;
-        }
+.ag-cal-celda.seleccionada {
+    background: #dbeafe;
+    border: 2px solid #3b82f6;
+}
 
 /* Número del día */
 .ag-cal-num {
-    font-weight: 700;
+    font-weight: bold;
     font-size: 0.8rem;
     display: inline-block;
     background: #e8f5ee;
     color: #0d2b1a;
     padding: 2px 8px;
     border-radius: 20px;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
+    width: fit-content;
 }
 
-td.hoy .ag-cal-num {
+.ag-cal-num.hoy {
     background: #2d8653;
-    color: white;
+    color: #fff;
 }
 
-/* Eventos dentro de la celda */
+.ag-cal-num.seleccionada {
+    background: #3b82f6;
+    color: #fff;
+}
+
+/* Eventos */
 .ag-cal-evento-pill {
-    font-size: 0.68rem;
+    font-size: 0.65rem;
     padding: 3px 5px;
     margin-bottom: 3px;
     border-radius: 4px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    border-left: 3px solid;
 }
 
-    .ag-cal-evento-pill.pendiente {
-        background: #fdf3e3;
-        color: #c9922a;
-        border-left: 3px solid #c9922a;
-    }
+.ag-cal-evento-pill.pendiente {
+    background: #fdf3e3;
+    color: #c9922a;
+    border-left-color: #c9922a;
+}
 
-    .ag-cal-evento-pill.proceso {
-        background: #e8f0fb;
-        color: #1d4f8a;
-        border-left: 3px solid #1d4f8a;
-    }
+.ag-cal-evento-pill.proceso {
+    background: #e8f0fb;
+    color: #1d4f8a;
+    border-left-color: #1d4f8a;
+}
 
-    .ag-cal-evento-pill.aprobada {
-        background: #e8f5ee;
-        color: #2d8653;
-        border-left: 3px solid #2d8653;
-    }
+.ag-cal-evento-pill.aprobada {
+    background: #e8f5ee;
+    color: #2d8653;
+    border-left-color: #2d8653;
+}
 
 .ag-cal-evento-mas {
     font-size: 0.6rem;
@@ -173,14 +143,13 @@ td.hoy .ag-cal-num {
     margin-top: 2px;
 }
 
-/* ── LEYENDA ─────────────────────────────────────── */
+/* Leyenda */
 .ag-leyenda {
     display: flex;
     gap: 20px;
     padding: 10px 1rem;
     border-top: 1px solid #e2e8f0;
     background: #fafaf8;
-    flex-wrap: wrap;
 }
 
 .ag-leyenda-item {
@@ -197,19 +166,11 @@ td.hoy .ag-cal-num {
     border-radius: 50%;
 }
 
-    .ag-leyenda-dot.pendiente {
-        background: #c9922a;
-    }
+.ag-leyenda-dot.pendiente { background: #c9922a; }
+.ag-leyenda-dot.proceso { background: #1d4f8a; }
+.ag-leyenda-dot.aprobada { background: #2d8653; }
 
-    .ag-leyenda-dot.proceso {
-        background: #1d4f8a;
-    }
-
-    .ag-leyenda-dot.aprobada {
-        background: #2d8653;
-    }
-
-/* ── PANEL DERECHO ───────────────────────────────── */
+/* Panel derecho */
 .ag-dia-seleccionado-label {
     font-size: 0.75rem;
     background: #e8f5ee;
@@ -228,22 +189,13 @@ td.hoy .ag-cal-num {
     gap: 14px;
     padding: 14px;
     border-bottom: 1px solid #e2e8f0;
-    transition: background 0.2s;
 }
-
-    .ag-lista-item:hover {
-        background: #f8faf8;
-    }
 
 .ag-lista-hora {
     min-width: 55px;
-    font-weight: 700;
+    font-weight: bold;
     font-size: 0.8rem;
     color: #2d8653;
-}
-
-.ag-lista-info {
-    flex: 1;
 }
 
 .ag-lista-nombre {
@@ -256,75 +208,9 @@ td.hoy .ag-cal-num {
 .ag-lista-sub {
     font-size: 0.68rem;
     color: #64748b;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    margin-bottom: 6px;
 }
 
-.ag-lista-acciones {
-    display: flex;
-    gap: 8px;
-    align-items: flex-start;
-}
-
-    .ag-lista-acciones .btn-icon {
-        background: none;
-        border: none;
-        cursor: pointer;
-        color: #64748b;
-        padding: 5px;
-        border-radius: 6px;
-    }
-
-        .ag-lista-acciones .btn-icon:hover {
-            background: #e8f5ee;
-            color: #2d8653;
-        }
-
-/* Día vacío */
-.ag-dia-vacio {
-    text-align: center;
-    padding: 40px 20px;
-    color: #64748b;
-}
-
-.ag-dia-vacio-icon {
-    font-size: 2.5rem;
-    margin-bottom: 12px;
-    opacity: 0.5;
-}
-
-.ag-dia-vacio p {
-    font-size: 0.8rem;
-    margin: 0;
-}
-
-/* Chips */
-.chip {
-    display: inline-block;
-    padding: 3px 8px;
-    border-radius: 20px;
-    font-size: 0.65rem;
-    font-weight: 500;
-}
-
-.chip-pendiente {
-    background: #fdf3e3;
-    color: #c9922a;
-}
-
-.chip-proceso {
-    background: #e8f0fb;
-    color: #1d4f8a;
-}
-
-.chip-aprobada {
-    background: #e8f5ee;
-    color: #2d8653;
-}
-
-/* ── TOAST ───────────────────────────────────────── */
+/* Toast */
 #ag-toast {
     position: fixed;
     bottom: 28px;
@@ -335,45 +221,32 @@ td.hoy .ag-cal-num {
     border-radius: 8px;
     font-size: 0.8rem;
     z-index: 2000;
-    display: flex;
-    align-items: center;
-    gap: 8px;
     transform: translateY(80px);
     opacity: 0;
     transition: all 0.3s;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
-    #ag-toast.visible {
-        transform: translateY(0);
-        opacity: 1;
-    }
+#ag-toast.visible {
+    transform: translateY(0);
+    opacity: 1;
+}
 
-    #ag-toast.error {
-        background: #b83232;
-    }
+#ag-toast.error {
+    background: #b83232;
+}
 
-/* ── RESPONSIVE ──────────────────────────────────── */
+/* Responsive */
 @media (max-width: 900px) {
     .ag-body {
         grid-template-columns: 1fr;
     }
-
-    .ag-cal-grid td {
+    .ag-cal-celda {
         height: 70px;
         min-height: 70px;
         padding: 4px;
     }
-
-    .ag-cal-num {
-        font-size: 0.7rem;
-        padding: 1px 5px;
-        margin-bottom: 4px;
-    }
-
     .ag-cal-evento-pill {
         font-size: 0.55rem;
-        padding: 2px 3px;
         white-space: normal;
     }
 }
