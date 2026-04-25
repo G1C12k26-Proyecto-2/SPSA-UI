@@ -4,6 +4,13 @@ namespace WebUI.Controllers
 {
     public class FincasController : Controller
     {
+        private readonly IConfiguration _config;
+
+        public FincasController(IConfiguration config)
+        {
+            _config = config;
+        }
+
         public IActionResult Index()
         {
             ViewData["Title"] = "Mis Fincas";
@@ -15,6 +22,7 @@ namespace WebUI.Controllers
         {
             ViewData["Title"] = "Registrar Finca";
             ViewData["Breadcrumb"] = "Registrar Finca";
+            ViewBag.GoogleMapsApiKey = _config["GoogleMaps:JsApiKey"] ?? "";
             return View();
         }
 

@@ -26,24 +26,27 @@
                 </div>
                 <div class="col-12">
                     <label class="form-label-psa">Seleccionar Ubicación en Mapa</label>
-                    <div class="psa-map-selector">
-                        <div class="pin" style="top:45%;left:50%;background:var(--psa-red);box-shadow:0 0 0 6px rgba(184,50,50,0.3);"></div>
-                        <div class="psa-map-hint"><i class="fas fa-mouse-pointer"></i> Clic para seleccionar ubicación</div>
-                    </div>
-                    <small class="text-muted">Coordenadas: 10.4628° N, -84.6426° W</small>
+                    <div id="map" style="height:350px; border-radius:12px; border:1px solid #2d5a3d;"></div>
+                    <small class="text-muted mt-1 d-block">
+                        <i class="fas fa-map-marker-alt me-1"></i>
+                        <span id="lblCoordenadas">Haz clic en el mapa para seleccionar la ubicación</span>
+                    </small>
+                    <input type="hidden" id="hfLatitud" />
+                    <input type="hidden" id="hfLongitud" />
                 </div>
+
                 <div class="col-md-4">
                     <label class="form-label-psa">Provincia</label>
-                    <input type="text" class="form-control" value="Alajuela" >
-                    <small class="text-muted">Auto-detectada</small>
+                    <input id="ddlProvincia" type="text" class="form-control" placeholder="Provincia" />
+                    <small class="text-muted">Auto-detectada al hacer clic en el mapa</small>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label-psa">Cantón</label>
-                    <input type="text" class="form-control" value="San Carlos" />
+                    <input id="ddlCanton" type="text" class="form-control" placeholder="Cantón" />
                 </div>
                 <div class="col-md-4">
                     <label class="form-label-psa">Distrito</label>
-                    <input type="text" class="form-control" value="La Fortuna" />
+                    <input id="ddlDistrito" type="text" class="form-control" placeholder="Distrito" />
                 </div>
                 <div class="col-md-4">
                     <label class="form-label-psa">Tamaño (Hectáreas)</label>
@@ -53,44 +56,48 @@
             </div>
 
             <h5 class="mb-3 mt-4"><i class="fas fa-leaf text-success"></i> Características Ambientales</h5>
+
             <div class="mb-3">
                 <label class="form-label-psa">Tipo de Superficie</label>
-                <div class="psa-chip-group">
-                    <span class="psa-chip">Plana</span>
-                    <span class="psa-chip selected">Inclinada</span>
-                    <span class="psa-chip">Muy Inclinada</span>
+                <div class="psa-chip-group" data-field="pendiente">
+                    <span class="psa-chip" data-value="PLANA">Plana</span>
+                    <span class="psa-chip selected" data-value="INCLINADA">Inclinada</span>
+                    <span class="psa-chip" data-value="MUY_INCLINADA">Muy Inclinada</span>
                 </div>
             </div>
+
             <div class="mb-3">
                 <label class="form-label-psa">Tipo de Vegetación</label>
-                <div class="psa-chip-group">
-                    <span class="psa-chip selected">Bosque Primario</span>
-                    <span class="psa-chip">Bosque Secundario</span>
-                    <span class="psa-chip">Plantación Forestal</span>
-                    <span class="psa-chip">Pasto</span>
+                <div class="psa-chip-group" data-field="vegetacion">
+                    <span class="psa-chip selected" data-value="BOSQUE_PRIMARIO">Bosque Primario</span>
+                    <span class="psa-chip" data-value="BOSQUE_SECUNDARIO">Bosque Secundario</span>
+                    <span class="psa-chip" data-value="PLANTACION_FORESTAL">Plantación Forestal</span>
+                    <span class="psa-chip" data-value="PASTO_ESCASA">Pasto</span>
                 </div>
             </div>
+
             <div class="mb-3">
                 <label class="form-label-psa">Recursos Hídricos</label>
-                <div class="psa-chip-group" data-multi="true">
-                    <span class="psa-chip selected">Ríos o Quebradas</span>
-                    <span class="psa-chip">Nacientes</span>
-                    <span class="psa-chip">Sin recurso hídrico</span>
+                <div class="psa-chip-group" data-multi="true" data-field="hidrico">
+                    <span class="psa-chip" data-value="rios">Ríos o Quebradas</span>
+                    <span class="psa-chip" data-value="nacientes">Nacientes</span>
+                    <span class="psa-chip" data-value="ninguno">Sin recurso hídrico</span>
                 </div>
                 <div class="d-flex gap-2 align-items-center mt-2">
                     <label class="form-label-psa mb-0" style="white-space:nowrap;">Cantidad de nacientes:</label>
-                    <input type="number" class="form-control" value="0" min="0" style="width:80px;" />
+                    <input id="txtNacientes" type="number" class="form-control" value="0" min="0" style="width:80px;" />
                 </div>
             </div>
+
             <div class="mb-3">
                 <label class="form-label-psa">Uso de Suelo (selección múltiple)</label>
-                <div class="psa-chip-group" data-multi="true">
-                    <span class="psa-chip selected">Conservación</span>
-                    <span class="psa-chip selected">Protección Forestal</span>
-                    <span class="psa-chip">Reforestación</span>
-                    <span class="psa-chip">Agroforestal</span>
-                    <span class="psa-chip">Ganaderia</span>
-                    <span class="psa-chip">Mixto</span>
+                <div class="psa-chip-group" data-multi="true" data-field="usosuelo">
+                    <span class="psa-chip selected" data-value="Conservación">Conservación</span>
+                    <span class="psa-chip selected" data-value="Protección Forestal">Protección Forestal</span>
+                    <span class="psa-chip" data-value="Reforestación">Reforestación</span>
+                    <span class="psa-chip" data-value="Agroforestal">Agroforestal</span>
+                    <span class="psa-chip" data-value="Ganadería">Ganadería</span>
+                    <span class="psa-chip" data-value="Mixto">Mixto</span>
                 </div>
             </div>
 
@@ -98,25 +105,29 @@
             <div class="row g-3 mb-3">
                 <div class="col-md-6">
                     <label class="form-label-psa">Fotografías</label>
-                    <div class="psa-upload">
+                    <div class="psa-upload" id="uploadFotos" style="cursor:pointer;">
                         <i class="fas fa-camera"></i>
                         <p>Arrastra imágenes o haz clic</p>
                         <small>JPG, PNG · máx. 10MB</small>
                     </div>
+                    <input type="file" id="inputFotos" multiple accept="image/*" style="display:none;" />
+                    <div id="previewFotos" class="d-flex flex-wrap gap-2 mt-2"></div>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label-psa">Documentos Legales</label>
-                    <div class="psa-upload">
+                    <div class="psa-upload" id="uploadDocs" style="cursor:pointer;">
                         <i class="fas fa-file-arrow-up"></i>
                         <p>Plano catastrado, escritura, etc.</p>
                         <small>PDF · máx. 25MB</small>
                     </div>
+                    <input type="file" id="inputDocs" multiple accept=".pdf" style="display:none;" />
+                    <div id="previewDocs" class="d-flex flex-wrap gap-2 mt-2"></div>
                 </div>
             </div>
+
             <hr />
             <div class="d-flex gap-2">
                 <button type="button" class="btn btn-psa" id="btnEnviar"><i class="fas fa-paper-plane"></i> Enviar Solicitud</button>
-                <button type="button" class="btn btn-outline-psa" id="btnBorrador"><i class="fas fa-floppy-disk"></i> Guardar Borrador</button>
                 <a class="btn btn-outline-psa" asp-controller="Fincas" asp-action="Index">Cancelar</a>
             </div>
         </form>
@@ -124,5 +135,19 @@
 </div>
 
 @section Scripts {
-    <script src="~/js/Pages/Fincas/crearfinca.js" asp-append-version="true"></script>
+    <script src="~/js/Pages/Fincas/crearfinca.js"></script>
+    <script>
+        function initMap() {
+            if (window.crearFincaInstance) window.crearFincaInstance.InitMap();
+        }
+
+        $(document).ready(() => {
+            if (typeof google !== 'undefined' && typeof google.maps !== 'undefined') {
+                if (window.crearFincaInstance) window.crearFincaInstance.InitMap();
+            }
+        });
+    </script>
+    <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=@ViewBag.GoogleMapsApiKey&callback=initMap">
+    </script>
 }
