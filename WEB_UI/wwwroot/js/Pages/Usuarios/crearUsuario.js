@@ -1,14 +1,15 @@
 ﻿const API_URL = "https://spsaapi.azurewebsites.net";
 
-async function crearUsuario() {
-    const nombre = document.getElementById('txtNombre').value.trim();
-    const email = document.getElementById('txtEmail').value.trim();
-    const usuario = document.getElementById('txtUsuario').value.trim();
-    const password = document.getElementById('txtPassword').value;
-    const confirmar = document.getElementById('txtConfirmar').value;
-    const rol = document.getElementById('ddRol').value;
-    const activo = document.getElementById('ddEstado').value === 'true';
-    const btn = document.getElementById('btnCrear');
+
+function crearUsuario() {
+    const nombre = $('#txtNombre').val().trim();
+    const email = $('#txtEmail').val().trim();
+    const usuario = $('#txtUsuario').val().trim();
+    const password = $('#txtPassword').val();
+    const confirmar = $('#txtConfirmar').val();
+    const rol = $('#ddRol').val();
+    const activo = $('#ddEstado').val() === 'true';
+    const btn = $('#btnCrear');
 
     if (!nombre || !email || !usuario || !password || !confirmar || !rol) {
         ShowError('Campos incompletos', 'Por favor completá todos los campos.');
@@ -25,35 +26,43 @@ async function crearUsuario() {
         return;
     }
 
-    btn.disabled = true;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creando...';
+    btn.prop('disabled', true);
+    btn.html('<i class="fas fa-spinner fa-spin"></i> Creando...');
 
-    try {
-        const response = await fetch(`${API_URL}/api/Auth/CreateUserWithRole`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                userName: usuario,
-                password: password,
-                fullName: nombre,
-                email: email,
-                active: activo,
-                rol: rol
-            })
-        });
+    const user = {
+        userName: usuario,
+        password: password,
+        fullName: nombre,
+        email: email,
+        active: activo,
+        rol: rol
+    };
 
-        const data = await response.json();
+    $.ajax({
+        url: API_URL + "/api/Auth/CreateUserWithRole",
+        method: "POST",
+        dataType: "json",
+        contentType: "application/json;charset=utf-8",
+        data: JSON.stringify(user)
+    }).done(function (data) {
 
-        if (data.result === 'ok') {
+        if (data.result === "ok") {
             ShowSuccess('Usuario creado', 'El usuario fue creado exitosamente.');
-            setTimeout(() => window.location.href = '/Usuarios/Index', 2000);
+
+            setTimeout(function () {
+                window.location.href = '/Usuarios/Index';
+            }, 2000);
+
         } else {
             ShowError('Error', data.message || 'No se pudo crear el usuario.');
         }
-    } catch (e) {
+
+    }).fail(function (xhr) {
+        console.error("Error AJAX:", xhr);
         ShowError('Error de conexión', 'No se pudo conectar con el servidor.');
-    } finally {
-        btn.disabled = false;
-        btn.innerHTML = '<i class="fas fa-save"></i> Crear Usuario';
-    }
+
+    }).always(function () {
+        btn.prop('disabled', false);
+        btn.html('<i class="fas fa-save"></i> Crear Usuario');
+    });
 }
