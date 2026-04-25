@@ -1,3 +1,15 @@
+﻿En el proyecto SPSA-UI hacé los siguientes cambios:
+
+---
+
+**1. WEB_UI/Controllers/FincasController.cs**
+Corregí la ruta de la acción Editar — actualmente dice [Route] o tiene "Feanm", cambiála a "Fincas" para que quede /Fincas/Editar/{id}.
+
+---
+
+**2. WEB_UI/wwwroot/js/Pages/Fincas/editarfinca.js**
+Reemplazá el contenido completo por esto:
+
 function EditarFinca() {
     const self = this;
 
@@ -83,3 +95,81 @@ function EditarFinca() {
 }
 
 $(document).ready(() => { let v = new EditarFinca(); v.InitView(); });
+
+---
+
+**3. WEB_UI/wwwroot/js/Pages/Fincas/ — creá el archivo detallefinca.js** con este contenido:
+
+function DetalleFinca() {
+    const self = this;
+
+    this.InitView = () => {
+        const id = window.location.pathname.split('/').pop();
+        self.LoadData(id);
+    };
+
+    this.LoadData = (id) => {
+        $.ajax({
+            url: `${API_URL_BASE}/api/Solicitudes/GetById/${id}`,
+            type: 'GET',
+            success: (res) => {
+                if (res.result === 'ok') {
+                    const d = res.data;
+                    $('#detNombre').text(d.nombreFinca || '—');
+                    $('#detEstado').text(d.estado || '—');
+                    $('#detProvincia').text(d.provincia || '—');
+                    $('#detCanton').text(d.canton || '—');
+                    $('#detDistrito').text(d.distrito || '—');
+                    $('#detHectareas').text(d.hectareasOriginal ?? '—');
+                    $('#detVegetacion').text(d.tipoVegetacionOriginal || '—');
+                    $('#detPendiente').text(d.pendienteOriginal || '—');
+                    $('#detHidrico').text(d.tieneRiosQuebradasOriginal ? 'Sí' : 'No');
+                    $('#detNacientes').text(d.cantidadNacientesOriginal ?? '—');
+                    $('#detUsoSuelo').text(d.usoSueloOriginal || '—');
+                    $('#detFecha').text(d.fechaSolicitud ? new Date(d.fechaSolicitud).toLocaleDateString('es-CR') : '—');
+                    $('#detPago').text(d.pagoMensual != null ? `₡${d.pagoMensual.toLocaleString('es-CR')}` : '—');
+                    $('#detPropietario').text(d.propietario || '—');
+                } else {
+                    Swal.fire('Error', res.message || 'No se pudo cargar la finca.', 'error');
+                }
+            },
+            error: () => Swal.fire('Error', 'No se pudo conectar con el servidor.', 'error')
+        });
+    };
+}
+
+$(document).ready(() => { let v = new DetalleFinca(); v.InitView(); });
+
+---
+
+**4. WEB_UI/Views/Fincas/Detalle.cshtml**
+Reemplazá todos los valores hardcodeados por elementos con IDs para que el JS pueda actualizarlos. Específicamente:
+- El nombre de la finca → id="detNombre"
+- El estado → id="detEstado"
+- Provincia → id="detProvincia", Cantón → id="detCanton", Distrito → id="detDistrito"
+- Hectáreas → id="detHectareas"
+- Tipo de vegetación → id="detVegetacion"
+- Pendiente → id="detPendiente"
+- Recursos hídricos → id="detHidrico"
+- Nacientes → id="detNacientes"
+- Uso de suelo → id="detUsoSuelo"
+- Fecha solicitud → id="detFecha"
+- Pago mensual → id="detPago"
+- Propietario → id="detPropietario"
+
+También agregá al final en @section Scripts: <script src="~/js/Pages/Fincas/detallefinca.js"></script>
+
+---
+
+**5. WEB_UI/Views/Fincas/Editar.cshtml**
+Verificá que los campos del formulario tengan estos IDs exactos (agregálos si no los tienen):
+- Nombre → id="txtNombre"
+- Hectáreas → id="txtHectareas"
+- Nacientes → id="txtNacientes"
+- Uso de suelo → id="txtUsoSuelo"
+- Provincia → id="txtProvincia"
+- Cantón → id="txtCanton"
+- Distrito → id="txtDistrito"
+- Chips de chips de selección → atributo data-grupo="vegetacion"|"pendiente"|"hidrico" y data-valor con el valor correspondiente
+
+No toques ningún estilo CSS ni clases existentes.

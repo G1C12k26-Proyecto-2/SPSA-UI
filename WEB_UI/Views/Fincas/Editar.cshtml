@@ -25,54 +25,55 @@
             <div class="row g-3">
                 <div class="col-md-6">
                     <label class="form-label-psa">Nombre</label>
-                    <input type="text" class="form-control" value="Finca Las Palmas" />
+                    <input id="txtNombre" type="text" class="form-control" placeholder="Nombre de la finca" />
                 </div>
                 <div class="col-md-6">
                     <label class="form-label-psa">Hectáreas</label>
-                    <input type="number" class="form-control" value="78" min="0.1" step="0.1" />
+                    <input id="txtHectareas" type="number" class="form-control" min="0.1" step="0.1" />
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <label class="form-label-psa">Provincia</label>
-                    <input type="text" class="form-control" value="Heredia" readonly />
+                    <input id="txtProvincia" type="text" class="form-control" readonly />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label-psa">Cantón</label>
+                    <input id="txtCanton" type="text" class="form-control" readonly />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label-psa">Distrito</label>
+                    <input id="txtDistrito" type="text" class="form-control" readonly />
                 </div>
                 <div class="col-md-6">
-                    <label class="form-label-psa">Cantón / Distrito</label>
-                    <input type="text" class="form-control" value="Sarapiquí, Puerto Viejo" readonly />
+                    <label class="form-label-psa">Nacientes</label>
+                    <input id="txtNacientes" type="number" class="form-control" min="0" />
                 </div>
                 <div class="col-md-6">
-                    <label class="form-label-psa">Vegetación</label>
-                    <select class="form-select">
-                        <option>Bosque Primario</option>
-                        <option selected>Bosque Secundario</option>
-                        <option>Plantación Forestal</option>
-                        <option>Pasto / Escasa</option>
-                    </select>
+                    <label class="form-label-psa">Uso de Suelo</label>
+                    <input id="txtUsoSuelo" type="text" class="form-control" />
                 </div>
-                <div class="col-md-6">
-                    <label class="form-label-psa">Superficie</label>
-                    <select class="form-select">
-                        <option>Montañosa</option>
-                        <option selected>Llanura</option>
-                        <option>Laderas</option>
-                        <option>Valle</option>
-                    </select>
+                <div class="col-12">
+                    <label class="form-label-psa">Tipo de Vegetación</label>
+                    <div class="psa-chip-group">
+                        <span class="psa-chip chip-option" data-grupo="vegetacion" data-valor="BOSQUE_PRIMARIO">Bosque Primario</span>
+                        <span class="psa-chip chip-option" data-grupo="vegetacion" data-valor="BOSQUE_SECUNDARIO">Bosque Secundario</span>
+                        <span class="psa-chip chip-option" data-grupo="vegetacion" data-valor="PLANTACION_FORESTAL">Plantación Forestal</span>
+                        <span class="psa-chip chip-option" data-grupo="vegetacion" data-valor="PASTO_ESCASA">Pasto</span>
+                    </div>
                 </div>
-                <div class="col-md-6">
-                    <label class="form-label-psa">Recursos Hídricos</label>
-                    <select class="form-select">
-                        <option selected>Ríos o Quebradas</option>
-                        <option>Nacientes</option>
-                        <option>Ambos</option>
-                        <option>Sin recurso</option>
-                    </select>
-                </div>
-                <div class="col-md-6">
+                <div class="col-12">
                     <label class="form-label-psa">Pendiente</label>
-                    <select class="form-select">
-                        <option selected>Plana</option>
-                        <option>Inclinada</option>
-                        <option>Muy Inclinada</option>
-                    </select>
+                    <div class="psa-chip-group">
+                        <span class="psa-chip chip-option" data-grupo="pendiente" data-valor="PLANA">Plana</span>
+                        <span class="psa-chip chip-option" data-grupo="pendiente" data-valor="INCLINADA">Inclinada</span>
+                        <span class="psa-chip chip-option" data-grupo="pendiente" data-valor="MUY_INCLINADA">Muy Inclinada</span>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <label class="form-label-psa">Recursos Hídricos</label>
+                    <div class="psa-chip-group">
+                        <span class="psa-chip chip-option" data-grupo="hidrico" data-valor="true">Sí tiene ríos/quebradas</span>
+                        <span class="psa-chip chip-option" data-grupo="hidrico" data-valor="false">Sin recurso hídrico</span>
+                    </div>
                 </div>
                 <div class="col-12">
                     <label class="form-label-psa">Documentos</label>
@@ -97,4 +98,11 @@
 
 @section Scripts {
     <script src="~/js/Pages/Fincas/editarfinca.js" asp-append-version="true"></script>
+    <script>
+        $(document).on('click', '.chip-option', function () {
+            const grupo = $(this).data('grupo');
+            $('.chip-option[data-grupo="' + grupo + '"]').removeClass('selected');
+            $(this).addClass('selected');
+        });
+    </script>
 }
