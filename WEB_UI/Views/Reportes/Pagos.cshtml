@@ -2,45 +2,42 @@
     ViewData["Title"] = "Reporte de Pagos";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
-
 <div class="psa-page-header">
     <div>
         <span class="subtitle">Reportes</span>
         <h1>Reporte de Pagos</h1>
-        <p>Total pagado mensual y anual con filtros geográficos — </p>
+        <p>Total pagado mensual y anual con filtros geográficos</p>
     </div>
     <a asp-controller="Reportes" asp-action="Index" class="btn btn-outline-psa btn-sm">
         <i class="fas fa-arrow-left"></i> Volver
     </a>
 </div>
-
 <div class="psa-stats" style="grid-template-columns:repeat(3,1fr);">
     <div class="psa-stat-card">
         <div class="psa-stat-header">
-            <div class="psa-stat-label">Total Pagado Este Mes</div>
+            <div class="psa-stat-label">Total Pagado</div>
             <div class="psa-stat-icon gold"><i class="fas fa-circle-dollar-to-slot"></i></div>
         </div>
-        <div class="psa-stat-value">₡18.4M</div>
-        <div class="psa-stat-sub"><b>15 pagos</b> ejecutados</div>
+        <div class="psa-stat-value" id="totalPagado">—</div>
+        <div class="psa-stat-sub">Total acumulado</div>
     </div>
     <div class="psa-stat-card">
         <div class="psa-stat-header">
-            <div class="psa-stat-label">Total Pagado Este Año</div>
-            <div class="psa-stat-icon gold"><i class="fas fa-calendar"></i></div>
+            <div class="psa-stat-label">Pagos Aprobados</div>
+            <div class="psa-stat-icon green"><i class="fas fa-calendar"></i></div>
         </div>
-        <div class="psa-stat-value">₡52.1M</div>
-        <div class="psa-stat-sub"><b>42 pagos</b> ejecutados</div>
+        <div class="psa-stat-value" id="totalAprobados">—</div>
+        <div class="psa-stat-sub">Con pago asignado</div>
     </div>
     <div class="psa-stat-card">
         <div class="psa-stat-header">
-            <div class="psa-stat-label">Pagos Pendientes</div>
-            <div class="psa-stat-icon red"><i class="fas fa-hourglass-half"></i></div>
+            <div class="psa-stat-label">Pagos Procesados</div>
+            <div class="psa-stat-icon gold"><i class="fas fa-hourglass-half"></i></div>
         </div>
-        <div class="psa-stat-value">3</div>
-        <div class="psa-stat-sub">por ejecutar este mes</div>
+        <div class="psa-stat-value" id="totalProcesados">—</div>
+        <div class="psa-stat-sub">Estado Pagada</div>
     </div>
 </div>
-
 <div class="psa-card">
     <div class="psa-filters">
         <select class="form-select form-select-sm" style="max-width:160px;" id="filtroProvinciaReporte">
@@ -55,35 +52,19 @@
         </select>
         <select class="form-select form-select-sm" style="max-width:160px;" id="filtroCantonReporte">
             <option value="">Todos los cantones</option>
-            <option>San Carlos</option>
-            <option>Alajuela</option>
-            <option>Hojancha</option>
-            <option>Sarapiquí</option>
-        </select>
-        <select class="form-select form-select-sm" style="max-width:160px;" id="filtroDistritoReporte">
-            <option value="">Todos los distritos</option>
-        </select>
-        <select class="form-select form-select-sm" style="max-width:160px;" id="filtroPeriodoReporte">
-            <option value="">Todos los períodos</option>
-            <option>Mar 2026</option>
-            <option>Feb 2026</option>
-            <option>Ene 2026</option>
-            <option>Dic 2025</option>
         </select>
         <select class="form-select form-select-sm" style="max-width:160px;" id="filtroEstadoReporte">
             <option value="">Todos los estados</option>
-            <option>Ejecutado</option>
-            <option>Pendiente</option>
+            <option value="Aprobada">Aprobada</option>
+            <option value="Pagada">Pagada</option>
         </select>
         <div class="spacer"></div>
-        <button class="btn btn-outline-psa btn-sm">
+        <button class="btn btn-outline-psa btn-sm" id="btnExportarPagos">
             <i class="fas fa-download"></i> Exportar
         </button>
     </div>
-
     <div id="gridReportePagos" style="height:400px;width:100%;" class="ag-theme-alpine"></div>
 </div>
-
 @section Scripts {
     <script src="~/js/Pages/Reportes/PagosReporteGrid.js" asp-append-version="true"></script>
 }

@@ -5,7 +5,7 @@ function SolicitudesReporteGrid() {
         this.LoadGrid();
     };
 
-    this.LoadGrid = async () => {
+    this.LoadGrid = () => {
         const self = this;
         const colDefs = [
             {
@@ -24,20 +24,22 @@ function SolicitudesReporteGrid() {
             }
         ];
 
-        let data = [];
-        try {
-            const res = await fetch(`${API_URL}/api/Reportes/GetSolicitudes`);
-            const json = await res.json();
-            if (json.result === "ok") data = json.data;
-        } catch (e) {
-            console.error("Error cargando solicitudes", e);
-        }
-
-        const gridDiv = document.querySelector('#gridReporteSolicitudes');
-        agGrid.createGrid(gridDiv, {
-            columnDefs: colDefs, rowData: data, rowSelection: 'single', rowHeight: 50,
-            defaultColDef: { sortable: true, filter: true }, pagination: true, paginationPageSize: 10,
-            onGridReady: p => { self.gridApi = p.api; }
+        $.ajax({
+            url: `${API_URL}/api/Reportes/GetSolicitudes`,
+            type: 'GET',
+            success: function (json) {
+                let data = [];
+                if (json.result === "ok") data = json.data;
+                const gridDiv = document.querySelector('#gridReporteSolicitudes');
+                agGrid.createGrid(gridDiv, {
+                    columnDefs: colDefs, rowData: data, rowSelection: 'single', rowHeight: 50,
+                    defaultColDef: { sortable: true, filter: true }, pagination: true, paginationPageSize: 10,
+                    onGridReady: p => { self.gridApi = p.api; }
+                });
+            },
+            error: function (e) {
+                console.error("Error cargando solicitudes", e);
+            }
         });
     };
 }
