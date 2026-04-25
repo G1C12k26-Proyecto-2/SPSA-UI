@@ -1,12 +1,14 @@
+const API_URL = "https://awakatech-bzb3evdgapcdchc5.canadacentral-01.azurewebsites.net";
+
 function AuditoriaGrid() {
     this.InitView = () => {
         this.LoadGrid();
     };
 
-    this.LoadGrid = () => {
+    this.LoadGrid = async () => {
         const self = this;
         const colDefs = [
-            { field: "fecha", headerName: "Fecha", flex: 1 },
+            { field: "fechaCambio", headerName: "Fecha", flex: 1 },
             { field: "usuario", headerName: "Usuario", flex: 1 },
             {
                 field: "accion", headerName: "Acción", flex: 1.2,
@@ -17,8 +19,8 @@ function AuditoriaGrid() {
             },
             { field: "modulo", headerName: "Módulo", flex: 1 },
             {
-                field: "ip", headerName: "IP", flex: 1,
-                cellRenderer: p => `<span style="font-family:monospace;font-size:0.75rem;">${p.value}</span>`
+                field: "descripcion", headerName: "Descripción", flex: 1.5,
+                cellRenderer: p => `<span style="font-size:0.75rem;">${p.value ?? ''}</span>`
             },
             {
                 headerName: "", width: 100, minWidth: 100, sortable: false, filter: false,
@@ -26,12 +28,14 @@ function AuditoriaGrid() {
             }
         ];
 
-        const data = [
-            { fecha: "22/03/2026 10:14", usuario: "Admin Sistema", accion: "Pago ejecutado", modulo: "Pagos", ip: "192.168.1.10" },
-            { fecha: "22/03/2026 08:30", usuario: "Admin Sistema", accion: "Usuario creado", modulo: "Usuarios", ip: "192.168.1.10" },
-            { fecha: "21/03/2026 16:45", usuario: "Admin Sistema", accion: "Parámetro editado", modulo: "Configuración", ip: "192.168.1.10" },
-            { fecha: "21/03/2026 14:10", usuario: "Ing. Rojas", accion: "Solicitud rechazada", modulo: "Solicitudes", ip: "192.168.1.22" }
-        ];
+        let data = [];
+        try {
+            const res = await fetch(`${API_URL}/api/Auditoria/GetAll`);
+            const json = await res.json();
+            if (json.result === "ok") data = json.data;
+        } catch (e) {
+            console.error("Error cargando auditoría", e);
+        }
 
         const gridDiv = document.querySelector('#gridAuditoria');
         agGrid.createGrid(gridDiv, {
