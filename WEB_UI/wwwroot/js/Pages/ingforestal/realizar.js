@@ -21,6 +21,26 @@ const RL = {
 /* ═══════════════════════════════════════════════════
    1. CARGA INICIAL DESDE EL BACKEND
 ═══════════════════════════════════════════════════ */
+/* ── OBTENER ID DEL INGENIERO ─────────────────────── */
+function obtenerIngenieroId() {
+    let id = localStorage.getItem('userId') || sessionStorage.getItem('userId');
+    if (!id) {
+        const userStr = sessionStorage.getItem('user');
+        if (userStr) {
+            try {
+                const user = JSON.parse(userStr);
+                id = user.id;
+            } catch (e) { console.error('Error parsing user:', e); }
+        }
+    }
+    if (!id) {
+        console.warn('No se encontró ID de usuario, usando valor por defecto 57');
+        return 57;
+    }
+    return parseInt(id);
+}
+
+
 async function cargarDatosIniciales() {
     mostrarLoading(true);
 
@@ -546,8 +566,8 @@ async function guardarEvaluacion() {
     };
 
     try {
-        PR.ingenieroId = obtenerIngenieroId();
-        const response = await fetch(`${API_URL}/api/Ingeniero/realizar-visita/guardar/${PR.ingenieroId}`, {
+        RL.ingenieroId = obtenerIngenieroId();
+        const response = await fetch(`${API_URL}/api/Ingeniero/realizar-visita/guardar/${RL.ingenieroId}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

@@ -320,7 +320,7 @@ function renderizarTabla(solicitudes) {
             </button>
         `;
 
-        if (estadoTexto === 'Pendiente') {
+        /*if (estadoTexto === 'Pendiente') {
             botones += `
                 <button class="btn-icon" style="background: none; border: none; cursor: pointer; color: var(--psa-leaf); font-size: 0.9rem; padding: 4px 8px; border-radius: 6px;" 
                         title="Programar visita" onclick="abrirModalProgramar(${sol.idSolicitud}, '${escapeHtml(sol.nombreFinca)}', '${escapeHtml(sol.propietario)}')">
@@ -335,7 +335,7 @@ function renderizarTabla(solicitudes) {
                 </button>
             `;
         }
-
+        */
         row.innerHTML = `
             <td style="padding: 14px 16px;">
                 <div style="font-weight: 600; color: var(--psa-forest);">${escapeHtml(sol.nombreFinca || '')}</div>
