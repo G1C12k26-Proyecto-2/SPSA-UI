@@ -1,6 +1,11 @@
 @{
     ViewData["Title"] = "Mi Perfil";
     ViewData["Breadcrumb"] = "Mi Perfil";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Scripts {
+    <script src="~/js/pages/usuarios/perfil.js"></script>
 }
 
 <div class="psa-page-header">
@@ -12,56 +17,93 @@
 </div>
 
 <div class="row g-3">
-    <!-- COLUMNA IZQUIERDA -->
     <div class="col-lg-7">
-        <!-- DATOS DEL USUARIO -->
+
         <div class="psa-card">
             <div class="psa-card-header">
-                <div class="psa-card-title"><i class="fas fa-user-circle"></i> Datos del Usuario</div>
+                <div class="psa-card-title">
+                    <i class="fas fa-user-circle"></i> Datos del Usuario
+                </div>
             </div>
-            <div class="psa-detail-grid">
-                <div class="psa-detail-item">
-                    <div class="psa-detail-label">ID</div>
-                    <div class="psa-detail-value" style="font-family:monospace;">USR-00142</div>
+
+            <div class="psa-card-body">
+
+                <input type="hidden" id="txtIdUsuario" />
+
+                <div class="mb-3">
+                    <label class="form-label">ID</label>
+                    <div id="perfilId" class="psa-detail-value" style="font-family:monospace;">
+                        Cargando...
+                    </div>
                 </div>
-                <div class="psa-detail-item">
-                    <div class="psa-detail-label">Nombre</div>
-                    <div class="psa-detail-value">Carlos Fonseca Salas</div>
+
+                <div class="mb-3">
+                    <label for="txtUserName" class="form-label">Nombre de Usuario</label>
+                    <input type="text" id="txtUserName" class="form-control" />
                 </div>
-                <div class="psa-detail-item">
-                    <div class="psa-detail-label">Correo Electrónico</div>
-                    <div class="psa-detail-value">carlos.fonseca@email.com</div>
+
+                <div class="mb-3">
+                    <label for="txtFullName" class="form-label">Nombre Completo</label>
+                    <input type="text" id="txtFullName" class="form-control" />
                 </div>
-                <div class="psa-detail-item">
-                    <div class="psa-detail-label">Rol</div>
-                    <div class="psa-detail-value"><span class="psa-badge psa-badge-green">Propietario</span></div>
+
+                <div class="mb-3">
+                    <label for="txtEmail" class="form-label">Correo Electrónico</label>
+                    <input type="email" id="txtEmail" class="form-control" />
                 </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Rol</label>
+                    <div>
+                        <span id="perfilRol" class="psa-badge psa-badge-gold">
+                            Cargando...
+                        </span>
+                    </div>
+                    <small class="text-muted">
+                        El rol solo puede ser actualizado por un usuario administrador.
+                    </small>
+                </div>
+
+                <button type="button" id="btnGuardarPerfil" class="btn btn-psa">
+                    <i class="fas fa-save"></i> Guardar Cambios
+                </button>
+
             </div>
         </div>
 
-        <!-- SEGURIDAD Y CONTRASEÑA -->
         <div class="psa-card">
             <div class="psa-card-header">
-                <div class="psa-card-title"><i class="fas fa-shield-halved"></i> Seguridad</div>
+                <div class="psa-card-title">
+                    <i class="fas fa-shield-halved"></i> Seguridad
+                </div>
             </div>
+
             <div class="psa-card-body">
-                <div class="d-flex align-items-center justify-content-between p-3 rounded" style="background:var(--psa-cream);border:1px solid var(--psa-border);">
+                <div class="d-flex align-items-center justify-content-between p-3 rounded"
+                     style="background:var(--psa-cream);border:1px solid var(--psa-border);">
+
                     <div class="d-flex align-items-center gap-3">
-                        <div class="psa-tl-dot gold"><i class="fas fa-lock"></i></div>
+                        <div class="psa-tl-dot gold">
+                            <i class="fas fa-lock"></i>
+                        </div>
+
                         <div>
-                            <div style="font-size:0.85rem;font-weight:500;color:var(--psa-ink);">Contraseña</div>
-                            <div style="font-size:0.78rem;color:var(--psa-muted);">••••••••••••</div>
+                            <div style="font-size:0.85rem;font-weight:500;color:var(--psa-ink);">
+                                Contraseña
+                            </div>
+                            <div style="font-size:0.78rem;color:var(--psa-muted);">
+                                ••••••••••••
+                            </div>
                         </div>
                     </div>
-                    <a class="btn btn-outline-psa btn-sm" href="/Login/RecuperarContrasena"><i class="fas fa-key"></i> Cambiar Contraseña</a>
+
+                    <a class="btn btn-outline-psa btn-sm" href="/Login/RecuperarContrasena">
+                        <i class="fas fa-key"></i> Cambiar Contraseña
+                    </a>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- COLUMNA DERECHA -->
-    <div class="col-lg-5">
-        <!-- AVATAR Y RESUMEN -->
-        
     </div>
 </div>
+<script></script>
