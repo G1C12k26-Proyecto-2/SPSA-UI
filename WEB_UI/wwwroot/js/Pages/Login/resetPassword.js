@@ -44,7 +44,7 @@ async function cambiarContrasena() {
     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
 
     try {
-        const response = await fetch(`${API_URL}/api/Auth/reset-password`, {
+        const response = await fetch(`${API_URL}/api/Auth/ResetPassword`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ token: token, newPassword: nueva })

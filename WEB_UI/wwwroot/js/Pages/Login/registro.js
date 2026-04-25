@@ -56,7 +56,7 @@ async function doRegistro() {
                 window.location.href = '/Login/Login';
             }, 2000);
         } else {
-            errorText.textContent = data.message || 'No se pudo crear la cuenta.';
+            errorText.innerHTML = 'No se pudo crear la cuenta.<br><br>El correo existe en nuestra base de datos';
             errorMsg.style.display = 'block';
         }
     } catch (e) {

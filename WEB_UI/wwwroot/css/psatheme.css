@@ -64,6 +64,10 @@
     --psa-r: 8px;
 }
 
+.Juan5{
+    display:None;
+}
+
 /* ── BASE ─────────────────────────────────────────────────── */
 body {
     font-family: 'Epilogue', sans-serif;
@@ -959,6 +963,10 @@ h6,
 
 .Juan3{
     display:None;
+}
+
+.Juan4{
+    display:none;
 }
 
     .psa-upload:hover {
