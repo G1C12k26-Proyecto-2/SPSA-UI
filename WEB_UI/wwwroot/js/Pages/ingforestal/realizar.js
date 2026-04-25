@@ -1,85 +1,269 @@
 /* =====================================================
-   realizar.js — Visitas / Realizar | PSA
+   realizar.js — Realizar Visita Técnica | Ingeniero Forestal
    Ruta: wwwroot/js/ingforestal/realizar.js
    ===================================================== */
 
-/* ═══════════════════════════════════════════════════
-   ESTADO GLOBAL
-═══════════════════════════════════════════════════ */
+const API_URL = window.location.hostname === 'localhost'
+    ? "https://localhost:44392"  // Desarrollo local
+    : "https://spsaapi.azurewebsites.net";  // Producción
+
+// Estado global
 const RL = {
-    decision:       null,   // 'aprobar' | 'rechazar'
-    fotosNuevas:    [],     // archivos seleccionados
-    camposModif:    new Set(),
+    idSolicitud: null,
+    datosSolicitud: null,
+    parametros: null,
+    decision: null,
+    fotosNuevas: [],
     valoresOriginales: {},
+    camposModif: new Set()
 };
+
 /* ═══════════════════════════════════════════════════
-   1. CAMPOS MODIFICADOS vs ORIGINALES
+   1. CARGA INICIAL DESDE EL BACKEND
 ═══════════════════════════════════════════════════ */
-function registrarOriginal(id) {
-    const el = document.getElementById(id);
-    if (el) RL.valoresOriginales[id] = el.value;
+async function cargarDatosIniciales() {
+    mostrarLoading(true);
+
+    try {
+        // Obtener ID de la URL
+        const urlParams = new URLSearchParams(window.location.search);
+        RL.idSolicitud = parseInt(urlParams.get('id'));
+
+        if (!RL.idSolicitud || isNaN(RL.idSolicitud)) {
+            mostrarToast('ID de solicitud no válido', true);
+            setTimeout(() => window.location.href = '/IngForestal/Index', 2000);
+            return;
+        }
+
+        // Cargar datos en paralelo
+        const [solicitudResponse, parametrosResponse] = await Promise.all([
+            fetch(`${API_URL}/api/Ingeniero/realizar-visita/${RL.idSolicitud}`),
+            fetch(`${API_URL}/api/Ingeniero/realizar-visita/parametros`)
+        ]);
+
+        const solicitudData = await solicitudResponse.json();
+        const parametrosData = await parametrosResponse.json();
+
+        if (solicitudData.result === "SUCCESS" && solicitudData.data) {
+            RL.datosSolicitud = solicitudData.data;
+            renderizarDatosSolicitud();
+        } else {
+            mostrarToast('Error al cargar la solicitud', true);
+            return;
+        }
+
+        if (parametrosData.result === "SUCCESS" && parametrosData.data) {
+            RL.parametros = parametrosData.data;
+            renderizarParametros();
+        } else {
+            mostrarToast('Error al cargar parámetros de configuración', true);
+        }
+
+        // Configurar event listeners después de renderizar
+        configurarEventListeners();
+
+        // Si ya hay datos verificados previos, cargarlos
+        if (RL.datosSolicitud.hectareasVerificadas) {
+            cargarDatosExistentes();
+        }
+
+        actualizarProgreso();
+
+    } catch (error) {
+        console.error('Error cargando datos:', error);
+        mostrarToast('Error de conexión con el servidor', true);
+    } finally {
+        mostrarLoading(false);
+    }
 }
-function eeRegistrarOriginales() {
-    const campos = ['ee-hectareas', 'ee-vegetacion', 'ee-pendiente',
-        'ee-recursos', 'ee-fecha-visita', 'ee-hora-visita',
-        'ee-observaciones'];
+
+/* ═══════════════════════════════════════════════════
+   2. RENDERIZADO DE DATOS DINÁMICOS
+═══════════════════════════════════════════════════ */
+function renderizarDatosSolicitud() {
+    const data = RL.datosSolicitud;
+
+    // Actualizar alerta de contexto
+    document.getElementById('rl-finca-nombre').textContent = data.nombreFinca || '';
+    document.getElementById('rl-propietario').textContent = data.propietario || '';
+    document.getElementById('rl-ubicacion').textContent = `${data.provincia || ''}, ${data.canton || ''}, ${data.distrito || ''}`.replace(/^, |, $/g, '');
+    document.getElementById('rl-fecha-programada').textContent = data.fechaVisitaProgramada ? formatFecha(data.fechaVisitaProgramada) : 'No programada';
+    document.getElementById('rl-hora-programada').textContent = data.horaInicioVisita || '00:00';
+    document.getElementById('rl-estado').textContent = data.estado || 'Pendiente';
+
+    // Guardar valores originales
+    RL.valoresOriginales = {
+        hectareas: data.hectareasOriginal || 0,
+        vegetacion: data.tipoVegetacionOriginal || '',
+        pendiente: data.pendienteOriginal || '',
+        recursos: obtenerRecursoOriginal(data),
+        usoSuelo: data.usoSueloOriginal || ''
+    };
+
+    // Pre-cargar valores en inputs
+    const haInput = document.getElementById('rl-hectareas');
+    if (haInput) {
+        haInput.value = data.hectareasOriginal || '';
+        haInput.dataset.original = data.hectareasOriginal || '';
+    }
+}
+
+function obtenerRecursoOriginal(data) {
+    if (data.tieneRiosQuebradasOriginal && data.cantidadNacientesOriginal > 0) return 'rio-naciente';
+    if (data.tieneRiosQuebradasOriginal) return 'quebrada';
+    if (data.cantidadNacientesOriginal > 0) return 'naciente';
+    return 'ninguno';
+}
+
+function renderizarParametros() {
+    // Renderizar Tipo de Vegetación
+    const vegetacionSelect = document.getElementById('rl-vegetacion');
+    if (vegetacionSelect && RL.parametros.ajustesVegetacion) {
+        vegetacionSelect.innerHTML = '<option value="">Seleccione...</option>';
+        Object.keys(RL.parametros.ajustesVegetacion).forEach(clave => {
+            const texto = formatearClave(clave);
+            const option = document.createElement('option');
+            option.value = clave;
+            option.textContent = texto;
+            if (RL.valoresOriginales.vegetacion === clave) {
+                option.selected = true;
+            }
+            vegetacionSelect.appendChild(option);
+        });
+    }
+
+    // Renderizar Pendiente
+    const pendienteSelect = document.getElementById('rl-pendiente');
+    if (pendienteSelect && RL.parametros.ajustesPendiente) {
+        pendienteSelect.innerHTML = '<option value="">Seleccione...</option>';
+        Object.keys(RL.parametros.ajustesPendiente).forEach(clave => {
+            const texto = formatearClave(clave);
+            const option = document.createElement('option');
+            option.value = clave;
+            option.textContent = texto;
+            if (RL.valoresOriginales.pendiente === clave) {
+                option.selected = true;
+            }
+            pendienteSelect.appendChild(option);
+        });
+    }
+
+    // Recursos hídricos (fijos, no vienen de parámetros)
+    const recursosSelect = document.getElementById('rl-recursos');
+    if (recursosSelect && RL.valoresOriginales.recursos) {
+        recursosSelect.value = RL.valoresOriginales.recursos;
+    }
+
+    // Uso de suelo
+    const usoSueloSelect = document.getElementById('rl-uso-suelo');
+    if (usoSueloSelect && RL.valoresOriginales.usoSuelo) {
+        const valorMapeado = mapearUsoSueloReverse(RL.valoresOriginales.usoSuelo);
+        if (valorMapeado) usoSueloSelect.value = valorMapeado;
+    }
+}
+
+function formatearClave(clave) {
+    return clave.replace(/_/g, ' ').toLowerCase()
+        .split(' ')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+}
+
+function mapearUsoSueloReverse(valorBackend) {
+    const mapa = {
+        'Conservación': 'conservacion',
+        'Ganadería': 'agropecuario',
+        'Agricultura': 'agropecuario',
+        'Mixto': 'mixto'
+    };
+    return mapa[valorBackend] || 'conservacion';
+}
+
+/* ═══════════════════════════════════════════════════
+   3. CONFIGURAR EVENT LISTENERS
+═══════════════════════════════════════════════════ */
+function configurarEventListeners() {
+    // Campos de fecha/hora
+    const fechaInput = document.getElementById('rl-fecha-visita');
+    const horaInput = document.getElementById('rl-hora-visita');
+    if (fechaInput) fechaInput.max = new Date().toISOString().split('T')[0];
+    if (fechaInput) fechaInput.addEventListener('change', () => validarCampo('rl-fecha-visita'));
+    if (horaInput) horaInput.addEventListener('change', () => validarCampo('rl-hora-visita'));
+
+    // Campos de datos de campo
+    const campos = ['rl-hectareas', 'rl-vegetacion', 'rl-pendiente', 'rl-recursos', 'rl-observaciones'];
     campos.forEach(id => {
         const el = document.getElementById(id);
-        if (el) EE.originales[id] = el.value;
+        if (el) {
+            el.addEventListener('change', () => {
+                validarCampo(id);
+                onCampoChange(id);
+            });
+            el.addEventListener('input', () => {
+                if (document.getElementById(id)?.classList.contains('invalido')) validarCampo(id);
+                onCampoChange(id);
+            });
+        }
     });
 
-    // Uso de suelo original
-    document.querySelectorAll('.ee-check-item.marcado').forEach(el => {
-        EE.usoSueloOrig.add(el.dataset.valor);
-        EE.usoSueloSel.add(el.dataset.valor);
-    });
+    // Recursos hídricos - mostrar campo de nacientes
+    const recursoSelect = document.getElementById('rl-recursos');
+    const nacientesField = document.getElementById('rl-field-nacientes');
+    if (recursoSelect) {
+        recursoSelect.addEventListener('change', () => {
+            const showNacientes = recursoSelect.value === 'NACIENTES';
+            if (nacientesField) nacientesField.style.display = showNacientes ? 'block' : 'none';
+            validarCampo('rl-recursos');
+            actualizarProgreso();
+            onCampoChange('rl-recursos');
+        });
+        // Trigger inicial
+        if (recursoSelect.value === 'NACIENTES' && nacientesField) {
+            nacientesField.style.display = 'block';
+        }
+    }
+
+    // Botones de decisión
+    const btnAprobar = document.getElementById('rl-btn-aprobar');
+    const btnRechazar = document.getElementById('rl-btn-rechazar');
+    if (btnAprobar) btnAprobar.addEventListener('click', () => seleccionarDecision('Aprobado'));
+    if (btnRechazar) btnRechazar.addEventListener('click', () => seleccionarDecision('Rechazado'));
+
+    // Upload de fotos
+    const uploadZona = document.getElementById('rl-upload-zona');
+    const inputFotos = document.getElementById('rl-input-fotos');
+    if (uploadZona && inputFotos) {
+        uploadZona.addEventListener('click', () => inputFotos.click());
+        inputFotos.addEventListener('change', onFotosSeleccionadas);
+        setupDragAndDrop(uploadZona);
+    }
+
+    // Validación de motivo de rechazo
+    const motivoRechazo = document.getElementById('rl-motivo-rechazo');
+    if (motivoRechazo) {
+        motivoRechazo.addEventListener('input', () => validarCampo('rl-motivo-rechazo'));
+    }
 }
-function eeActualizarComparador() {
-    const etiqVeg = { 'bosque-primario': 'Bosque Primario', 'bosque-secundario': 'Bosque Secundario', 'plantacion-forestal': 'Plantación Forestal', 'pasto': 'Pasto' };
-    const etiqPen = { 'plana': 'Plana', 'inclinada': 'Inclinada', 'muy-inclinada': 'Muy inclinada' };
-    const etiqRec = { 'ninguno': 'Ninguno', 'quebrada': 'Quebrada', 'rio': 'Río', 'naciente': 'Naciente', 'rio-naciente': 'Río y naciente' };
 
-    const campos = [
-        { id: 'ee-hectareas', etiq: null, label: 'Hectáreas', sufijo: ' ha' },
-        { id: 'ee-vegetacion', etiq: etiqVeg, label: 'Vegetación', sufijo: '' },
-        { id: 'ee-pendiente', etiq: etiqPen, label: 'Pendiente', sufijo: '' },
-        { id: 'ee-recursos', etiq: etiqRec, label: 'Recursos', sufijo: '' },
-    ];
-
-    const wrapOrig = document.getElementById('ee-comp-original');
-    const wrapNuev = document.getElementById('ee-comp-nuevo');
-    if (!wrapOrig || !wrapNuev) return;
-
-    wrapOrig.innerHTML = '';
-    wrapNuev.innerHTML = '';
-
-    campos.forEach(c => {
-        const orig = EE.originales[c.id] ?? '—';
-        const nuevo = document.getElementById(c.id)?.value ?? '—';
-        const camb = orig !== nuevo;
-
-        const etiqFn = v => c.etiq ? (c.etiq[v] || v) : v;
-
-        wrapOrig.innerHTML += `
-            <div class="ee-comparar-fila">
-                <span class="ee-comparar-fila-label">${c.label}</span>
-                <span class="ee-comparar-fila-val">${etiqFn(orig)}${orig !== '—' ? c.sufijo : ''}</span>
-            </div>`;
-        wrapNuev.innerHTML += `
-            <div class="ee-comparar-fila">
-                <span class="ee-comparar-fila-label">${c.label}</span>
-                <span class="ee-comparar-fila-val${camb ? ' cambiado' : ''}">${etiqFn(nuevo)}${nuevo !== '—' ? c.sufijo : ''}</span>
-            </div>`;
-    });
-}
-
+/* ═══════════════════════════════════════════════════
+   4. CAMPOS MODIFICADOS
+═══════════════════════════════════════════════════ */
 function onCampoChange(id) {
-    const el  = document.getElementById(id);
+    const el = document.getElementById(id);
     if (!el) return;
-    const original = RL.valoresOriginales[id] ?? '';
-    const actual   = el.value;
 
-    if (actual !== original) {
+    let original = '';
+    switch (id) {
+        case 'rl-hectareas': original = RL.valoresOriginales.hectareas?.toString() || ''; break;
+        case 'rl-vegetacion': original = RL.valoresOriginales.vegetacion || ''; break;
+        case 'rl-pendiente': original = RL.valoresOriginales.pendiente || ''; break;
+        case 'rl-recursos': original = RL.valoresOriginales.recursos || ''; break;
+        default: return;
+    }
+
+    const actual = el.value;
+
+    if (actual !== original && actual !== '') {
         RL.camposModif.add(id);
         el.classList.add('modificado');
         mostrarOriginal(id, original);
@@ -91,18 +275,31 @@ function onCampoChange(id) {
 
     actualizarBadgeCambios();
     actualizarProgreso();
-
-    // Limpiar error si estaba marcado
-    if (el.classList.contains('invalido')) validarCampo(id);
 }
 
 function mostrarOriginal(id, valorOrig) {
     const tag = document.getElementById(`${id}-orig`);
     if (tag && valorOrig) {
-        tag.textContent = `Original: ${valorOrig}`;
+        let displayValue = valorOrig;
+        if (id === 'rl-vegetacion') displayValue = formatearClave(valorOrig);
+        if (id === 'rl-pendiente') displayValue = formatearClave(valorOrig);
+        if (id === 'rl-recursos') displayValue = formatearRecurso(valorOrig);
+        tag.textContent = `Original: ${displayValue}`;
         tag.style.display = 'inline-flex';
     }
 }
+
+function formatearRecurso(valor) {
+    const mapa = {
+        'quebrada': 'Quebrada',
+        'rio': 'Río',
+        'naciente': 'Naciente',
+        'rio-naciente': 'Río y naciente',
+        'ninguno': 'Ninguno'
+    };
+    return mapa[valor] || valor;
+}
+
 function ocultarOriginal(id) {
     const tag = document.getElementById(`${id}-orig`);
     if (tag) tag.style.display = 'none';
@@ -110,145 +307,140 @@ function ocultarOriginal(id) {
 
 function actualizarBadgeCambios() {
     const badge = document.getElementById('rl-badge-cambios');
-    const n     = RL.camposModif.size;
-    if (!badge) return;
-    badge.textContent = `${n} cambio${n !== 1 ? 's' : ''}`;
-    badge.classList.toggle('visible', n > 0);
+    const n = RL.camposModif.size;
+    if (badge) {
+        badge.innerHTML = `<i class="fas fa-pen"></i> ${n} cambio${n !== 1 ? 's' : ''}`;
+    }
 }
 
 /* ═══════════════════════════════════════════════════
-   2. VALIDACIÓN
+   5. VALIDACIÓN
 ═══════════════════════════════════════════════════ */
-const RL_REGLAS = {
-    'rl-fecha-visita':  { req: true,  tipo: 'fecha',  msg: 'Ingrese la fecha real de la visita.' },
-    'rl-hora-visita':   { req: true,  tipo: 'texto',  msg: 'Ingrese la hora de la visita.' },
-    'rl-hectareas':     { req: true,  tipo: 'numero', msg: 'Las hectáreas deben ser un número mayor a 0.', min: 0.01 },
-    'rl-vegetacion':    { req: true,  tipo: 'select', msg: 'Seleccione el tipo de vegetación observado.' },
-    'rl-pendiente':     { req: true,  tipo: 'select', msg: 'Seleccione el tipo de pendiente observada.' },
-    'rl-recursos':      { req: true,  tipo: 'select', msg: 'Seleccione los recursos hídricos observados.' },
-    'rl-observaciones': { req: true,  tipo: 'texto',  msg: 'Las observaciones técnicas son obligatorias.', minLen: 20 },
-};
-
 function validarCampo(id) {
-    const regla = RL_REGLAS[id];
-    if (!regla) return true;
-
-    const el  = document.getElementById(id);
+    const el = document.getElementById(id);
     const err = document.getElementById(`${id}-err`);
     if (!el) return true;
 
-    const val = el.value.trim();
     let ok = true;
+    const val = el.value.trim();
 
-    if (regla.req) {
-        if (!val || (regla.tipo === 'select' && val === '')) ok = false;
-        if (ok && regla.tipo === 'numero') {
-            const n = parseFloat(val);
-            if (isNaN(n) || n < (regla.min || 0)) ok = false;
-        }
-        if (ok && regla.minLen && val.length < regla.minLen) ok = false;
+    switch (id) {
+        case 'rl-fecha-visita':
+            ok = val !== '';
+            break;
+        case 'rl-hora-visita':
+            ok = val !== '';
+            break;
+        case 'rl-hectareas':
+            const num = parseFloat(val);
+            ok = !isNaN(num) && num > 0;
+            break;
+        case 'rl-vegetacion':
+        case 'rl-pendiente':
+        case 'rl-recursos':
+            ok = val !== '';
+            break;
+        case 'rl-observaciones':
+            ok = val.length >= 20;
+            break;
+        case 'rl-motivo-rechazo':
+            if (RL.decision === 'Rechazado') {
+                ok = val.length >= 15;
+            } else {
+                ok = true;
+            }
+            break;
+        default:
+            return true;
     }
 
-    el.classList.toggle('invalido', !ok);
     if (err) err.classList.toggle('visible', !ok);
+    if (el) el.classList.toggle('invalido', !ok);
     return ok;
 }
 
 function validarTodo() {
-    const resultados = Object.keys(RL_REGLAS).map(id => validarCampo(id));
+    const camposBasicos = ['rl-fecha-visita', 'rl-hora-visita', 'rl-hectareas', 'rl-vegetacion', 'rl-pendiente', 'rl-recursos', 'rl-observaciones'];
+    let ok = camposBasicos.every(id => validarCampo(id));
 
-    // Validar decisión
-    const okDecision = validarDecision();
+    if (RL.decision === 'Rechazado') {
+        ok = ok && validarCampo('rl-motivo-rechazo');
+    }
 
-    const ok = resultados.every(Boolean) && okDecision;
-    if (!ok) mostrarToastRL('Corrija los campos marcados en rojo antes de guardar.', true);
-    return ok;
-}
+    const okDecision = RL.decision !== null;
+    const decisionErr = document.getElementById('rl-decision-err');
+    if (decisionErr) decisionErr.classList.toggle('visible', !okDecision);
+    ok = ok && okDecision;
 
-function validarDecision() {
-    const err = document.getElementById('rl-decision-err');
-    const ok  = RL.decision !== null;
-    if (err) err.classList.toggle('visible', !ok);
+    if (!ok) mostrarToast('Corrija los campos marcados en rojo antes de guardar.', true);
     return ok;
 }
 
 /* ═══════════════════════════════════════════════════
-   3. DECISIÓN FINAL (aprobar / rechazar)
+   6. DECISIÓN FINAL
 ═══════════════════════════════════════════════════ */
-function seleccionarDecision(tipo) {
-    RL.decision = tipo;
+function seleccionarDecision(valor) {
+    RL.decision = valor;
+    document.getElementById('rl-califica-pago').value = valor;
 
-    const btnAprobar  = document.getElementById('rl-btn-aprobar');
+    const btnAprobar = document.getElementById('rl-btn-aprobar');
     const btnRechazar = document.getElementById('rl-btn-rechazar');
-    const wrapMotivo  = document.getElementById('rl-wrap-motivo');
+    const wrapMotivo = document.getElementById('rl-wrap-motivo');
 
-    if (btnAprobar)  btnAprobar.className  = 'rl-decision-btn' + (tipo === 'aprobar'  ? ' seleccionado-aprobar'  : '');
-    if (btnRechazar) btnRechazar.className = 'rl-decision-btn' + (tipo === 'rechazar' ? ' seleccionado-rechazar' : '');
+    if (btnAprobar) btnAprobar.classList.toggle('seleccionado', valor === 'Aprobado');
+    if (btnRechazar) btnRechazar.classList.toggle('seleccionado', valor === 'Rechazado');
+    if (wrapMotivo) wrapMotivo.style.display = valor === 'Rechazado' ? 'block' : 'none';
 
-    // Motivo obligatorio solo al rechazar
-    if (wrapMotivo) wrapMotivo.style.display = tipo === 'rechazar' ? 'block' : 'none';
+    const decisionErr = document.getElementById('rl-decision-err');
+    if (decisionErr) decisionErr.classList.remove('visible');
 
-    // Limpiar error
-    document.getElementById('rl-decision-err')?.classList.remove('visible');
-
-    // Agregar regla dinámica de motivo
-    if (tipo === 'rechazar') {
-        RL_REGLAS['rl-motivo-rechazo'] = {
-            req: true, tipo: 'texto',
-            msg: 'El motivo de rechazo debe tener al menos 15 caracteres.', minLen: 15
-        };
-    } else {
-        delete RL_REGLAS['rl-motivo-rechazo'];
-        document.getElementById('rl-motivo-rechazo')?.classList.remove('invalido');
-        document.getElementById('rl-motivo-rechazo-err')?.classList.remove('visible');
+    if (valor === 'Rechazado') {
+        validarCampo('rl-motivo-rechazo');
     }
 
     actualizarProgreso();
 }
 
 /* ═══════════════════════════════════════════════════
-   4. UPLOAD DE FOTOS
+   7. FOTOS - UPLOAD Y PREVIEW
 ═══════════════════════════════════════════════════ */
 function onFotosSeleccionadas(event) {
     const archivos = Array.from(event.target.files || []);
-    const validos  = archivos.filter(f => f.type.startsWith('image/'));
+    const validos = archivos.filter(f => f.type.startsWith('image/'));
 
     if (validos.length !== archivos.length) {
-        mostrarToastRL('Solo se permiten archivos de imagen (JPG, PNG, WEBP).', true);
+        mostrarToast('Solo se permiten archivos de imagen (JPG, PNG, WEBP).', true);
     }
 
-    // Límite de 8 fotos totales
     const disponibles = 8 - RL.fotosNuevas.length;
-    const aCargr      = validos.slice(0, disponibles);
+    const aCargar = validos.slice(0, disponibles);
 
     if (validos.length > disponibles) {
-        mostrarToastRL(`Máximo 8 fotos. Se agregarán solo las primeras ${disponibles}.`, true);
+        mostrarToast(`Máximo 8 fotos. Se agregarán solo las primeras ${disponibles}.`, true);
     }
 
-    aCargr.forEach(file => {
+    aCargar.forEach(file => {
         RL.fotosNuevas.push(file);
         agregarThumbFoto(file, RL.fotosNuevas.length - 1);
     });
 
     actualizarProgreso();
-
-    // Limpiar el input para permitir volver a seleccionar los mismos archivos
     event.target.value = '';
 }
 
 function agregarThumbFoto(file, idx) {
-    const grid  = document.getElementById('rl-fotos-preview');
+    const grid = document.getElementById('rl-fotos-preview');
     if (!grid) return;
 
     const thumb = document.createElement('div');
     thumb.className = 'rl-foto-thumb';
-    thumb.id        = `rl-thumb-${idx}`;
+    thumb.id = `rl-thumb-${idx}`;
 
     const reader = new FileReader();
-    reader.onload = e => {
+    reader.onload = (e) => {
         thumb.innerHTML = `
             <img src="${e.target.result}" alt="Foto ${idx + 1}">
-            <button class="rl-foto-remove" onclick="removerFoto(${idx})" title="Eliminar foto" aria-label="Eliminar foto ${idx + 1}">
+            <button class="rl-foto-remove" type="button" onclick="removerFoto(${idx})" title="Eliminar foto">
                 <i class="fa-solid fa-xmark"></i>
             </button>`;
     };
@@ -259,168 +451,241 @@ function agregarThumbFoto(file, idx) {
 function removerFoto(idx) {
     RL.fotosNuevas.splice(idx, 1);
     document.getElementById(`rl-thumb-${idx}`)?.remove();
-    // Re-indexar botones restantes
+    // Re-indexar
     document.querySelectorAll('.rl-foto-thumb').forEach((t, i) => {
         t.id = `rl-thumb-${i}`;
         const btn = t.querySelector('.rl-foto-remove');
-        if (btn) {
-            btn.setAttribute('onclick', `removerFoto(${i})`);
-            btn.setAttribute('aria-label', `Eliminar foto ${i + 1}`);
-        }
+        if (btn) btn.setAttribute('onclick', `removerFoto(${i})`);
     });
     actualizarProgreso();
 }
 
-/* Drag & drop */
-function onDragOver(e)  { e.preventDefault(); document.getElementById('rl-upload-zona')?.classList.add('drag-over'); }
-function onDragLeave()  { document.getElementById('rl-upload-zona')?.classList.remove('drag-over'); }
-function onDrop(e) {
-    e.preventDefault();
-    document.getElementById('rl-upload-zona')?.classList.remove('drag-over');
-    const fakeEvt = { target: { files: e.dataTransfer.files }, value: '' };
-    onFotosSeleccionadas(fakeEvt);
-}
-
-/* ═══════════════════════════════════════════════════
-   5. PROGRESO LATERAL
-═══════════════════════════════════════════════════ */
-const RL_CHECKS = [
-    { id: 'chk-datos',       label: 'Datos de campo',       fn: () => ['rl-fecha-visita','rl-hora-visita','rl-hectareas'].every(id => document.getElementById(id)?.value.trim()) },
-    { id: 'chk-vegetacion',  label: 'Tipo de vegetación',   fn: () => !!document.getElementById('rl-vegetacion')?.value },
-    { id: 'chk-pendiente',   label: 'Pendiente del terreno',fn: () => !!document.getElementById('rl-pendiente')?.value  },
-    { id: 'chk-recursos',    label: 'Recursos hídricos',    fn: () => !!document.getElementById('rl-recursos')?.value   },
-    { id: 'chk-observ',      label: 'Observaciones técnicas',fn: () => (document.getElementById('rl-observaciones')?.value.trim().length || 0) >= 20 },
-    { id: 'chk-fotos',       label: 'Fotografías adjuntas', fn: () => RL.fotosNuevas.length > 0 },
-    { id: 'chk-decision',    label: 'Decisión final',       fn: () => RL.decision !== null },
-];
-
-function actualizarProgreso() {
-    let completados = 0;
-    RL_CHECKS.forEach(c => {
-        const ok  = c.fn();
-        const dot = document.getElementById(c.id + '-dot');
-        const row = document.getElementById(c.id + '-row');
-        if (dot) dot.className = 'rl-check-dot' + (ok ? ' ok' : '');
-        if (ok) {
-            if (dot) dot.innerHTML = '<i class="fa-solid fa-check"></i>';
-            row?.classList.add('completado');
-            completados++;
-        } else {
-            if (dot) dot.innerHTML = '';
-            row?.classList.remove('completado');
-        }
+function setupDragAndDrop(zona) {
+    zona.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        zona.classList.add('drag-over');
     });
-
-    const pct  = Math.round((completados / RL_CHECKS.length) * 100);
-    const pctEl = document.getElementById('rl-progreso-pct');
-    const bar   = document.getElementById('rl-progreso-bar');
-    if (pctEl) pctEl.textContent = `${pct}%`;
-    if (bar)   bar.style.width   = `${pct}%`;
+    zona.addEventListener('dragleave', () => {
+        zona.classList.remove('drag-over');
+    });
+    zona.addEventListener('drop', (e) => {
+        e.preventDefault();
+        zona.classList.remove('drag-over');
+        const fakeEvt = { target: { files: e.dataTransfer.files }, value: '' };
+        onFotosSeleccionadas(fakeEvt);
+    });
 }
 
 /* ═══════════════════════════════════════════════════
-   6. GUARDAR EVALUACIÓN
+   8. PROGRESO
 ═══════════════════════════════════════════════════ */
-function guardarEvaluacion() {
+function actualizarProgreso() {
+    const checks = [
+        !!document.getElementById('rl-fecha-visita')?.value,
+        !!document.getElementById('rl-hora-visita')?.value,
+        parseFloat(document.getElementById('rl-hectareas')?.value) > 0,
+        !!document.getElementById('rl-vegetacion')?.value,
+        !!document.getElementById('rl-pendiente')?.value,
+        !!document.getElementById('rl-recursos')?.value,
+        (document.getElementById('rl-observaciones')?.value.length || 0) >= 20,
+        RL.decision !== null,
+        RL.fotosNuevas.length > 0
+    ];
+
+    const completados = checks.filter(Boolean).length;
+    const total = checks.length;
+    const pct = Math.round((completados / total) * 100);
+
+    const pctEl = document.getElementById('rl-progreso-pct');
+    const bar = document.getElementById('rl-progreso-bar');
+    if (pctEl) pctEl.textContent = `${pct}%`;
+    if (bar) bar.style.width = `${pct}%`;
+
+    // Actualizar checks individuales
+    const checkIds = ['datos', 'vegetacion', 'pendiente', 'recursos', 'observ', 'decision', 'fotos'];
+    checks.forEach((ok, i) => {
+        const dot = document.getElementById(`chk-${checkIds[i]}-dot`);
+        const row = document.getElementById(`chk-${checkIds[i]}-row`);
+        if (dot) {
+            dot.className = `rl-check-dot${ok ? ' ok' : ''}`;
+            if (ok) dot.innerHTML = '<i class="fa-solid fa-check"></i>';
+            else dot.innerHTML = '';
+        }
+        if (row && ok) row.classList.add('completado');
+        else if (row) row.classList.remove('completado');
+    });
+}
+
+/* ═══════════════════════════════════════════════════
+   9. GUARDAR EVALUACIÓN
+═══════════════════════════════════════════════════ */
+async function guardarEvaluacion() {
     if (!validarTodo()) return;
 
-    const id = obtenerIdVisita();
-    const datos = {
-        visitaId:       id,
-        fechaVisita:    document.getElementById('rl-fecha-visita')?.value,
-        horaVisita:     document.getElementById('rl-hora-visita')?.value,
-        hectareas:      document.getElementById('rl-hectareas')?.value,
-        vegetacion:     document.getElementById('rl-vegetacion')?.value,
-        pendiente:      document.getElementById('rl-pendiente')?.value,
-        recursos:       document.getElementById('rl-recursos')?.value,
-        usoSuelo:       document.getElementById('rl-uso-suelo')?.value,
-        observaciones:  document.getElementById('rl-observaciones')?.value,
-        motivoRechazo:  document.getElementById('rl-motivo-rechazo')?.value || '',
-        decision:       RL.decision,
-        camposModif:    Array.from(RL.camposModif),
-        cantFotos:      RL.fotosNuevas.length,
+    mostrarLoading(true);
+
+    // Construir request DTO
+    const request = {
+        idSolicitud: RL.idSolicitud,
+        hectareasVerificadas: parseFloat(document.getElementById('rl-hectareas')?.value) || 0,
+        tipoVegetacionVerificado: document.getElementById('rl-vegetacion')?.value || '',
+        pendienteVerificada: document.getElementById('rl-pendiente')?.value || '',
+        recursoHidricoVerificado: document.getElementById('rl-recursos')?.value || '',
+        cantidadNacientesVerificado: parseInt(document.getElementById('rl-cantidad-nacientes')?.value) || 0,
+        usoSueloVerificado: mapearUsoSuelo(document.getElementById('rl-uso-suelo')?.value),
+        fechaVisitaReal: document.getElementById('rl-fecha-visita')?.value
+            ? new Date(document.getElementById('rl-fecha-visita').value).toISOString()
+            : null,
+        horaInicioReal: document.getElementById('rl-hora-visita')?.value || null,
+        observacionesTecnicas: document.getElementById('rl-observaciones')?.value || null,
+        calificaParaPago: RL.decision,
+        razonRechazo: RL.decision === 'Rechazado'
+            ? document.getElementById('rl-motivo-rechazo')?.value || ''
+            : '',
+        fotosCampo: await convertirFotosABase64()
     };
 
-    /* === Conectar al backend en producción ===
-    const token    = document.querySelector('input[name="__RequestVerificationToken"]').value;
-    const formData = new FormData();
-    Object.entries(datos).forEach(([k,v]) => formData.append(k, Array.isArray(v) ? JSON.stringify(v) : v));
-    RL.fotosNuevas.forEach((f, i) => formData.append(`fotos[${i}]`, f));
+    try {
+        PR.ingenieroId = obtenerIngenieroId();
+        const response = await fetch(`${API_URL}/api/Ingeniero/realizar-visita/guardar/${PR.ingenieroId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(request)
+        });
 
-    fetch('/IngForestal/Visitas/GuardarEvaluacion', {
-        method: 'POST',
-        headers: { 'RequestVerificationToken': token },
-        body: formData
-    })
-    .then(r => r.json())
-    .then(data => {
-        if (data.exito) window.location.href = `/IngForestal/Visitas/Detalle?id=${id}`;
-        else mostrarToastRL(data.mensaje || 'Error al guardar.', true);
-    })
-    .catch(() => mostrarToastRL('Error de conexión con el servidor.', true));
-    */
+        const result = await response.json();
 
-    // Simulación frontend
-    console.log('Evaluación a guardar:', datos);
-    mostrarToastRL(`✅ Evaluación guardada. Decisión: ${RL.decision === 'aprobar' ? 'Aprobada' : 'Rechazada'}`);
-    setTimeout(() => {
-        window.location.href = `/IngForestal/Detalle?id=${id}`;
-    }, 2000);
+        if (result.result === "SUCCESS") {
+            mostrarToast(result.message || '✅ Evaluación guardada exitosamente');
+            setTimeout(() => {
+                window.location.href = `/IngForestal/Detalle?id=${RL.idSolicitud}`;
+            }, 2000);
+        } else {
+            mostrarToast(result.message || 'Error al guardar la evaluación', true);
+        }
+    } catch (error) {
+        console.error('Error guardando:', error);
+        mostrarToast('Error de conexión con el servidor', true);
+    } finally {
+        mostrarLoading(false);
+    }
+}
+
+function mapearUsoSuelo(valorFront) {
+    const mapa = {
+        'conservacion': 'Conservación',
+        'agropecuario': 'Ganadería',
+        'mixto': 'Mixto',
+        'sin-uso': 'Sin uso definido'
+    };
+    return mapa[valorFront] || '';
+}
+
+async function convertirFotosABase64() {
+    const fotosBase64 = [];
+    for (const file of RL.fotosNuevas) {
+        const base64 = await fileToBase64(file);
+        fotosBase64.push({
+            nombreArchivo: file.name,
+            base64Content: base64.split(',')[1],
+            tipoArchivo: file.type
+        });
+    }
+    return fotosBase64;
+}
+
+function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
 }
 
 /* ═══════════════════════════════════════════════════
-   7. HELPERS
+   10. FUNCIONES AUXILIARES
 ═══════════════════════════════════════════════════ */
-function obtenerIdVisita() {
-    const params = new URLSearchParams(window.location.search);
-    return parseInt(params.get('id')) || 0;
+function cargarDatosExistentes() {
+    const data = RL.datosSolicitud;
+    if (data.hectareasVerificadas) {
+        document.getElementById('rl-hectareas').value = data.hectareasVerificadas;
+    }
+    if (data.tipoVegetacionVerificado) {
+        document.getElementById('rl-vegetacion').value = data.tipoVegetacionVerificado;
+    }
+    if (data.pendienteVerificada) {
+        document.getElementById('rl-pendiente').value = data.pendienteVerificada;
+    }
+    if (data.fechaVisitaReal) {
+        const fecha = new Date(data.fechaVisitaReal);
+        document.getElementById('rl-fecha-visita').value = fecha.toISOString().split('T')[0];
+    }
+    if (data.horaInicioReal) {
+        document.getElementById('rl-hora-visita').value = data.horaInicioReal.substring(0, 5);
+    }
+    if (data.observacionesTecnicas) {
+        document.getElementById('rl-observaciones').value = data.observacionesTecnicas;
+    }
+    if (data.calificaParaPago === true) {
+        seleccionarDecision('Aprobado');
+    } else if (data.calificaParaPago === false) {
+        seleccionarDecision('Rechazado');
+        if (data.razonRechazo) {
+            document.getElementById('rl-motivo-rechazo').value = data.razonRechazo;
+        }
+    }
 }
 
-function mostrarToastRL(mensaje, esError = false) {
-    const toast   = document.getElementById('rl-toast');
+function formatFecha(fecha) {
+    if (!fecha) return '';
+    const date = new Date(fecha);
+    return `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()}`;
+}
+
+function mostrarLoading(mostrar) {
+    let loader = document.getElementById('global-loader');
+    if (!loader && mostrar) {
+        loader = document.createElement('div');
+        loader.id = 'global-loader';
+        loader.style.cssText = `position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; display: flex; align-items: center; justify-content: center;`;
+        loader.innerHTML = `<div style="background: white; padding: 20px 30px; border-radius: 12px; display: flex; gap: 12px; align-items: center;"><i class="fas fa-spinner fa-spin" style="font-size: 24px; color: var(--psa-leaf);"></i><span>Cargando...</span></div>`;
+        document.body.appendChild(loader);
+    } else if (loader && !mostrar) {
+        loader.remove();
+    }
+}
+
+function mostrarToast(mensaje, esError = false) {
+    const toast = document.getElementById('rl-toast');
     const msgSpan = document.getElementById('rl-toast-msg');
-    if (!toast || !mensaje) return;
+    if (!toast || !msgSpan) return;
     msgSpan.textContent = mensaje;
     toast.classList.toggle('error', esError);
     toast.classList.add('visible');
-    clearTimeout(toast._t);
-    toast._t = setTimeout(() => toast.classList.remove('visible'), 3800);
+    clearTimeout(toast._timer);
+    toast._timer = setTimeout(() => toast.classList.remove('visible'), 3500);
 }
 
-
 /* ═══════════════════════════════════════════════════
-   8. INIT
+   11. INICIALIZACIÓN
 ═══════════════════════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', () => {
+    cargarDatosIniciales();
 
-    // Registrar valores originales para comparación
-    ['rl-hectareas','rl-vegetacion','rl-pendiente','rl-recursos','rl-uso-suelo'].forEach(registrarOriginal);
-
-    // Fecha máxima = hoy
-    const inputFecha = document.getElementById('rl-fecha-visita');
-    if (inputFecha) inputFecha.max = new Date().toISOString().split('T')[0];
-
-    // Validación en tiempo real
-    Object.keys(RL_REGLAS).forEach(id => {
-        const el = document.getElementById(id);
-        if (!el) return;
-        el.addEventListener('blur',   () => { validarCampo(id); actualizarProgreso(); });
-        el.addEventListener('change', () => { validarCampo(id); actualizarProgreso(); onCampoChange(id); });
-        el.addEventListener('input',  () => {
-            if (el.classList.contains('invalido')) validarCampo(id);
-            actualizarProgreso();
-            onCampoChange(id);
-        });
-    });
-
-    // Drag & drop en la zona de fotos
-    const zona = document.getElementById('rl-upload-zona');
-    if (zona) {
-        zona.addEventListener('dragover',  onDragOver);
-        zona.addEventListener('dragleave', onDragLeave);
-        zona.addEventListener('drop',      onDrop);
+    // Botón guardar
+    const btnGuardar = document.getElementById('rl-btn-guardar');
+    if (btnGuardar) {
+        btnGuardar.addEventListener('click', guardarEvaluacion);
     }
 
-    // Render inicial del progreso
-    actualizarProgreso();
+    // Cerrar modal con ESC
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            const modal = document.getElementById('modalProceso');
+            if (modal && modal.style.display === 'flex') cerrarModal();
+        }
+    });
 });

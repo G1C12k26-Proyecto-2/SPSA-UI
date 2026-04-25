@@ -1,5 +1,5 @@
 /* =====================================================
-   Programar Visita - Estilos mejorados
+   Programar Visita - Estilos unificados
    ===================================================== */
 
 /* Stepper */
@@ -44,6 +44,11 @@
     color: #fff;
 }
 
+.pr-step.completado .pr-step-num {
+    background: var(--psa-leaf);
+    color: #fff;
+}
+
 .pr-step-titulo {
     font-size: 0.85rem;
     font-weight: 600;
@@ -64,7 +69,7 @@
     background: #fff;
 }
 
-/* Tarjeta de solicitud - ESTILO COMO EN LA IMAGEN */
+/* Tarjeta de solicitud */
 .pr-solicitud-item {
     display: flex;
     gap: 1rem;
@@ -88,7 +93,7 @@
         border-left: 3px solid var(--psa-leaf);
     }
 
-/* Icono decorativo - árbol */
+/* Icono decorativo */
 .pr-solicitud-icono {
     width: 48px;
     height: 48px;
@@ -141,7 +146,6 @@
         color: var(--psa-leaf);
     }
 
-/* Métricas adicionales - hectáreas y vegetación */
 .pr-solicitud-metricas {
     display: flex;
     flex-wrap: wrap;
@@ -165,7 +169,6 @@
         color: var(--psa-leaf);
     }
 
-    /* Estado badge */
     .pr-metrica.estado {
         background: var(--psa-gold-bg);
         color: var(--psa-gold);
@@ -175,7 +178,7 @@
             color: var(--psa-gold);
         }
 
-/* Badge de selección - check circular */
+/* Badge de selección */
 .pr-solicitud-seleccion {
     position: absolute;
     right: 1rem;
@@ -202,7 +205,7 @@
         font-size: 0.7rem;
     }
 
-/* Buscador mejorado */
+/* Buscador */
 .pr-buscar-solicitud {
     position: relative;
     margin-bottom: 1.25rem;
@@ -230,16 +233,6 @@
     transform: translateY(-50%);
     color: var(--psa-muted);
     font-size: 0.9rem;
-}
-
-/* Contador de resultados */
-.pr-resultados-count {
-    font-size: 0.7rem;
-    color: var(--psa-muted);
-    margin-bottom: 0.75rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
 }
 
 /* Estado vacío */
@@ -433,97 +426,40 @@
     gap: 0.75rem;
 }
 
-/* ===== DARK MODE ===== */
-[data-bs-theme=dark] .pr-stepper {
-    background: #2a2a2a;
-    border-color: #464646;
-}
-
-[data-bs-theme=dark] .pr-step.activo {
-    background: #1e4d3c;
-}
-
-[data-bs-theme=dark] .pr-step-num {
-    background: #464646;
-    color: #a0a0a0;
-}
-
-[data-bs-theme=dark] .pr-step-titulo {
-    color: #f5f5f5;
-}
-
-[data-bs-theme=dark] .pr-solicitudes-lista {
-    background: #2a2a2a;
-    border-color: #464646;
-}
-
-[data-bs-theme=dark] .pr-solicitud-item {
-    border-bottom-color: #464646;
-}
-
-[data-bs-theme=dark] .pr-solicitud-item:hover {
-    background: #1e4d3c;
-}
-
-[data-bs-theme=dark] .pr-solicitud-item.seleccionada {
-    background: #1e4d3c;
-    border-left-color: #52be80;
-}
-
-[data-bs-theme=dark] .pr-solicitud-icono {
-    background: #1e4d3c;
-}
-
-[data-bs-theme=dark] .pr-solicitud-nombre {
-    color: #f5f5f5;
-}
-
-[data-bs-theme=dark] .pr-metrica {
-    background: #1e4d3c;
-    color: #f5f5f5;
-}
-
-[data-bs-theme=dark] .pr-solicitud-seleccion {
-    border-color: #464646;
-}
-
-[data-bs-theme=dark] .pr-solicitud-item.seleccionada .pr-solicitud-seleccion {
-    border-color: #52be80;
-    background: #52be80;
+/* Toast */
+#pr-toast {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    background: var(--psa-leaf);
     color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transform: translateY(80px);
+    opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
-[data-bs-theme=dark] .pr-buscar-solicitud input {
-    background: #2a2a2a;
-    border-color: #464646;
-    color: #f5f5f5;
+    #pr-toast.visible {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    #pr-toast.error {
+        background: var(--psa-red);
+    }
+
+/* Secciones del wizard - ocultar por defecto */
+.pr-seccion {
+    display: none;
 }
 
-[data-bs-theme=dark] .pr-buscar-solicitud input::placeholder {
-    color: #808080;
-}
-
-[data-bs-theme=dark] .pr-buscar-solicitud input:focus {
-    border-color: #52be80;
-    box-shadow: 0 0 0 3px rgba(82, 190, 128, 0.2);
-}
-
-[data-bs-theme=dark] .pr-confirmacion h3 {
-    color: #f5f5f5;
-}
-
-[data-bs-theme=dark] .pr-confirmacion-detalle {
-    background: #1e4d3c;
-}
-
-[data-bs-theme=dark] .pr-resumen-item {
-    border-bottom-color: #464646;
-}
-
-[data-bs-theme=dark] .pr-resumen-valor {
-    color: #f5f5f5;
-}
-
-[data-bs-theme=dark] .pr-resumen-alerta {
-    background: #1e4d3c;
-}
+    .pr-seccion.activa {
+        display: block;
+    }

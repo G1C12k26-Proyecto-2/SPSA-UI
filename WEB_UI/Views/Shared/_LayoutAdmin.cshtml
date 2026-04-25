@@ -89,6 +89,9 @@
                    asp-controller="Pagos" asp-action="Historial">
                     <i class="fas fa-receipt"></i> Historial de Pagos
                 </a>
+                <a class="psa-nav-item @(controller == "Usuarios" && action == "Perfil" ? "active" : "")" asp-controller="Usuarios" asp-action="Perfil">
+                    <i class="fa-regular fa-user"></i> Mi Perfil
+                </a>
             </nav>
 
             <div class="psa-sidebar-footer">
