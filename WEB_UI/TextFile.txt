@@ -1,3 +1,5 @@
+﻿Reemplazá el contenido completo de Views/Cuenta/DatosBanco.cshtml por:
+
 @{
     ViewData["Title"] = "Datos Bancarios";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -14,12 +16,6 @@
     <div id="sinDatos" class="alert alert-warning">
         <i class="fas fa-exclamation-triangle me-2"></i>
         No tenés datos bancarios registrados. Usá el botón <strong>Editar Información Bancaria</strong> para agregar tu cuenta.
-    </div>
-
-    <div class="mb-3">
-        <button id="btnEditar" class="btn btn-psa">
-            <i class="fas fa-pen me-2"></i><span id="btnEditarTexto">Registrar Datos Bancarios</span>
-        </button>
     </div>
 
     <!-- Con datos -->
@@ -57,6 +53,11 @@
                                 <label class="form-label-psa">FECHA DE REGISTRO</label>
                                 <div id="txtFechaRegistro" class="fw-medium"></div>
                             </div>
+                        </div>
+                        <div class="mt-4">
+                            <button id="btnEditar" class="btn btn-psa">
+                                <i class="fas fa-pen me-2"></i>Editar Información Bancaria
+                            </button>
                         </div>
                     </div>
                 </div>
