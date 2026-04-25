@@ -24,10 +24,10 @@ function EditarFinca() {
                     self.SetChip('pendiente', d.pendienteOriginal);
                     self.SetChip('hidrico', d.tieneRiosQuebradasOriginal === true ? 'true' : 'false');
 
-                    // Provincia/Cantón/Distrito (solo texto por ahora)
-                    $('#txtProvincia').val(d.provincia);
-                    $('#txtCanton').val(d.canton);
-                    $('#txtDistrito').val(d.distrito);
+                    $('#txtProvincia').val(d.provincia).data('id', d.idProvincia);
+                    $('#txtCanton').val(d.canton).data('id', d.idCanton);
+                    $('#txtDistrito').val(d.distrito).data('id', d.idDistrito);
+                    self.LoadDocumentos(d);
                 } else {
                     Swal.fire('Error', res.message || 'No se pudo cargar la finca.', 'error');
                 }
@@ -41,6 +41,37 @@ function EditarFinca() {
         $(`.chip-option[data-grupo="${grupo}"][data-valor="${valor}"]`).addClass('selected');
     };
 
+    this.LoadDocumentos = (d) => {
+        const fotos = d.fotosUrls || [];
+        const docs = d.documentosUrls || [];
+        if (fotos.length === 0 && docs.length === 0) {
+            $('#sinArchivos').show();
+            return;
+        }
+        if (fotos.length > 0) {
+            let html = '<p class="fw-medium mb-2"><i class="fas fa-images me-1"></i> Fotografías</p><div class="d-flex flex-wrap gap-2 mb-3">';
+            fotos.forEach((url, i) => {
+                html += `<a href="${url}" target="_blank"><img src="${url}" alt="Foto ${i+1}" style="width:80px;height:80px;object-fit:cover;border-radius:6px;border:1px solid #dee2e6;"></a>`;
+            });
+            html += '</div>';
+            $('#listaFotos').html(html);
+        }
+        if (docs.length > 0) {
+            let html = '';
+            docs.forEach((url) => {
+                const nombre = decodeURIComponent(url.split('/').pop().split('?')[0]);
+                html += `<div class="d-flex align-items-center gap-3 p-2 bg-light rounded mb-2">
+                <i class="fas fa-file-pdf text-danger fs-5"></i>
+                <div class="flex-grow-1">
+                    <div style="font-size:0.82rem;font-weight:500;">${nombre}</div>
+                </div>
+                <a href="${url}" target="_blank" class="btn btn-outline-psa btn-sm"><i class="fas fa-download"></i></a>
+            </div>`;
+            });
+            $('#listaDocumentos').html(html);
+        }
+    };
+
     this.GuardarCambios = (id) => {
         Swal.fire({
             title: '¿Guardar cambios?',
@@ -52,15 +83,19 @@ function EditarFinca() {
         }).then(result => {
             if (!result.isConfirmed) return;
 
+            const hidrico = $(`.chip-option[data-grupo="hidrico"].selected`).data('valor');
             const payload = {
                 idSolicitud: parseInt(id),
                 nombreFinca: $('#txtNombre').val(),
+                idProvincia: parseInt($('#txtProvincia').data('id')) || null,
+                idCanton: parseInt($('#txtCanton').data('id')) || null,
+                idDistrito: parseInt($('#txtDistrito').data('id')) || null,
                 hectareasOriginal: parseFloat($('#txtHectareas').val()) || null,
                 cantidadNacientesOriginal: parseInt($('#txtNacientes').val()) || null,
                 usoSueloOriginal: $('#txtUsoSuelo').val(),
                 tipoVegetacionOriginal: $(`.chip-option[data-grupo="vegetacion"].selected`).data('valor') || null,
                 pendienteOriginal: $(`.chip-option[data-grupo="pendiente"].selected`).data('valor') || null,
-                tieneRiosQuebradasOriginal: $(`.chip-option[data-grupo="hidrico"].selected`).data('valor') === 'true'
+                tieneRiosQuebradasOriginal: hidrico === undefined ? null : hidrico === 'true'
             };
 
             $.ajax({
