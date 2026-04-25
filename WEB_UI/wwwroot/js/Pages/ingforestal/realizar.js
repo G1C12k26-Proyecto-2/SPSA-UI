@@ -546,7 +546,8 @@ async function guardarEvaluacion() {
     };
 
     try {
-        const response = await fetch(`${API_URL}/api/Ingeniero/realizar-visita/guardar`, {
+        PR.ingenieroId = obtenerIngenieroId();
+        const response = await fetch(`${API_URL}/api/Ingeniero/realizar-visita/guardar/${PR.ingenieroId}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

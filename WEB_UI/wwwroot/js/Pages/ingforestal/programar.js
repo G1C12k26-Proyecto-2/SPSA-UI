@@ -379,7 +379,8 @@ async function guardarVisita() {
     mostrarToastPR('Guardando visita...');
 
     try {
-        const response = await fetch(`${API_URL}/api/Ingeniero/visita/programar`, {
+        PR.ingenieroId = obtenerIngenieroId();
+        const response = await fetch(`${API_URL}/api/Ingeniero/visita/programar/${PR.ingenieroId}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(request)
