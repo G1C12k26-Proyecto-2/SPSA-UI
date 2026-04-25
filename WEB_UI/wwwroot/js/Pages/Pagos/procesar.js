@@ -6,7 +6,7 @@ function cargarPagos() {
         type: 'GET',
         success: function (json) {
             if (json.result === "ok") {
-                const pendientes = json.data.filter(p => p.estado === 'Aprobada' && p.pagoMensual);
+                const pendientes = json.data.filter(p => p.estado === 'Aprobada');
                 const procesados = json.data.filter(p => p.estado === 'Pagada');
 
                 const tablaPendientes = document.getElementById("tablaPendientes");
