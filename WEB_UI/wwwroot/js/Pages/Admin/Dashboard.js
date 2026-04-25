@@ -1,4 +1,6 @@
-﻿const API_URL = "https://awakatech-bzb3evdgapcdchc5.canadacentral-01.azurewebsites.net";
+﻿const API_URL = window.location.hostname === 'localhost'
+    ? "https://awakatech-bzb3evdgapcdchc5.canadacentral-01.azurewebsites.net"
+    : "https://spsaapi.azurewebsites.net";
 
 async function cargarDashboard() {
     try {
