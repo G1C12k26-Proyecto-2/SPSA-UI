@@ -1,6 +1,4 @@
-const API_URL = window.location.hostname === 'localhost'
-    ? "https://awakatech-bzb3evdgapcdchc5.canadacentral-01.azurewebsites.net"
-    : "https://spsaapi.azurewebsites.net";
+const API_URL = "https://spsaapi.azurewebsites.net";
 
 let gridApi = null;
 let todosLosDatos = [];

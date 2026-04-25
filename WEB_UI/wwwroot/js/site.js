@@ -1,4 +1,5 @@
-﻿const API_URL_BASE = 'https://localhost:7070';
+﻿const API_URL_BASE = "https://spsaapi.azurewebsites.net";
+
 
 // ── Header scroll effect ──
 const header = document.getElementById('bpHeader');
