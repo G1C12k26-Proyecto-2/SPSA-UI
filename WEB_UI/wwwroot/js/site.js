@@ -1,4 +1,6 @@
-﻿// ── Header scroll effect ──
+﻿const API_URL_BASE = 'https://localhost:7070';
+
+// ── Header scroll effect ──
 const header = document.getElementById('bpHeader');
 window.addEventListener('scroll', () => {
     header.classList.toggle('scrolled', window.scrollY > 60);

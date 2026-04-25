@@ -18,7 +18,7 @@
             <div class="psa-stat-label">Total Fincas</div>
             <div class="psa-stat-icon green"><i class="fas fa-tree"></i></div>
         </div>
-        <div class="psa-stat-value">4</div>
+        <div id="statTotalFincas" class="psa-stat-value">4</div>
         <div class="psa-stat-sub">Registradas</div>
     </div>
     <div class="psa-stat-card">
@@ -26,7 +26,7 @@
             <div class="psa-stat-label">Activas en PSA</div>
             <div class="psa-stat-icon green"><i class="fas fa-circle-check"></i></div>
         </div>
-        <div class="psa-stat-value">2</div>
+        <div id="statActivas" class="psa-stat-value">2</div>
         <div class="psa-stat-sub">Recibiendo pagos</div>
     </div>
     <div class="psa-stat-card">
@@ -34,7 +34,7 @@
             <div class="psa-stat-label">En Proceso</div>
             <div class="psa-stat-icon gold"><i class="fas fa-hourglass-half"></i></div>
         </div>
-        <div class="psa-stat-value">1</div>
+        <div id="statEnProceso" class="psa-stat-value">1</div>
         <div class="psa-stat-sub">Pendiente evaluación</div>
     </div>
     <div class="psa-stat-card">
@@ -42,7 +42,7 @@
             <div class="psa-stat-label">Total Hectáreas</div>
             <div class="psa-stat-icon blue"><i class="fas fa-map"></i></div>
         </div>
-        <div class="psa-stat-value">67</div>
+        <div id="statHectareas" class="psa-stat-value">67</div>
         <div class="psa-stat-sub">ha registradas</div>
     </div>
 </div>
@@ -50,14 +50,14 @@
 <div class="psa-card">
     <div class="psa-filters">
         <input type="text" id="txtSearch" class="form-control form-control-sm" placeholder="Buscar finca..." style="max-width:220px;" />
-        <select class="form-select form-select-sm" style="max-width:160px;">
+        <select id="selectEstado" class="form-select form-select-sm" style="max-width:160px;">
             <option value="">Todos los estados</option>
             <option>PSA Activo</option>
             <option>En Evaluación</option>
             <option>En Revisión</option>
             <option>Rechazada</option>
         </select>
-        <select class="form-select form-select-sm" style="max-width:160px;">
+        <select id="selectProvincia" class="form-select form-select-sm" style="max-width:160px;">
             <option value="">Todas las provincias</option>
             <option>Alajuela</option>
             <option>Heredia</option>
