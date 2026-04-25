@@ -1,15 +1,19 @@
-const API_URL = "https://awakatech-bzb3evdgapcdchc5.canadacentral-01.azurewebsites.net";
+const API_URL = window.location.hostname === 'localhost'
+    ? "https://awakatech-bzb3evdgapcdchc5.canadacentral-01.azurewebsites.net"
+    : "https://spsaapi.azurewebsites.net";
+
+let gridApiAuditoria = null;
+let todosLosRegistros = [];
 
 function AuditoriaGrid() {
     this.InitView = () => {
         this.LoadGrid();
     };
 
-    this.LoadGrid = async () => {
-        const self = this;
+    this.LoadGrid = () => {
         const colDefs = [
             { field: "fechaCambio", headerName: "Fecha", flex: 1 },
-            { field: "usuario", headerName: "Usuario", flex: 1 },
+            { field: "usuarioNombre", headerName: "Usuario", flex: 1 },
             {
                 field: "accion", headerName: "Acción", flex: 1.2,
                 cellRenderer: p => {
@@ -18,30 +22,53 @@ function AuditoriaGrid() {
                 }
             },
             { field: "modulo", headerName: "Módulo", flex: 1 },
-            {
-                field: "descripcion", headerName: "Descripción", flex: 1.5,
-                cellRenderer: p => `<span style="font-size:0.75rem;">${p.value ?? ''}</span>`
-            },
-            {
-                headerName: "", width: 100, minWidth: 100, sortable: false, filter: false,
-                cellRenderer: p => `<a href="/Auditoria/Detalle" class="btn btn-psa btn-sm" style="font-size:0.68rem;padding:1px 8px;">Ver</a>`
-            }
+            { field: "descripcion", headerName: "Descripción", flex: 1.5 }
         ];
 
-        let data = [];
-        try {
-            const res = await fetch(`${API_URL}/api/Auditoria/GetAll`);
-            const json = await res.json();
-            if (json.result === "ok") data = json.data;
-        } catch (e) {
-            console.error("Error cargando auditoría", e);
-        }
+        $.ajax({
+            url: `${API_URL}/api/Auditoria/GetAll`,
+            type: 'GET',
+            success: function (json) {
+                if (json.result === "ok") todosLosRegistros = json.data;
 
-        const gridDiv = document.querySelector('#gridAuditoria');
-        agGrid.createGrid(gridDiv, {
-            columnDefs: colDefs, rowData: data, rowSelection: 'single', rowHeight: 45,
-            defaultColDef: { sortable: true, filter: true }, pagination: true, paginationPageSize: 10,
-            onGridReady: p => { self.gridApi = p.api; }
+                const gridDiv = document.querySelector('#gridAuditoria');
+                agGrid.createGrid(gridDiv, {
+                    columnDefs: colDefs,
+                    rowData: todosLosRegistros,
+                    rowSelection: 'single',
+                    rowHeight: 45,
+                    defaultColDef: { sortable: true, filter: true },
+                    pagination: true,
+                    paginationPageSize: 10,
+                    onGridReady: p => { gridApiAuditoria = p.api; }
+                });
+
+                function aplicarFiltros() {
+                    const texto = document.getElementById('auditoriaSearch').value.toLowerCase();
+                    const modulo = document.getElementById('auditoriaModulo').value;
+                    const accion = document.getElementById('auditoriaAccion').value;
+                    const fecha = document.getElementById('auditoriaFecha').value;
+
+                    const filtrado = todosLosRegistros.filter(r => {
+                        const matchTexto = texto === '' ||
+                            (r.usuarioNombre ?? '').toLowerCase().includes(texto) ||
+                            (r.accion ?? '').toLowerCase().includes(texto);
+                        const matchModulo = modulo === '' || r.modulo === modulo;
+                        const matchAccion = accion === '' || r.accion === accion;
+                        const matchFecha = fecha === '' || (r.fechaCambio ?? '').startsWith(fecha);
+                        return matchTexto && matchModulo && matchAccion && matchFecha;
+                    });
+                    gridApiAuditoria.setGridOption('rowData', filtrado);
+                }
+
+                document.getElementById('auditoriaSearch').addEventListener('input', aplicarFiltros);
+                document.getElementById('auditoriaModulo').addEventListener('change', aplicarFiltros);
+                document.getElementById('auditoriaAccion').addEventListener('change', aplicarFiltros);
+                document.getElementById('auditoriaFecha').addEventListener('change', aplicarFiltros);
+            },
+            error: function (e) {
+                console.error("Error cargando auditoría", e);
+            }
         });
     };
 }

@@ -31,11 +31,11 @@
                 <div class="brand-title">Bio<span>Pago</span> <small style="font-size:0.7rem;font-style:normal;color:rgba(255,255,255,0.4);font-family:var(--font-cuerpo);">Admin</small></div>
             </div>
 
-            <div class="psa-sidebar-user">
-                <div class="psa-avatar">AD</div>
+            <div class="psa-sidebar-user" id="user-info-container">
+                <div class="psa-avatar" id="user-avatar">--</div>
                 <div>
-                    <div class="user-name">Admin Sistema</div>
-                    <div class="user-role">Administrador</div>
+                    <div class="user-name" id="user-nombre">Cargando...</div>
+                    <div class="user-role" id="user-rol">Administrador</div>
                 </div>
             </div>
 
@@ -191,60 +191,126 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.js"></script>
     <script>
+        const API_URL_BASE = window.location.hostname === 'localhost'
+        ? "https://localhost:44392"  // Desarrollo local
+        : "https://spsaapi.azurewebsites.net";  // Producción
+        
         function ShowSuccess(t, x) { Swal.fire({ icon: 'success', title: t, text: x, timer: 2000 }); }
-        function ShowError(t, x)   { Swal.fire({ icon: 'error',   title: t, text: x }); }
-        function ShowConfirm(t, x, cb) {
-            Swal.fire({ title: t, text: x, icon: 'warning', showCancelButton: true,
-                confirmButtonColor: '#2d8653', cancelButtonColor: '#b83232',
-                confirmButtonText: 'Confirmar', cancelButtonText: 'Cancelar'
-            }).then(r => { if (r.isConfirmed) cb(); });
-        }
+        function ShowError(t, x) { Swal.fire({ icon: 'error', title: t, text: x }); }
+        function ShowConfirm(t, x, cb) { Swal.fire({ title: t, text: x, icon: 'warning', showCancelButton: true, confirmButtonColor: '#2d8653', cancelButtonColor: '#b83232', confirmButtonText: 'Confirmar', cancelButtonText: 'Cancelar' }).then(r => { if (r.isConfirmed) cb(); }); }
 
         // Dark mode toggle
         function toggleDarkMode() {
-            const html = document.documentElement;
-            const currentTheme = html.getAttribute('data-bs-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            html.setAttribute('data-bs-theme', newTheme);
-            localStorage.setItem('psa-theme', newTheme);
-            updateDarkModeIcon(newTheme);
+        const html = document.documentElement;
+        const currentTheme = html.getAttribute('data-bs-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        html.setAttribute('data-bs-theme', newTheme);
+        localStorage.setItem('psa-theme', newTheme);
+        updateDarkModeIcon(newTheme);
         }
 
         // Set dark mode icon based on current theme
         function updateDarkModeIcon(theme) {
-            const icon = document.querySelector('#btnDarkMode i');
-            if (icon) {
-                if (theme === 'dark') {
-                    icon.classList.remove('fa-moon');
-                    icon.classList.add('fa-sun');
-                    icon.parentElement.title = 'Cambiar a modo claro';
-                } else {
-                    icon.classList.remove('fa-sun');
-                    icon.classList.add('fa-moon');
-                    icon.parentElement.title = 'Cambiar a modo oscuro';
-                }
-            }
+        const icon = document.querySelector('#btnDarkMode i');
+        if (icon) {
+        if (theme === 'dark') {
+        icon.classList.remove('fa-moon');
+        icon.classList.add('fa-sun');
+        icon.parentElement.title = 'Cambiar a modo claro';
+        } else {
+        icon.classList.remove('fa-sun');
+        icon.classList.add('fa-moon');
+        icon.parentElement.title = 'Cambiar a modo oscuro';
+        }
+        }
         }
 
         // Update icon on page load (theme already applied in head)
         document.addEventListener('DOMContentLoaded', function() {
-            const currentTheme = document.documentElement.getAttribute('data-bs-theme') || 'light';
-            updateDarkModeIcon(currentTheme);
+        const currentTheme = document.documentElement.getAttribute('data-bs-theme') || 'light';
+        updateDarkModeIcon(currentTheme);
         });
 
         function toggleNotif() {
-            var panel = document.getElementById('notifPanel');
-            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+        var panel = document.getElementById('notifPanel');
+        panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
         }
+        
         document.addEventListener('click', function(e) {
-            var wrapper = document.querySelector('.psa-notif-wrapper');
-            var panel = document.getElementById('notifPanel');
-            if (wrapper && panel && !wrapper.contains(e.target)) {
-                panel.style.display = 'none';
-            }
+        var wrapper = document.querySelector('.psa-notif-wrapper');
+        var panel = document.getElementById('notifPanel');
+        if (wrapper && panel && !wrapper.contains(e.target)) {
+        panel.style.display = 'none';
+        }
+        });
+
+        // =====================================================
+        // CARGAR DATOS DINÁMICOS DEL LAYOUT
+        // =====================================================
+        
+        async function cargarParametrosLayout() {
+        try {
+        const response = await fetch(`${API_URL_BASE}/api/Ingeniero/realizar-visita/parametros`);
+        const data = await response.json();
+                
+        if (data.result === "SUCCESS" && data.data) {
+        // Obtener nombre del sistema desde los parámetros
+        const nombreSistema = data.data.ajustesVegetacion?.['NOMBRE_SISTEMA'] || 'BioPago';
+        document.getElementById('app-nombre').textContent = nombreSistema;
+        }
+        } catch (error) {
+        console.error('Error cargando parámetros:', error);
+        }
+        }
+        
+        function cargarDatosUsuario() {
+        // Obtener datos del usuario desde localStorage/sessionStorage
+        let nombre = localStorage.getItem('userName') || sessionStorage.getItem('userName');
+        let avatar = '';
+            
+        if (!nombre) {
+        try {
+        const userStr = sessionStorage.getItem('user');
+        if (userStr) {
+        const user = JSON.parse(userStr);
+        nombre = user.fullName || user.userName || user.nombre;
+        avatar = user.avatar || '';
+        }
+        } catch (e) { console.error('Error parsing user:', e); }
+        }
+            
+        if (!nombre) {
+        nombre = 'Ingeniero';
+        }
+            
+        // Generar iniciales para el avatar
+        const iniciales = nombre.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+            
+        // Actualizar elementos del DOM
+        const userNombre = document.getElementById('user-nombre');
+        const userAvatar = document.getElementById('user-avatar');
+        const topbarAvatar = document.getElementById('topbar-avatar');
+            
+        if (userNombre) userNombre.textContent = nombre;
+        if (userAvatar) userAvatar.textContent = iniciales;
+        if (topbarAvatar) topbarAvatar.textContent = iniciales;
+        }
+        
+        function cerrarSesion() {
+        ShowConfirm('Cerrar sesión', '¿Está seguro que desea cerrar sesión?', () => {
+        localStorage.clear();
+        sessionStorage.clear();
+        window.location.href = '/Login';
+        });
+        }
+        
+        // Inicializar layout
+        document.addEventListener('DOMContentLoaded', () => {
+        cargarParametrosLayout();
+        cargarDatosUsuario();
         });
     </script>
-    @await RenderSectionAsync("Scripts", required: false)
     <script src="~/js/Pages/Shared/layout.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
