@@ -2,7 +2,6 @@
     ViewData["Title"] = "Procesar Pagos";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
-
 <div class="psa-page-header">
     <div>
         <span class="subtitle">Pagos</span>
@@ -12,7 +11,7 @@
     <a asp-controller="Pagos" asp-action="Historial" class="btn btn-outline-psa btn-sm"><i class="fas fa-receipt"></i> Historial</a>
 </div>
 
-<div class="psa-card">
+<div class="psa-card mb-3">
     <div class="psa-card-header">
         <div class="psa-card-title"><i class="fas fa-circle-dollar-to-slot"></i> Pagos Pendientes de Procesar</div>
     </div>
@@ -22,32 +21,34 @@
                 <th style="padding:0.8rem 1.3rem;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--psa-muted);font-weight:600;border-bottom:1px solid var(--psa-border);">Finca</th>
                 <th style="padding:0.8rem 1.3rem;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--psa-muted);font-weight:600;border-bottom:1px solid var(--psa-border);">Propietario</th>
                 <th style="padding:0.8rem 1.3rem;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--psa-muted);font-weight:600;border-bottom:1px solid var(--psa-border);">Monto</th>
-                <th style="padding:0.8rem 1.3rem;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--psa-muted);font-weight:600;border-bottom:1px solid var(--psa-border);">Período</th>
+                <th style="padding:0.8rem 1.3rem;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--psa-muted);font-weight:600;border-bottom:1px solid var(--psa-border);">Provincia</th>
                 <th style="padding:0.8rem 1.3rem;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--psa-muted);font-weight:600;border-bottom:1px solid var(--psa-border);">Acción</th>
             </tr>
         </thead>
-        <tbody>
-            <tr>
-                <td style="padding:0.9rem 1.3rem;">Finca El Roble</td>
-                <td style="padding:0.9rem 1.3rem;">Carlos Fonseca</td>
-                <td style="padding:0.9rem 1.3rem;"><strong>₡4,200,000</strong></td>
-                <td style="padding:0.9rem 1.3rem;">Ene–Mar 2026</td>
-                <td style="padding:0.9rem 1.3rem;"><a class="btn btn-psa btn-sm" style="font-size:0.75rem;">Procesar</a></td>
-            </tr>
-            <tr>
-                <td style="padding:0.9rem 1.3rem;">Finca Las Palmas</td>
-                <td style="padding:0.9rem 1.3rem;">Ana Solano</td>
-                <td style="padding:0.9rem 1.3rem;"><strong>₡3,100,000</strong></td>
-                <td style="padding:0.9rem 1.3rem;">Ene–Mar 2026</td>
-                <td style="padding:0.9rem 1.3rem;"><a class="btn btn-psa btn-sm" style="font-size:0.75rem;">Procesar</a></td>
-            </tr>
-            <tr>
-                <td style="padding:0.9rem 1.3rem;">Finca Cerro Verde</td>
-                <td style="padding:0.9rem 1.3rem;">Pedro Vargas</td>
-                <td style="padding:0.9rem 1.3rem;"><strong>₡2,800,000</strong></td>
-                <td style="padding:0.9rem 1.3rem;">Ene–Mar 2026</td>
-                <td style="padding:0.9rem 1.3rem;"><a class="btn btn-psa btn-sm" style="font-size:0.75rem;">Procesar</a></td>
-            </tr>
+        <tbody id="tablaPendientes">
         </tbody>
     </table>
 </div>
+
+<div class="psa-card">
+    <div class="psa-card-header">
+        <div class="psa-card-title"><i class="fas fa-check-circle"></i> Pagos Procesados</div>
+    </div>
+    <table class="table table-hover mb-0" style="font-size:0.82rem;">
+        <thead style="background:#fafaf8;">
+            <tr>
+                <th style="padding:0.8rem 1.3rem;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--psa-muted);font-weight:600;border-bottom:1px solid var(--psa-border);">Finca</th>
+                <th style="padding:0.8rem 1.3rem;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--psa-muted);font-weight:600;border-bottom:1px solid var(--psa-border);">Propietario</th>
+                <th style="padding:0.8rem 1.3rem;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--psa-muted);font-weight:600;border-bottom:1px solid var(--psa-border);">Monto</th>
+                <th style="padding:0.8rem 1.3rem;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--psa-muted);font-weight:600;border-bottom:1px solid var(--psa-border);">Provincia</th>
+                <th style="padding:0.8rem 1.3rem;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--psa-muted);font-weight:600;border-bottom:1px solid var(--psa-border);">Estado</th>
+            </tr>
+        </thead>
+        <tbody id="tablaProcesados">
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script src="~/js/Pages/Pagos/procesar.js"></script>
+}
